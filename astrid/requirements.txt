@@ -1,0 +1,7 @@
+anytree
+numpy
+pandas
+sklearn
+torch
+tqdm
+redis
