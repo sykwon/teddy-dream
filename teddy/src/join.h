@@ -23,7 +23,6 @@
 #include "wSED.h"
 
 #define JOIN_INFO_PATH "stat/join_info.txt"
-// #define JOIN_BRIEF_PATH "stat/join_brief.txt"
 #define JOIN_TIME_PATH "stat/join_time.txt"
 #define PRIME 2147483647  // (1 << 31) - 1
 #define TOPK_HASH_SIZE 10000
@@ -41,24 +40,6 @@ typedef tuple<int, int> TI2;
 typedef tuple<int, int, int> TI3;
 typedef TrieStore<char32_t, vector<int> *> TriePart;
 static int _n_prfx_;
-
-namespace CompareString {
-vector<string> *R;
-bool compare(int i, int j) {
-    return (*R)[i] < (*R)[j];
-}
-bool compare_len(int i, int j) {
-    return (*R)[i].length() < (*R)[j].length();
-}
-
-bool utf8compare(int i, int j) {
-    return wSED::utf8compare((*R)[i], (*R)[j]);
-}
-
-bool utf8compare_len(int i, int j) {
-    return wSED::utf8length((*R)[i]) < wSED::utf8length((*R)[j]);
-}
-};  // namespace CompareString
 
 namespace join {
 string args_str;
@@ -116,68 +97,6 @@ CT count_table(vector<u32string> &S_Q, vector<u32string> &S_D, int delta_M, bool
     return ct;
 }
 
-void write_train_instance(vector<u32string> &S_Q, int delta_M, CT ct, bool prefix_aug, string ofname) {
-    u32stringstream ss_intv;
-    ofstream writeFile;
-    writeFile.open(ofname.c_str(), fstream::out);
-    if (!writeFile) {
-        cout << "is not open at " << ofname << endl;
-        exit(0);
-    }
-    cout << "saving at " << ofname << endl;
-
-    // write header
-    writeFile << "word, delta, card(s)" << endl;
-
-    Qry qry;
-    string q_csv;
-    for (auto q : S_Q) {
-        for (int delta = 0; delta <= delta_M; ++delta) {
-            q_csv = u32string2string(csv_token(q));
-            writeFile << q_csv << ',' << delta << ',';
-            if (prefix_aug) {
-                for (int i = 0; i < (int)q.size(); ++i) {
-                    qry = Qry(q.substr(0, i + 1), delta);
-                    if (i) {
-                        writeFile << ":";
-                    }
-                    writeFile << ct[qry];
-                }
-
-            } else {
-                qry = Qry(q, delta);
-                writeFile << ct[qry];
-            }
-            writeFile << endl;
-        }
-    }
-
-    // write results
-    // for (int i = 0; i < (int)R.size(); i++) {
-    //     ss_intv.str(U"");
-
-    //     ss_intv << csv_token(R[i]);
-    //     for (int val : join_result[i]) {
-    //         ss_intv << U',' << utf8::utf8to32(to_string(val));
-    //     }
-
-    //     ss_intv << U'\n';
-    //     if (i < MIN((int)R.size(), 10)) {
-    //         cout << utf8::utf32to8(ss_intv.str());
-    //     }
-
-    //     string line = utf8::utf32to8(ss_intv.str());
-    //     writeFile << line;
-    // }
-
-    writeFile.close();
-}
-
-void gen_train_template(vector<u32string> &S_Q, vector<u32string> &S_D, int delta_M, bool prefix_aug, string ofname) {
-    CT ct = count_table(S_Q, S_D, delta_M, prefix_aug);
-    write_train_instance(S_Q, delta_M, ct, prefix_aug, ofname);
-}
-
 vector<vector<int>> all_pair_join(vector<u32string> &S_Q, vector<u32string> &S_D, int delta_M) {
 // naive algorithm by computing pairwise distance computation
 #ifdef JOIN_INFO
@@ -206,7 +125,6 @@ vector<vector<int>> all_pair_join(vector<u32string> &S_Q, vector<u32string> &S_D
     int sed;
     for (int rid = 0; rid < (int)S_Q.size(); rid++) {
         r = S_Q[rid];
-        // cout<< "rid: " << rid  <<" rstring " << r << endl;
         for (int sid = 0; sid < (int)S_D.size(); sid++) {
             s = S_D[sid];
             sed = wSED::SED(r, s);
@@ -214,11 +132,7 @@ vector<vector<int>> all_pair_join(vector<u32string> &S_Q, vector<u32string> &S_D
                 output[rid][sed] += 1;
             }
         }
-        // if (rid % 100 == 0) {
-        //     cout << "\rR " << rid << "th done" << flush;
-        // }
     }
-    // cout << endl;
 
     for (int rid = 0; rid < (int)S_Q.size(); rid++) {  // accumlation make slightly faster
         for (int i = 1; i < delta_M + 1; i++) {
@@ -287,10 +201,7 @@ vector<vector<int>> all_pair_join(vector<u32string> &S_Q, vector<u32string> &S_D
     return output;
 }
 
-vector<vector<int>> Ablation_join(vector<u32string> &R, vector<u32string> &S, int delta, int prune_level, bool prefix_mode = false) {
-    // prune_level0: interval + individual table
-    // prune_level1: interval + global table
-
+vector<vector<int>> Ablation_join(vector<u32string> &R, vector<u32string> &S, int delta) {
 #ifdef JOIN_INFO
     system_clock::time_point tps;
     system_clock::time_point tpe;
@@ -314,17 +225,15 @@ vector<vector<int>> Ablation_join(vector<u32string> &R, vector<u32string> &S, in
     vector<int> s_lens;
     int R_max = 0;
     int S_max = 0;
-    if (prune_level >= 1) {
-        for (auto r : R) {
-            r_lens.push_back(r.size());
-        }
-
-        for (auto s : S) {
-            s_lens.push_back(s.size());
-        }
-        R_max = *max_element(begin(r_lens), end(r_lens));
-        S_max = *max_element(begin(s_lens), end(s_lens));
+    for (auto r : R) {
+        r_lens.push_back(r.size());
     }
+
+    for (auto s : S) {
+        s_lens.push_back(s.size());
+    }
+    R_max = *max_element(begin(r_lens), end(r_lens));
+    S_max = *max_element(begin(s_lens), end(s_lens));
 
     // initialize join_result
     vector<vector<int>> join_result;
@@ -335,14 +244,12 @@ vector<vector<int>> Ablation_join(vector<u32string> &R, vector<u32string> &S, in
 
     // allocate & initialize memories for dynamic programming
     int **mem;
-    if (prune_level >= 1) {
-        mem = new int *[R_max + 1];
-        for (int i = 0; i < R_max + 1; ++i) {
-            mem[i] = new int[S_max + 2];
-            mem[i][0] = i;
-            for (int j = 1; j < S_max + 2; ++j) {
-                mem[i][j] = 0;
-            }
+    mem = new int *[R_max + 1];
+    for (int i = 0; i < R_max + 1; ++i) {
+        mem[i] = new int[S_max + 2];
+        mem[i][0] = i;
+        for (int j = 1; j < S_max + 2; ++j) {
+            mem[i][j] = 0;
         }
     }
 
@@ -366,77 +273,65 @@ vector<vector<int>> Ablation_join(vector<u32string> &R, vector<u32string> &S, in
             r_len = r.size();
             js = 1;
             je = s_len + 1;
-            if (prune_level == 0) {
-                sed = wSED::SED_intv(r, s, delta);
-            } else {
-                sed = INT32_MAX;
-                for (int i = 1; i < r_len + 1; ++i) {
+            sed = INT32_MAX;
+            for (int i = 1; i < r_len + 1; ++i) {
 #ifdef JOIN_INFO
-                    if (je > js) {
-                        compute_line += 1;
-                    }
+                if (je > js) {
+                    compute_line += 1;
+                }
 #endif
-                    // if (rid == 0 && sid <= 10) {
-                    //     cout << "sid: " << sid << " i: " << i << " js: " << js << " je: " << je << endl;
-                    // }
-                    for (int j = js; j < je; ++j) {
-                        if (r[i - 1] == s[j - 1]) {  // i and j are 1-index
-                            mem[i][j] = mem[i - 1][j - 1];
-                        } else {
-                            // mem[i][j] = min({mem[i - 1][j - 1], mem[i][j - 1], mem[i - 1][j]}) + 1;
-                            mem[i][j] = MIN(mem[i - 1][j], mem[i - 1][j - 1]);  // faster than min funtion
-                            mem[i][j] = MIN(mem[i][j], mem[i][j - 1]) + 1;      // faster than min funtion
+                for (int j = js; j < je; ++j) {
+                    if (r[i - 1] == s[j - 1]) {  // i and j are 1-index
+                        mem[i][j] = mem[i - 1][j - 1];
+                    } else {
+                        // mem[i][j] = min({mem[i - 1][j - 1], mem[i][j - 1], mem[i - 1][j]}) + 1;
+                        mem[i][j] = MIN(mem[i - 1][j], mem[i - 1][j - 1]);  // faster than min funtion
+                        mem[i][j] = MIN(mem[i][j], mem[i][j - 1]) + 1;      // faster than min funtion
+                    }
+#ifdef JOIN_INFO
+                    compute_cell += 1;
+#endif
+                }
+
+                if (i == r_len) {
+                    sed = util::minArr(mem[r_len], js, je);
+                    break;
+                }
+
+                // update next interval
+                if (i > delta + 1) {
+                    js_n = INT32_MAX;
+                    je_n = 0;
+                    for (int j = js; j < MIN(je, s_len); ++j) {
+                        if (mem[i][j] <= delta) {
+                            js_n = j + 1;  // inclusive
+                            break;
                         }
-#ifdef JOIN_INFO
-                        compute_cell += 1;
-#endif
                     }
-
-                    if (i == r_len) {
-                        // cout << rid << " js: " << js << " je: " << je << endl;
-                        sed = util::minArr(mem[r_len], js, je);
-                        break;
-                    }
-
-                    // update next interval
-                    if (prune_level == 1 && i > delta + 1) {
-                        js_n = INT32_MAX;
-                        je_n = 0;
-                        for (int j = js; j < MIN(je, s_len); ++j) {
+                    if (js_n < INT32_MAX) {
+                        for (int j = MIN(je, s_len) - 1; j >= js; --j) {
                             if (mem[i][j] <= delta) {
-                                js_n = j + 1;  // inclusive
+                                je_n = j + 2;  // exclusive
                                 break;
                             }
                         }
-                        if (js_n < INT32_MAX) {
-                            for (int j = MIN(je, s_len) - 1; j >= js; --j) {
-                                if (mem[i][j] <= delta) {
-                                    je_n = j + 2;  // exclusive
-                                    break;
-                                }
-                            }
-                        }
-                        if (js_n > je_n) {
-                            break;
-                        }
-
-                        // initialize boundary
-                        if (je == je_n - 1) {
-                            mem[i][je_n - 1] = INT32_MAX;
-                        }
-                        if (js_n > 1) {
-                            mem[i + 1][js_n - 1] = INT32_MAX;
-                        }
-                        js = js_n;
-                        je = je_n;
                     }
+                    if (js_n > je_n) {
+                        break;
+                    }
+
+                    // initialize boundary
+                    if (je == je_n - 1) {
+                        mem[i][je_n - 1] = INT32_MAX;
+                    }
+                    if (js_n > 1) {
+                        mem[i + 1][js_n - 1] = INT32_MAX;
+                    }
+                    js = js_n;
+                    je = je_n;
                 }
             }
             if (sed <= delta) {
-                // cout << "rid: " << rid << " sed: " << sed << endl;
-                // string str_s = wSED::u32string2string(s);
-                // string str_r = wSED::u32string2string(r);
-                // cout << "r: " << str_r << " s: " << str_s << " rid: " << rid << " sid: " << sid << " sed: " << sed << endl;
                 join_result[rid][sed] += 1;
             }
         }
@@ -449,11 +344,9 @@ vector<vector<int>> Ablation_join(vector<u32string> &R, vector<u32string> &S, in
     }
 
 #ifdef JOIN_INFO
-    // Trie<char32_t> *trie = build_trie(R, delta);
     long int r_total = accumulate(r_lens.begin(), r_lens.end(), 0);
     long int s_total = accumulate(s_lens.begin(), s_lens.end(), 0);
     // long int n_prfx = trie->size() - 1;
-    // delete trie;
 
     total_line = r_total * S.size();
     // share_line = n_prfx * S.size();
@@ -503,20 +396,17 @@ vector<vector<int>> Ablation_join(vector<u32string> &R, vector<u32string> &S, in
     fprintf(writeFile, "Pruned cell  : %15ld\n", prune_cell);
     fclose(writeFile);
 #endif
-    if (prune_level >= 1) {
-        for (int i = 0; i < R_max + 1; ++i) {
-            delete[] mem[i];
-        }
-        delete[] mem;
+    for (int i = 0; i < R_max + 1; ++i) {
+        delete[] mem[i];
     }
+    delete[] mem;
     return join_result;
 }
 
 vector<vector<int>> SODDY_join(int R_size, vector<u32string> &S, int delta, int prune_level, bool prefix_mode = false, char32_t **S_Q_ptr = nullptr) {
-    // prune_level0:  sharing
-    // prune_level1:  prefix
-    // prune_level2:  interval
-    // prune_level3:  with partition
+// prune_level0: sharing
+// prune_level1: sharing + prefix pruning
+// prune_level2: sharing + interval pruning
 #ifdef JOIN_INFO
     system_clock::time_point tps;
     system_clock::time_point tpe;
@@ -784,21 +674,9 @@ vector<vector<int>> SODDY_join(int R_size, vector<u32string> &S, int delta, int 
         }
     }
 #ifdef JOIN_INFO
-    // Trie<char32_t> *trie = build_trie(R, delta);
     long int r_total = accumulate(r_lens.begin(), r_lens.end(), 0);
-    //  vector<u32string> S_P = distinct_prefix(R);
-    //  vector<int> p_lens;
-    //  for (auto q : S_P) {
-    //      p_lens.push_back(q.length());
-    //  }
-    //  if (prefix_mode) {
-    //      r_total = accumulate(p_lens.begin(), p_lens.end(), 0);
-    //  }
     long int s_total = accumulate(s_lens.begin(), s_lens.end(), 0);
-    //  long int n_prfx = (int)S_P.size();
     long int n_prfx = _n_prfx_;
-    // long int n_prfx = trie->size() - 1;
-    // delete trie;
 
     total_line = r_total * S.size();
     share_line = n_prfx * S.size();
@@ -1209,54 +1087,6 @@ vector<vector<int>> TEDDY_join(vector<u32string> &R, vector<u32string> &S, int d
     return join_result;
 }
 
-unordered_map<u32string, vector<int> *> get_partition_dictionary(vector<u32string> queries, int delta) {
-    unordered_map<u32string, vector<int> *> output_dict;
-
-    int n_sp = delta + 1;
-    u32string query;
-
-    output_dict[U"\0"] = new vector<int>();
-    for (int i = 0; i < (int)queries.size(); i++) {
-        query = queries[i];
-        if ((int)query.size() < n_sp) {
-            output_dict[U"\0"]->push_back(i);
-        } else {
-            vector<u32string> parts_vec = wSED::partition_string(query, n_sp);
-            unordered_set<u32string> parts = util::convertVec2Set(parts_vec);
-
-            for (auto part : parts) {
-                if (output_dict.find(part) == output_dict.end()) {
-                    output_dict[part] = new vector<int>();
-                }
-                output_dict[part]->push_back(i);
-            }
-        }
-        // cout << "query: " << query << " [curr/total]: [" << i + 1 << "/" << queries.size() << "]" << endl;
-    }
-    return output_dict;
-}
-
-TriePart *convert_inv_dict2part_trie(unordered_map<u32string, vector<int> *> part_inv_list) {
-    // TrieOld<TriePartNode> *trie = new TrieOld<TriePartNode>();
-    TriePart *trie = new TriePart();
-
-    u32string empty_str = U"\0";
-    assert(empty_str.size() == 0);
-
-    for (auto iter = part_inv_list.begin(); iter != part_inv_list.end(); iter++) {
-        auto partition = iter->first;
-        vector<int> *inv_list = iter->second;
-        // if (partition == "roz") {
-        //     cout << "roz trie inv debug:" << endl
-        //          << "\t";
-        //     util::printVec(*inv_list);
-        // }
-        trie->add_key_val(partition, inv_list);
-    }
-
-    return trie;
-}
-
 vector<vector<int>> taste_join(vector<u32string> &R, vector<u32string> &S, int delta) {
 #ifdef JOIN_INFO
     int pruned_count = 0;
@@ -1347,9 +1177,6 @@ vector<vector<int>> taste_join(vector<u32string> &R, vector<u32string> &S, int d
         }
         // cout << "query: " << query << " [curr/total]: [" << i + 1 << "/" << queries.size() << "]" << endl;
     }
-
-    // auto inv_dict = get_partition_dictionary(R, delta);
-    // u32string part;
 
     /****** create trie structure *************/
     TriePart *trie = new TriePart();
@@ -1492,55 +1319,9 @@ vector<vector<int>> taste_join(vector<u32string> &R, vector<u32string> &S, int d
     fprintf(writeFile, "Pruned cell  : %15ld\n", prune_cell);
     fclose(writeFile);
 #endif
-    // #ifdef JOIN_INFO
-    //     total_time = system_clock::now() - start;
-    //     FILE *writeFile = fopen("stat/stat.txt", "a");
-    //     total_line = r_total * S.size();
-    //     prune_line = share_line - compute_line;
-    //     // printf("alg n_rec time\n");
-    //     double trie_percnt = trie_build_time / total_time * 100;
-    //     double filter_percnt = filter_time / total_time * 100;
-    //     double cal_dist_percnt = cal_dist_time / total_time * 100;
-    //     fprintf(writeFile,
-    //             "[tri/fil/cal/tot]=[%8.3f/%8.1f/%8.1f/%8.1f]=[%2.0f%%/%2.0f%%/%2.0f%%/100%%]: (rem/tot)=(%12d/%12d)\n",
-    //             trie_build_time.count(), filter_time.count(), cal_dist_time.count(), total_time.count(),
-    //             trie_percnt, filter_percnt, cal_dist_percnt, remain_count, total_count);
-    // #endif
-
-    // fclose(writeFile);
-    // for (auto iter = inv_dict.begin(); iter != inv_dict.end(); iter++) {
-    //     delete iter->second;
-    // }
 
     delete trie;
     return join_result;
-}
-
-unordered_map<u32string, vector<int>> get_qgram_inverted_list(vector<u32string> &S, int q) {
-    unordered_map<u32string, vector<int>> r_inverted_dict(10000);
-
-    for (int d_id = 0; d_id < (int)S.size(); ++d_id) {
-        // string rec = S[d_id];
-        auto rec = S[d_id];
-        for (int s = 0; s < (int)rec.size() - q + 1; ++s) {
-            // string r_qgram = wSED::codes2string(sub_rec);
-            auto r_qgram = rec.substr(s, q);
-            // if (r_inverted_dict.find(r_qgram) == r_inverted_dict.end()) {
-            //     r_inverted_dict[r_qgram] = vector<int>(0);
-            // }
-            // r_inverted_dict[r_qgram].push_back(d_id);
-            vector<int> &inv_list = r_inverted_dict[r_qgram];
-            if (inv_list.empty() || inv_list.back() != d_id) {  // deduplication
-                inv_list.push_back(d_id);
-            }
-        }
-    }
-    // // deduplication
-    // for (auto kv : r_inverted_dict) {
-    //     auto val = get<1>(kv);
-    //     val.erase(unique(val.begin(), val.end()), val.end());
-    // }
-    return r_inverted_dict;
 }
 
 tuple<vector<int>, vector<int>> gen_min_hash_coefficient(int L, int seed) {
@@ -2239,16 +2020,12 @@ vector<vector<int>> get_count_array(string algName, vector<u32string> &S_Q, vect
             join_result = TEDDY_join(S_Q, S_D, delta_M, 0, prefix_mode);
             break;
         }
-        case str2inthash("teddy1"): {
-            join_result = TEDDY_join(S_Q, S_D, delta_M, 1, prefix_mode);
-            break;
-        }
         case str2inthash("teddy2"): {
             join_result = TEDDY_join(S_Q, S_D, delta_M, 2, prefix_mode);
             break;
         }
         case str2inthash("abl1"): {
-            join_result = Ablation_join(S_QP, S_D, delta_M, 1);
+            join_result = Ablation_join(S_QP, S_D, delta_M);
             break;
         }
         case str2inthash("taste"): {
@@ -2292,6 +2069,45 @@ CT get_count_table(string algName, vector<u32string> S_Q, vector<u32string> S_D,
         }
     }
     return ct;
+}
+
+void write_train_instance(vector<u32string> &S_Q, int delta_M, CT ct, bool prefix_aug, string ofname) {
+    u32stringstream ss_intv;
+    ofstream writeFile;
+    writeFile.open(ofname.c_str(), fstream::out);
+    if (!writeFile) {
+        cout << "is not open at " << ofname << endl;
+        exit(0);
+    }
+    cout << "saving at " << ofname << endl;
+
+    // write header
+    writeFile << "word, delta, card(s)" << endl;
+
+    Qry qry;
+    string q_csv;
+    for (auto q : S_Q) {
+        for (int delta = 0; delta <= delta_M; ++delta) {
+            q_csv = u32string2string(csv_token(q));
+            writeFile << q_csv << ',' << delta << ',';
+            if (prefix_aug) {
+                for (int i = 0; i < (int)q.size(); ++i) {
+                    qry = Qry(q.substr(0, i + 1), delta);
+                    if (i) {
+                        writeFile << ":";
+                    }
+                    writeFile << ct[qry];
+                }
+
+            } else {
+                qry = Qry(q, delta);
+                writeFile << ct[qry];
+            }
+            writeFile << endl;
+        }
+    }
+
+    writeFile.close();
 }
 
 void write_train_data(string algName, vector<u32string> &S_Q, vector<u32string> &S_D, int delta_M, bool prefix_aug, string ofname, char32_t **S_Q_ptr = nullptr) {

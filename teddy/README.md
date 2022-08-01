@@ -1,5 +1,10 @@
 # Traning Data Generation
 
+[![license](https://img.shields.io/github/license/sykwon/teddy-dream?color=brightgreen)](https://github.com/sykwon/teddy-dream/blob/master/LICENSE)
+[![ubuntu](https://img.shields.io/badge/ubuntu-v18.04-orange)](https://wiki.ubuntu.com/Releases)
+![gcc 7.5](https://img.shields.io/badge/gcc-v7.5-blue)
+![python 3.7](https://img.shields.io/badge/python-v3.7-blue)
+
 ## Prerequisite
 
 ```bash

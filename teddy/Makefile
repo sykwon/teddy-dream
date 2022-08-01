@@ -1,54 +1,30 @@
-# CC=g++
-# CXXFLAGS=-Wall -O2 # C++ compiler option
-# SRC_DIR=./src # source file directory
-# OBJ_DIR=./obj # object file directory
-# OBJS=main.o util.o
-# TARGET=app.out # name of execution file
-
-
-# $(TARGET): $(OBJS)
-# 	$(CC) $(CXXFLAGS) -o $(TARGET)
-
-# main.o : main.cpp util.h
-# 	$(CC) $(CXXFLAGS) -c main.cpp
-
-# util.o : util.h util.cpp
-# 	$(CC) $(CXXFLAGS) -c util.cpp
-
-# .PHONY: clean
-# clean:
-# 	rm -f *.o
-# 	rm -f $(TARGET)
+# compiler
 CC = g++
 
-# C++ 컴파일러 옵션
+# C++ compiler option
 CXXFLAGS = -Wall -O2
 
-# 링커 옵션
+# linker option
 #LDFLAGS = -DDEBUG -g
 LDFLAGS = 
 LDFLAGS_INFO = -DJOIN_INFO
 
-# 소스 파일 디렉토리
+# source directory
 SRC_DIR = ./src
 
-# 오브젝트 파일 디렉토리
+# object directory
 OBJ_DIR = ./obj
 OBJ_DIR_INFO = ./obj/info
 
-# 생성하고자 하는 실행 파일 이름
+# exe file name
 TARGET = main
 TARGET_INFO = main_info
 
-# Make 할 소스 파일들
-# wildcard 로 SRC_DIR 에서 *.cpp 로 된 파일들 목록을 뽑아낸 뒤에
-# notdir 로 파일 이름만 뽑아낸다.
-# (e.g SRCS 는 foo.cpp bar.cpp main.cpp 가 된다.)
+# source files to make
 SRCS = $(notdir $(wildcard $(SRC_DIR)/*.cpp))
 
 OBJS = $(SRCS:.cpp=.o)
 
-# OBJS 안의 object 파일들 이름 앞에 $(OBJ_DIR)/ 을 붙인다.
 OBJECTS = $(patsubst %.o,$(OBJ_DIR)/%.o,$(OBJS))
 DEPS = $(OBJECTS:.o=.d)
 

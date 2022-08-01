@@ -592,7 +592,7 @@ if __name__ == "__main__":
             model_name_prefix = args.prfx + \
                 f"_{args.delta}_{args.pt_r}_{args.max_l:02d}_{args.seed}_{args.es}_{args.bs}_{args.lr}_{args.epoch}_{args.p_train}_{args.emb_epoch}_{args.dsc}"
             save_prefix = model_name_prefix.replace("qs_", "")
-            log_dir = f"log/coding/{save_prefix}/"
+            log_dir = f"log/{dname}/{save_prefix}/"
             ts_path = log_dir + f"analysis_ts_{args.delta}.csv"
             qs_path = log_dir + f"analysis_qs.csv"
             # print(args)
@@ -648,7 +648,9 @@ if __name__ == "__main__":
         print(res_dict)
         exp_json_str = ut.get_model_exp_json_str("astrid", **res_dict)
         conn.set(f"anal:{exp_key}", exp_json_str)
-        print(conn.get(f"anal:{exp_key}"))
+        conn.set(f"est:{exp_key}", exp_json_str)
+        print("[anal]", conn.get(f"anal:{exp_key}"))
+        print("[est ]", conn.get(f"est:{exp_key}"))
         exit()
 
     conn.set(f"conf:{exp_key}", model_name_prefix)

@@ -1,9 +1,9 @@
 #!/bin/bash
-device=${1:-0}
-preview=${2:-1}
-# analysis=${3:-0}
+exp=${1}
+device=0
+preview=0
 analysis=0
-dnames='wiki2 imdb2 dblp'
+dnames='wiki2 imdb2 dblp egr1'
 seeds='0 1 2'
 p_trains='0.1 0.2 0.4 0.6 0.8 1.0'
 css='128 256 512 1024'
@@ -47,8 +47,6 @@ vclip_lv=10.0
 vclip_gr=0.01
 clip_gr=
 suffix="" # " --overwrite" " --analysis ts" # " --analysis lat" # " --analysis qs"
-
-
 
 function set_rnn {
   l2=0.00000001
@@ -110,7 +108,6 @@ function param_search_Pcard {
   sc=128
 }
 
-
 # rnn subprocedure
 function rnn_sub {
   echo [ rnn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --sep-emb --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
@@ -118,7 +115,6 @@ function rnn_sub {
     CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --sep-emb --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   fi
 }
-
 
 # Prnn subprocedure
 function Prnn_sub {
@@ -280,6 +276,7 @@ function for_data_size_rnn {
     done
   done
 }
+
 function for_data_size_Prnn {
   local seed
   local dname
@@ -292,6 +289,7 @@ function for_data_size_Prnn {
     done
   done
 }
+
 function for_data_size_Ernn {
   local seed
   local dname
@@ -304,6 +302,7 @@ function for_data_size_Ernn {
     done
   done
 }
+
 function for_data_size_card {
   local seed
   local dname
@@ -316,6 +315,7 @@ function for_data_size_card {
     done
   done
 }
+
 function for_data_size_Pcard {
   local seed
   local dname
@@ -369,15 +369,54 @@ function for_model_size_LBS {
   done
 }
 
+function for_analysis_rnn {
+  local suffix
+  local dname
+  local seed
+  suffix=" --analysis"
+
+  for seed in $seeds; do
+    for dname in $dnames; do
+      rnn_sub
+    done
+  done
+}
+
 function for_analysis_Prnn {
   local suffix
   local dname
   local seed
   suffix=" --analysis"
 
-  for seed in $seeds;do
+  for seed in $seeds; do
     for dname in $dnames; do
       Prnn_sub
+    done
+  done
+}
+
+function for_analysis_Ernn {
+  local suffix
+  local dname
+  local seed
+  suffix=" --analysis"
+
+  for seed in $seeds; do
+    for dname in $dnames; do
+      Ernn_sub
+    done
+  done
+}
+
+function for_analysis_card {
+  local suffix
+  local dname
+  local seed
+  suffix=" --analysis"
+
+  for seed in $seeds; do
+    for dname in $dnames; do
+      card_sub
     done
   done
 }
@@ -388,9 +427,22 @@ function for_analysis_Pcard {
   local seed
   suffix=" --analysis"
 
-  for seed in $seeds;do
+  for seed in $seeds; do
     for dname in $dnames; do
       Pcard_sub
+    done
+  done
+}
+
+function for_analysis_LBS {
+  local suffix
+  local dname
+  local seed
+  suffix=" --analysis"
+
+  for seed in $seeds; do
+    for dname in $dnames; do
+      LBS_sub
     done
   done
 }
@@ -426,10 +478,9 @@ function rnn_all {
   local clip_gr
   set_rnn
 
-  if [[ $analysis -eq 0 ]]; then
-    for_default_rnn
-    # for_data_size_rnn
-  fi
+  for_default_rnn
+  for_analysis_rnn
+  # for_data_size_rnn
   echo
 }
 
@@ -438,13 +489,10 @@ function Prnn_all {
   local clip_gr
   set_Prnn
 
-  if [[ $analysis -ne 0 ]]; then
-    for_analysis_Prnn
-  else
-    for_default_Prnn
-    # for_data_size_Prnn
-    # for_model_size_Prnn
-  fi 
+  for_default_Prnn
+  for_analysis_Prnn
+  # for_data_size_Prnn
+  # for_model_size_Prnn
   # for_each_delta_Prnn
   echo
 }
@@ -454,9 +502,8 @@ function Ernn_all {
   local clip_gr
   set_Ernn
 
-  if [[ $analysis -eq 0 ]]; then
-    for_default_Ernn
-  fi
+  for_default_Ernn
+  for_analysis_Ernn
   echo
 }
 
@@ -465,9 +512,8 @@ function card_all {
   local clip_gr
   set_card
 
-  if [[ $analysis -eq 0 ]]; then
-    for_default_card
-  fi
+  for_default_card
+  for_analysis_card
   echo
 }
 
@@ -476,22 +522,18 @@ function Pcard_all {
   local clip_gr
   set_Pcard
 
-  if [[ $analysis -ne 0 ]]; then
-    for_analysis_Pcard
-  else
-    for_default_Pcard
-    # for_data_size_Pcard
-    # for_model_size_Pcard
-  fi
+  for_default_Pcard
+  for_analysis_Pcard
+  # for_data_size_Pcard
+  # for_model_size_Pcard
   # for_each_delta_Pcard
   echo
 }
 
 function LBS_all {
-  if [[ $analysis -eq 0 ]]; then
-    for_default_LBS
-    # for_model_size_LBS
-  fi
+  for_default_LBS
+  for_analysis_LBS
+  # for_model_size_LBS
   echo
 }
 
