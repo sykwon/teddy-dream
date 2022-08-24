@@ -13,7 +13,7 @@ sudo apt-get install binutils
 pip install redis
 ```
 
-## Script
+## Example Usage
 
 ```bash
 # quick test
