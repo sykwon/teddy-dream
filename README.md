@@ -84,4 +84,4 @@ cd astrid
 cd ..
 ```
 
-Please refer to [[notebook](/plot/example.ipynb)] to visualize results.
+Please refer to [[notebook](/plot/example.ipynb)] to see the experimental results.
