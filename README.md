@@ -8,7 +8,7 @@
 ![size](https://img.shields.io/github/repo-size/sykwon/teddy-dream?color=yellow)
 ![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsykwon%2Fteddy-dream&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)
 
-This repository implements training data generation algorithm (TEDDY) and deep cardinality estimators (DREAM) proposed in our paper "Cardinality Estimation of Approximate Substring Queries using Deep Learning".
+This repository implements training data generation algorithms (SODDY & TEDDY) and deep cardinality estimators (DREAM) proposed in our paper "Cardinality Estimation of Approximate Substring Queries using Deep Learning".
 
 ## Repository Overwiew
 
@@ -16,7 +16,7 @@ It consists of four folders each of which contains its own README file and scrip
 
 |Folder| Description |
 |---|---|
-| teddy  | training data generation algorithms                                              |
+| gen_train_data | training data generation algorithms                                              |
 | dream  | deepp cardinality estimators for approximate substring queries                         |
 | astrid | the modified version of Astrid starting from the astrid model downloaded from [[github](<https://github.com/saravanan-thirumuruganathan/astrid-string-selectivity>)]|
 | plot | example notebook files |
@@ -52,19 +52,18 @@ These commands produces experimental results.
 ```bash
 cd teddy
 ./run.sh dblp
-# ./run.sh all # to test all datasets
+# ./run.sh all # to generate training data from all datasets
 cd ..
 
 cd dream
 ./run.sh dblp
-# ./run.sh all # to test all datasets
+# ./run.sh all # to train all models except astrid with all datasets
 cd ..
 
 cd astrid
 ./run.sh dblp
-# ./run.sh all # to test all datasets
+# ./run.sh all # to train the Astrid model with all datasets
 cd ..
 ```
 
 Please refer to [[notebook](/plot/example.ipynb)] to visualize results.
-
