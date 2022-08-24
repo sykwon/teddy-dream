@@ -5,7 +5,7 @@
 ![gcc 7.5](https://img.shields.io/badge/gcc-v7.5-blue)
 ![python 3.7](https://img.shields.io/badge/python-v3.7-blue)
 
-## Prerequisite
+## Installation
 
 ```bash
 sudo apt-get install redis-server
