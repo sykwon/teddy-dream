@@ -45,24 +45,42 @@ pip install -r requirements.txt
 cd ..
 ```
 
+### Datasets
+
+| in exp | in paper |
+|--------|----------|
+| dblp   |   DBLP   |
+| wiki2  |   WIKI   |
+| imdb2  |   IMDB   |
+| egr1   |   GENE   |
+
 ## Examples
 
 These commands produces experimental results.
 
 ```bash
-cd teddy
-./run.sh dblp
-# ./run.sh all # to generate training data from all datasets
+cd gen_train_data
+./run.sh dblp     # to generate training data from the DBLP dataset
+# ./run.sh wiki2  # to generate training data from the WIKI dataset
+# ./run.sh imdb2  # to generate training data from the IMDB dataset
+# ./run.sh egr1   # to generate training data from the GENE dataset
+# ./run.sh all    # to generate training data from all datasets
 cd ..
 
 cd dream
-./run.sh dblp
-# ./run.sh all # to train all models except astrid with all datasets
+./run.sh dblp    # to train all models except Astrid with the DBLP dataset
+# ./run.sh wiki2 # to train all models except Astrid with the WIKI dataset
+# ./run.sh imdb2 # to train all models except Astrid with the IMDB dataset
+# ./run.sh egr1  # to train all models except Astrid with the GENE dataset
+# ./run.sh all   # to train all models except Astrid with all datasets
 cd ..
 
 cd astrid
-./run.sh dblp
-# ./run.sh all # to train the Astrid model with all datasets
+./run.sh dblp    # to train the Astrid model with the DBLP dataset
+# ./run.sh wiki2 # to train the Astrid model with the WIKI dataset
+# ./run.sh imdb2 # to train the Astrid model with the IMDB dataset
+# ./run.sh egr1  # to train the Astrid model with the GENE dataset
+# ./run.sh all   # to train the Astrid model with all datasets
 cd ..
 ```
 

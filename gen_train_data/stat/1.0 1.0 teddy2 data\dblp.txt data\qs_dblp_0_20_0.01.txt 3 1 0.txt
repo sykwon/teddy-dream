@@ -1,0 +1,7 @@
+[Thu Aug 18 15:08:55 2022] 1.0 1.0 teddy2 data\dblp.txt data\qs_dblp_0_20_0.01.txt 3 1 0
+Total line   :      1120474058
+Computed line:        47348047
+Pruned line  :      1073126011
+Total cell   :     69065038130
+Computed cell:      2281969324
+Pruned cell  :     66783068806

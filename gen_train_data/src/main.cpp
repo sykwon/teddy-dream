@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
     cout << endl;
     if (argc < 9) {
         cout << "Please enter [# or p of records], [# or p of queries], [algorithm name], [data path], [query name], [delta], [augment prefix] and [trial]" << endl;
-        cout << "example: ./a.out {100(#), 0.1(p), 0(all)} {100(#), 0.1(p), 0(all)} {allp, teddy2, teddy1, teddy0, soddy2, soddy1, soddy0, taste, topk, topsp, toplb} [input_file] [query_file] [delta] [prefix] [trial]" << endl;
+        cout << "example: ./main {100(#), 0.1(p), 0(all)} {100(#), 0.1(p), 0(all)} {allp, topk, taste, soddy2, teddy2, teddy0, abl1} [input_file] [query_file] [delta] [prefix] [trial]" << endl;
         return 0;
     }
 

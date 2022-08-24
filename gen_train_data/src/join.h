@@ -430,7 +430,7 @@ vector<vector<int>> SODDY_join(int R_size, vector<u32string> &S, int delta, int 
 
     // start computing prefix
     // u32string prev_r = U"";
-    char32_t *prev_r;
+    char32_t *prev_r = nullptr;
     int prev_r_size = 0;
     int min_r_prev_r_size;
 
@@ -514,7 +514,7 @@ vector<vector<int>> SODDY_join(int R_size, vector<u32string> &S, int delta, int 
     int je;      // exclusive
     int js_n;    // inclusive
     int je_n;    // exclusive
-    int sed;
+    int sed = 0;
     int n_line_computed = 0;
     int last_point;
     int rid_prime;
@@ -1460,17 +1460,17 @@ vector<vector<int>> topk_join(vector<u32string> &R, vector<u32string> &S, int de
     vector<vector<int>> permutations;
     // vector<int> default_hash(L + 1, n + 1);  // size, val
     // default_hash[0] = 0;
-    int *default_hash;
+    int *default_hash = nullptr;
     int hash;
     vector<int> *permutation;
 
     /********* for dynamic programing in Best G' *******/
-    int rho = delta + 1;  // threshold for pruning a group of strings
-    double **mem_u;       // (1-index) u[i, t]: the minimum value of L(\theta(i,t))
-    int ***mem_mh;        // (1-index, 1-index, 0-index) min_hash of \theta(i,t)
-    int **mem_pos;        // (1-index) j* eq (7)
+    int rho = delta + 1;       // threshold for pruning a group of strings
+    double **mem_u = nullptr;  // (1-index) u[i, t]: the minimum value of L(\theta(i,t))
+    int ***mem_mh = nullptr;   // (1-index, 1-index, 0-index) min_hash of \theta(i,t)
+    int **mem_pos = nullptr;   // (1-index) j* eq (7)
 
-    int **d_hash_list;  // (1-index) it contains a s_id list for each the i-th q-gram q[i:i+q]
+    int **d_hash_list = nullptr;  // (1-index) it contains a s_id list for each the i-th q-gram q[i:i+q]
     vector<int> S_ids;
     for (int i = 0; i < (int)S.size(); i++) {
         S_ids.push_back(i);
@@ -1494,7 +1494,7 @@ vector<vector<int>> topk_join(vector<u32string> &R, vector<u32string> &S, int de
     double union_count;
     int common_count;
     int h1, h2;
-    int *union_mh;  // initailized later
+    int *union_mh = nullptr;  // initailized later
     int *tmp_mh;
     vector<vector<int>> cand_lists;        // posting lists for best-G'
     unordered_set<u32string> best_qgrams;  // qgrams for best-G'
