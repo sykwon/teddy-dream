@@ -1,4 +1,4 @@
-# TEDDY & DREAM
+# (SODDY, TEDDY) & DREAM
 
 [![license](https://img.shields.io/github/license/sykwon/teddy-dream?color=brightgreen)](https://github.com/sykwon/teddy-dream/blob/master/LICENSE)
 [![ubuntu](https://img.shields.io/badge/ubuntu-v18.04-orange)](https://wiki.ubuntu.com/Releases)
