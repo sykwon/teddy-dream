@@ -41,9 +41,9 @@ pip install redis
 
 ### Datasets
 
-| in exp | in paper |
-|--------|----------|
-| dblp   |   DBLP   |
-| wiki2  |   WIKI   |
-| imdb2  |   IMDB   |
-| egr1   |   GENE   |
+| Dataset |
+|---------|
+| DBLP    |
+| WIKI    |
+| IMDB    |
+| GENE    |
