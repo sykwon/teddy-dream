@@ -2,6 +2,7 @@
 #include <cassert>
 #include <chrono>
 #include <codecvt>
+#include <cstdlib>
 #include <ctime>
 #include <fstream>
 #include <iostream>
@@ -171,6 +172,15 @@ int main(int argc, char *argv[]) {
     if (argc < 9) {
         cout << "Please enter [# or p of records], [# or p of queries], [algorithm name], [data path], [query name], [delta], [augment prefix] and [trial]" << endl;
         cout << "example: ./main {100(#), 0.1(p), 0(all)} {100(#), 0.1(p), 0(all)} {allp, topk, taste, soddy2, teddy2, teddy0, abl1} [input_file] [query_file] [delta] [prefix] [trial]" << endl;
+        return 0;
+    }
+
+    int fail;
+    fail = std::system("mkdir -p res");
+    fail = std::system("mkdir -p stat");
+    fail = std::system("mkdir -p time");
+    if (fail) {
+        cout << "fail to create dir" << endl;
         return 0;
     }
 

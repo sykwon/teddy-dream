@@ -1,9 +1,6 @@
 #!/bin/bash
 exp=${1}
 make clean && make && make info
-mkdir -p res
-mkdir -p stat
-mkdir -p time
 
 if [[ "$exp" = "test" ]]; then
     echo "Start quick test"

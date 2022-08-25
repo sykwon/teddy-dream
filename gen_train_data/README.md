@@ -7,6 +7,8 @@
 
 ## Installation
 
+This code needs Python-3.7 or higher.
+
 ```bash
 sudo apt-get install redis-server
 sudo apt-get install binutils
@@ -27,15 +29,15 @@ pip install redis
 
 ### Algorithms
 
-| argument | in paper |
-|--------|----------|
-| allp   | NaiveGen |
-| topk   | Qgram    |
-| taste  | TASTE    |
-| soddy2 | SODDY    |
-| teddy2 | TEDDY    |
-| teddy0 | TEDDY-S  |
-| abl1   | TEDDY-R  |
+| Algorithm |
+|-----------|
+| NaiveGen  |
+| Qgram     |
+| TASTE     |
+| SODDY     |
+| TEDDY     |
+| TEDDY-S   |
+| TEDDY-R   |
 
 ### Datasets
 
