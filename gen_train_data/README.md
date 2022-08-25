@@ -15,6 +15,22 @@ sudo apt-get install binutils
 pip install redis
 ```
 
+## Training data generation
+
+To run an algorithm to generate a training data, run the following command:
+
+```bash
+python for.py -s <number_of_repetitions> -d <data_name> -a <algorithm_name> -pr <prefix_aug_flag> -t <delta_M> -hr <max_hours_to_execute>
+```
+
+where \
+    <number_of_repetitions>: the number of repeted executions of generating a dataset - This parameter value is used to compute average execution time for experiments. \
+    <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB) \
+    <algorithm_name>: the name of the training data generation algorithm (NaiveGen, Qgram, TASTE, SODDY, TEDDY, TEDDY-S or TEDDY-R) \
+    <prefix_aug_flag>: the flag to represent whether to generate the prefix-aug training data (0: base training data; 1: prefix-aug training data)\
+    <delta_M>: the maximum substring edit distance threshold \
+    <max_hours_to_execute>: the time to be allowed for generating training data (1 means an hour.) - If the algorithm does not finish within ```<max_hours_to_execute>```, we stop and generate nothing. \
+
 ## Example Usage
 
 ```bash
