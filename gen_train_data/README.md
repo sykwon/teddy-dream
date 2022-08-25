@@ -27,9 +27,9 @@ pip install redis
 
 ### Algorithms
 
-| in exp | in paper |
+| argument | in paper |
 |--------|----------|
-| allp   | NavieGen |
+| allp   | NaiveGen |
 | topk   | Qgram    |
 | taste  | TASTE    |
 | soddy2 | SODDY    |

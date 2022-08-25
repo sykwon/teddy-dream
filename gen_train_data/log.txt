@@ -1,2 +1,0 @@
-[Thu Aug 18 15:07:44 2022] 1.0 1.0 teddy2 data\dblp.txt data\qs_dblp_0_20_0.01.txt 3 1 0
-[Thu Aug 18 15:08:48 2022] 1.0 1.0 teddy2 data\dblp.txt data\qs_dblp_0_20_0.01.txt 3 1 0

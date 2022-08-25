@@ -2004,35 +2004,31 @@ vector<vector<int>> get_count_array(string algName, vector<u32string> &S_Q, vect
     }
     // auto tps = system_clock::now();
     switch (str2inthash(algName.c_str())) {
-        case str2inthash("allp"): {
+        case str2inthash("NaiveGen"): {
             join_result = all_pair_join(S_QP, S_D, delta_M);
             break;
         }
-        case str2inthash("soddy0"): {
-            join_result = SODDY_join(S_Q.size(), S_D, delta_M, 0, prefix_mode, S_Q_ptr);
-            break;
-        }
-        case str2inthash("soddy2"): {
+        case str2inthash("SODDY"): {
             join_result = SODDY_join(S_Q.size(), S_D, delta_M, 2, prefix_mode, S_Q_ptr);
             break;
         }
-        case str2inthash("teddy0"): {
+        case str2inthash("TEDDY-S"): {
             join_result = TEDDY_join(S_Q, S_D, delta_M, 0, prefix_mode);
             break;
         }
-        case str2inthash("teddy2"): {
+        case str2inthash("TEDDY"): {
             join_result = TEDDY_join(S_Q, S_D, delta_M, 2, prefix_mode);
             break;
         }
-        case str2inthash("abl1"): {
+        case str2inthash("TEDDY-R"): {
             join_result = Ablation_join(S_QP, S_D, delta_M);
             break;
         }
-        case str2inthash("taste"): {
+        case str2inthash("TASTE"): {
             join_result = taste_join(S_QP, S_D, delta_M);
             break;
         }
-        case str2inthash("topk"): {
+        case str2inthash("Qgram"): {
             int q = 2;
             join_result = topk_join(S_QP, S_D, delta_M, 2, q);
             break;

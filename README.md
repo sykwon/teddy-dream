@@ -23,6 +23,8 @@ It consists of four folders each of which contains its own README file and scrip
 
 ## Installation and Requirements
 
+This code needs Python-3.7 or higher.
+
 ```bash
 sudo apt-get install -y redis-server
 sudo apt-get install -y binutils
