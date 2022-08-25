@@ -20,7 +20,7 @@ pip install redis
 To run an algorithm to generate a training data, run the following command:
 
 ```bash
-python for.py -s <number_of_repetitions> -d <data_name> -a <algorithm_name> -pr <prefix_aug_flag> -t <delta_M> -hr <max_hours_to_execute>
+python for.py -nt <number_of_repetitions> -d <data_name> -a <algorithm_name> -pr <prefix_aug_flag> -th <delta_M> -hr <max_hours_to_execute>
 ```
 
 The meaning of each parameter value in the above is as follows.
@@ -29,14 +29,16 @@ The meaning of each parameter value in the above is as follows.
   This parameter value is used to compute average execution time for experiments.
 * <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
 The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our paper.
-* <algorithm_name>: the name of the training data generation algorithm (NaiveGen, Qgram, TASTE, SODDY, TEDDY, TEDDY-S or TEDDY-R)  
-The meanings of NaiveGen, Qgram, TASTE, SODDY, TEDDY, TEDDY-S and TEDDY-R are described in Section 6 of our paper.
+* <algorithm_name>: the name of the training data generation algorithm (NaiveGen, Qgram, TASTE, SODDY or TEDDY)  
+The meanings of NaiveGen, Qgram, TASTE, SODDY, TEDDY are described in Section 6 of our paper.
 * <prefix_aug_flag>: the flag to represent whether to generate the prefix-aug training data (0: base training data; 1: prefix-aug training data)
 * <delta_M>: the maximum substring edit distance threshold
 * <max_hours_to_execute>: the time to be allowed for generating training data (1 means an hour.)  
 If the algorithm does not finish within ```<max_hours_to_execute>```, we stop and generate nothing.
 
-To run all algorithms to generate a training data, run the following command:
+For ablation studies, ```<algorithm_name>``` can be TEDDY-S or TEDDY-R which is described in Section 6.1.
+
+To run all algorithms to generate the training data for a dataset, run the following command:
 
 ```bash
 ./run.sh <data_name>
@@ -45,36 +47,3 @@ To run all algorithms to generate a training data, run the following command:
 where <data_name> can be DBLP, GENE, WIKI, IMDB or all. Here, ```all``` represents to generate the training data with all datasets (i.e., DBLP, GENE, WIKI and IMDB).
 
 The default value of ```<max_hours_to_execute>``` is set to 30 (30 hours) to invoke the python code for.py to execute each algorithm.
-
-## Example Usage
-
-```bash
-./run.sh DBLP     # to generate training data from the DBLP dataset
-# ./run.sh WIKI   # to generate training data from the WIKI dataset
-# ./run.sh IMDB   # to generate training data from the IMDB dataset
-# ./run.sh GENE   # to generate training data from the GENE dataset
-# ./run.sh all    # to generate training data from all datasets
-```
-
-## Descriptions
-
-### Algorithms
-
-| Algorithm |
-|-----------|
-| NaiveGen  |
-| Qgram     |
-| TASTE     |
-| SODDY     |
-| TEDDY     |
-| TEDDY-S   |
-| TEDDY-R   |
-
-### Datasets
-
-| Dataset |
-|---------|
-| DBLP    |
-| WIKI    |
-| IMDB    |
-| GENE    |
