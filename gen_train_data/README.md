@@ -18,10 +18,10 @@ pip install redis
 ## Example Usage
 
 ```bash
-./run.sh dblp     # to generate training data from the DBLP dataset
-# ./run.sh wiki2  # to generate training data from the WIKI dataset
-# ./run.sh imdb2  # to generate training data from the IMDB dataset
-# ./run.sh egr1   # to generate training data from the GENE dataset
+./run.sh DBLP     # to generate training data from the DBLP dataset
+# ./run.sh WIKI   # to generate training data from the WIKI dataset
+# ./run.sh IMDB   # to generate training data from the IMDB dataset
+# ./run.sh GENE   # to generate training data from the GENE dataset
 # ./run.sh all    # to generate training data from all datasets
 ```
 

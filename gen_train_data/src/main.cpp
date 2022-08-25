@@ -170,8 +170,8 @@ int main(int argc, char *argv[]) {
     }
     cout << endl;
     if (argc < 9) {
-        cout << "Please enter [# or p of records], [# or p of queries], [algorithm name], [data path], [query name], [delta], [augment prefix] and [trial]" << endl;
-        cout << "example: ./main {100(#), 0.1(p), 0(all)} {100(#), 0.1(p), 0(all)} {allp, topk, taste, soddy2, teddy2, teddy0, abl1} [input_file] [query_file] [delta] [prefix] [trial]" << endl;
+        cout << "Please enter ./main [ratio of records] [ratio of queries] [alg] [data path] [query path] [delta] [prefix] [trial]" << endl;
+        cout << "example: ./main 1.0 1.0 TEDDY data/DBLP.txt data/qs_DBLP_0_20.txt 3 0 0" << endl;
         return 0;
     }
 

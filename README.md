@@ -16,8 +16,8 @@ It consists of four folders each of which contains its own README file and scrip
 
 |Folder| Description |
 |---|---|
-| gen_train_data | training data generation algorithms                                              |
-| dream  | deepp cardinality estimators for approximate substring queries                         |
+| gen_train_data | training data generation algorithms |
+| dream  | deep cardinality estimators for approximate substring queries |
 | astrid | the modified version of Astrid starting from the astrid model downloaded from [[github](<https://github.com/saravanan-thirumuruganathan/astrid-string-selectivity>)]|
 | plot | example notebook files |
 
@@ -62,26 +62,26 @@ These commands produces experimental results.
 
 ```bash
 cd gen_train_data
-./run.sh dblp     # to generate training data from the DBLP dataset
-# ./run.sh wiki2  # to generate training data from the WIKI dataset
-# ./run.sh imdb2  # to generate training data from the IMDB dataset
-# ./run.sh egr1   # to generate training data from the GENE dataset
+./run.sh DBLP     # to generate training data from the DBLP dataset
+# ./run.sh WIKI   # to generate training data from the WIKI dataset
+# ./run.sh IMDB   # to generate training data from the IMDB dataset
+# ./run.sh GENE   # to generate training data from the GENE dataset
 # ./run.sh all    # to generate training data from all datasets
 cd ..
 
 cd dream
-./run.sh dblp    # to train all models except Astrid with the DBLP dataset
-# ./run.sh wiki2 # to train all models except Astrid with the WIKI dataset
-# ./run.sh imdb2 # to train all models except Astrid with the IMDB dataset
-# ./run.sh egr1  # to train all models except Astrid with the GENE dataset
+./run.sh DBLP    # to train all models except Astrid with the DBLP dataset
+# ./run.sh WIKI  # to train all models except Astrid with the WIKI dataset
+# ./run.sh IMDB  # to train all models except Astrid with the IMDB dataset
+# ./run.sh GENE  # to train all models except Astrid with the GENE dataset
 # ./run.sh all   # to train all models except Astrid with all datasets
 cd ..
 
 cd astrid
-./run.sh dblp    # to train the Astrid model with the DBLP dataset
-# ./run.sh wiki2 # to train the Astrid model with the WIKI dataset
-# ./run.sh imdb2 # to train the Astrid model with the IMDB dataset
-# ./run.sh egr1  # to train the Astrid model with the GENE dataset
+./run.sh DBLP    # to train the Astrid model with the DBLP dataset
+# ./run.sh WIKI  # to train the Astrid model with the WIKI dataset
+# ./run.sh IMDB  # to train the Astrid model with the IMDB dataset
+# ./run.sh GENE  # to train the Astrid model with the GENE dataset
 # ./run.sh all   # to train the Astrid model with all datasets
 cd ..
 ```
