@@ -1,6 +1,0 @@
-[Thu Aug 18 15:07:51 2022] [time:       7.009] [args: 1.0 1.0 teddy2 data\dblp.txt data\qs_dblp_0_20_0.01.txt 3 1 0]
-[Thu Aug 25 12:45:05 2022] [time:       6.194] [args: 1.0 0.01 TEDDY data\dblp.txt data\qs_dblp_0_20.txt 3 0 0]
-[Thu Aug 25 12:45:26 2022] [time:      16.978] [args: 1.0 0.01 TEDDY-S data\dblp.txt data\qs_dblp_0_20.txt 3 0 0]
-[Thu Aug 25 12:45:40 2022] [time:       9.114] [args: 1.0 0.01 TEDDY-R data\dblp.txt data\qs_dblp_0_20.txt 3 0 0]
-[Thu Aug 25 12:46:26 2022] [time:      17.942] [args: 1.0 0.01 NaiveGen data\dblp.txt data\qs_dblp_0_20.txt 3 0 0]
-[Thu Aug 25 12:46:56 2022] [time:      17.961] [args: 1.0 0.01 NaiveGen data\dblp.txt data\qs_dblp_0_20.txt 3 0 0]

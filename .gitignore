@@ -3,6 +3,8 @@ __pycache__/
 **/main_info
 **/log.*
 **/result.*
+**/stat/
+**/time/
 obj/
 time/
 res/
