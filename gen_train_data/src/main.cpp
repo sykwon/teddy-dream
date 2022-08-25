@@ -169,9 +169,9 @@ int main(int argc, char *argv[]) {
         cout << argv[i] << " ";
     }
     cout << endl;
-    if (argc < 9) {
-        cout << "Please enter ./main [ratio of records] [ratio of queries] [alg] [data path] [query path] [delta] [prefix] [trial]" << endl;
-        cout << "example: ./main 1.0 1.0 TEDDY data/DBLP.txt data/qs_DBLP_0_20.txt 3 0 0" << endl;
+    if (argc < 7) {
+        cout << "Please enter ./main [alg] [data path] [query path] [delta] [prefix] [trial_id]" << endl;
+        cout << "example: ./main TEDDY data/DBLP.txt data/qs_DBLP.txt 3 0 0" << endl;
         return 0;
     }
 
@@ -198,14 +198,14 @@ int main(int argc, char *argv[]) {
 
     // read arguments
     cout << "Start reading arugments" << endl;
-    const char *arg_nr = argv[1];
-    const char *arg_nq = argv[2];
-    const char *arg_alg = argv[3];
-    const char *arg_rec = argv[4];
-    const char *arg_qry = argv[5];
-    const char *arg_del = argv[6];
-    const char *arg_prfx = argv[7];
-    // const char *arg_trial = argv[8];
+    const char *arg_nr = "1.0";
+    const char *arg_nq = "1.0";
+    const char *arg_alg = argv[1];
+    const char *arg_rec = argv[2];
+    const char *arg_qry = argv[3];
+    const char *arg_del = argv[4];
+    const char *arg_prfx = argv[5];
+    // const char *arg_trial = argv[6];
 
     int nr = num_str_to_int(arg_nr, arg_rec);
     vector<u32string> S_D = read_string_data(arg_rec, nr, true);
@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
     for (auto q : S_Q) {
         nc += q.size();
     }
-    cout << nq << ", " << nr << ", " << np << ", " << nc << endl;
+    // cout << nq << ", " << nr << ", " << np << ", " << nc << endl;
 
     string algName = arg_alg;
 

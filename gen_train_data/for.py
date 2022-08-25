@@ -87,6 +87,15 @@ def do_exp(conn, cmd, timeout, overwrite, clear):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--data", "-d", nargs="+", required=True, help="data name")
+    parser.add_argument("--alg", "-a", nargs="+", required=True, help="alg name")
+    parser.add_argument("--prefix", "-pr", nargs="+",
+                        help="augment prefix (0: base training data, 1: prefix-aug training data)")
+    parser.add_argument("--p-train", "-pt", nargs="+", help="ratio of training dataset")
+    parser.add_argument("--info", "-i", action="store_true", default=False, help="join info")
+    parser.add_argument("--threshold", "-th", type=int, help="maximum distance threshold (delta_M)")
+    parser.add_argument("--n_try", "-nt", type=int, help="number of tries")
+    parser.add_argument("--hour", "-hr", type=float, help="timeout to execute algorithm")
     parser.add_argument(
         "--clear", "-c", action="store_true", default=False, help="clear previous results"
     )
@@ -94,16 +103,8 @@ if __name__ == "__main__":
         "--overwrite", "-o", action="store_true", default=False, help="overwrite previous result"
     )
     parser.add_argument(
-        "--preview", "-p", action="store_true", default=False, help="only preview command"
+        "--preview", "-p", action="store_true", default=False, help="show command only"
     )
-    parser.add_argument("--n_try", "-nt", type=int, help="number of tries")
-    parser.add_argument("--data", "-d", nargs="+", required=True, help="data name")
-    parser.add_argument("--alg", "-a", nargs="+", required=True, help="alg name")
-    parser.add_argument("--prefix", "-pr", nargs="+", help="augment prefix 0: no prefix, 1: prefix")
-    parser.add_argument("--p-train", "-pt", nargs="+", help="ratio of train dataset")
-    parser.add_argument("--info", "-i", action="store_true", default=False, help="join info")
-    parser.add_argument("--threshold", "-th", type=int, help="maximum distance threshold (delta_M)")
-    parser.add_argument("--hour", "-hr", type=float, help="timeout to execute algorithm")
     args = parser.parse_args()
 
     preview = args.preview
