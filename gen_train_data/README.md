@@ -24,6 +24,7 @@ python for.py -s <number_of_repetitions> -d <data_name> -a <algorithm_name> -pr 
 ```
 
 The meaning of each parameter value in the above is as follows.
+
 * <number_of_repetitions>: the number of repeted executions of generating a dataset  
   This parameter value is used to compute average execution time for experiments.
 * <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
@@ -34,6 +35,16 @@ The meanings of NaiveGen, Qgram, TASTE, SODDY, TEDDY, TEDDY-S and TEDDY-R are de
 * <delta_M>: the maximum substring edit distance threshold
 * <max_hours_to_execute>: the time to be allowed for generating training data (1 means an hour.)  
 If the algorithm does not finish within ```<max_hours_to_execute>```, we stop and generate nothing.
+
+To run all algorithms to generate a training data, run the following command:
+
+```bash
+./run.sh <data_name>
+```
+
+where <data_name> can be DBLP, GENE, WIKI, IMDB or all. Here, ```all``` represents to generate the training data with all datasets (i.e., DBLP, GENE, WIKI and IMDB).
+
+The default value of ```<max_hours_to_execute>``` is set to 30 (30 hours) to invoke the python code for.py to execute each algorithm.
 
 ## Example Usage
 
