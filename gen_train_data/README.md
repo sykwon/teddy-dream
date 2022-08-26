@@ -13,6 +13,7 @@ This code needs Python-3.7 or higher.
 sudo apt-get install redis-server
 sudo apt-get install binutils
 pip install redis
+make clean && make && make info
 ```
 
 ## Training data generation
@@ -30,7 +31,7 @@ The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our pape
 * <algorithm_name>: the name of the training data generation algorithm (NaiveGen, Qgram, TASTE, SODDY or TEDDY)  
 The meanings of NaiveGen, Qgram, TASTE, SODDY, TEDDY are described in Section 6 of our paper.
 * <prefix_aug_flag>: the flag to represent whether to generate the prefix-aug training data (0: base training data; 1: prefix-aug training data)
-* <ratio_training>:
+* <ratio_training>: the sampling ratio of query strings used to generate the training data
 * <delta_M>: the maximum substring edit distance threshold
 * <number_of_repetitions>: the number of repeted executions of generating a dataset  
   This parameter value is used to compute average execution time for experiments.
@@ -41,8 +42,10 @@ For ablation studies, ```<algorithm_name>``` can be TEDDY-S or TEDDY-R which is 
 
 For example,
 
+The output will provide the training data and its generation time.
+
 ```bash
-python for.py -nt 1 -d DBLP 
+python for.py -d DBLP -a TEDDY -pr 0 -pt 1.0 -th 3 -nt 1 -hr 30
 ```
 
 To run all algorithms to generate the training data for a dataset, run the following command:
@@ -53,4 +56,4 @@ To run all algorithms to generate the training data for a dataset, run the follo
 
 where <data_name> can be DBLP, GENE, WIKI, IMDB or all. Here, ```all``` represents to generate the training data with all datasets (i.e., DBLP, GENE, WIKI and IMDB).
 
-The default value of ```<max_hours_to_execute>``` is set to 30 (30 hours) to invoke the python code for.py to execute each algorithm.
+In this case, the default value of ```<max_hours_to_execute>``` is set to 30 (30 hours) to invoke the python code for.py to execute each algorithm.

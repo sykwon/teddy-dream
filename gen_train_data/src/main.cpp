@@ -35,15 +35,15 @@ system_clock::time_point tpe;
 
 void print_envs() {
 #ifdef JOIN_INFO
-    cout << "JOIN_INFO defined" << endl;
+    cout << "JOIN_INFO is defined" << endl;
 #else
-    cout << "JOIN_INFO not defined" << endl;
+    cout << "JOIN_INFO is not defined" << endl;
 #endif
-#ifdef JOIN_DEBUG
-    cout << "JOIN_DEBUG defined" << endl;
-#else
-    cout << "JOIN_DEBUG not defined" << endl;
-#endif
+    // #ifdef JOIN_DEBUG
+    //     cout << "JOIN_DEBUG is defined" << endl;
+    // #else
+    //     cout << "JOIN_DEBUG is not defined" << endl;
+    // #endif
 }
 
 string get_args_str(int argc, char *argv[]) {
@@ -188,16 +188,15 @@ int main(int argc, char *argv[]) {
 
     string args_str = get_args_str(argc, argv);
     join::args_str = args_str;
-    cout << args_str << endl;
+    // cout << args_str << endl;
 
     // logging arguments
     ofstream wfstat;
-    wfstat.open("log.txt", fstream::out | fstream::app);
-    wfstat << "[" << util::getTimeStamp().c_str() << "] ";
-    wfstat << args_str << endl;
+    // wfstat.open("log.txt", fstream::out | fstream::app);
+    // wfstat << "[" << util::getTimeStamp().c_str() << "] ";
+    // wfstat << args_str << endl;
 
     // read arguments
-    cout << "Start reading arugments" << endl;
     const char *arg_nr = "1.0";
     const char *arg_nq = "1.0";
     const char *arg_alg = argv[1];
@@ -222,7 +221,6 @@ int main(int argc, char *argv[]) {
 
     string algName = arg_alg;
 
-    FILE *writeFile;
     string queryFileName = remove_ext(basename(string(arg_qry)));
 
     int delta_M = stoi(arg_del);
@@ -248,8 +246,8 @@ int main(int argc, char *argv[]) {
         }
     }
     double sort_time = duration<double>(tpe - tps).count();
-    cout << "sort time: " << sort_time << endl;
-    cout << "num R, S [" << S_Q.size() << ", " << S_D.size() << "]" << endl;
+    // cout << "sort time: " << sort_time << endl;
+    cout << "num S_Q, S_D [" << S_Q.size() << ", " << S_D.size() << "]" << endl;
 
     string logFileName = "time/" + args_str + ".txt";
     write_log(logFileName, algName, nq, nr, int(S_Q.size()), delta_M, prefix_mode, -1.0);
@@ -257,12 +255,6 @@ int main(int argc, char *argv[]) {
     cout << "Start algorihtm" << endl;
     double duration_time = 0.0;
     vector<vector<int>> join_result;
-#ifdef JOIN_INFO
-    writeFile = fopen(JOIN_INFO_PATH, "a");
-    fprintf(writeFile, "[%s] %s\n",
-            getTimeStamp().c_str(), args_str.c_str());
-    fclose(writeFile);
-#endif
 
     string save_path = get_save_name(queryFileName, algName, nq, nr, delta_M, prefix_mode, np);
     tps = system_clock::now();
@@ -274,17 +266,10 @@ int main(int argc, char *argv[]) {
     if (algName.find("soddy") != string::npos) {
         duration_time += sort_time;
     }
-    cout << algName << " sort time: " << sort_time << "s" << endl;
-    cout << algName << " join time: " << duration_time << "s" << endl;
+    // cout << algName << " sort time: " << sort_time << "s" << endl;
+    // cout << algName << " join time: " << duration_time << "s" << endl;
 
     write_log(logFileName, algName, nq, nr, int(S_Q.size()), delta_M, prefix_mode, duration_time);
-#ifndef JOIN_INFO
-    write_log("result.txt", algName, nq, nr, int(S_Q.size()), delta_M, prefix_mode, duration_time, "a");
-    writeFile = fopen(JOIN_TIME_PATH, "a");
-    fprintf(writeFile, "[%s] [time: %11.3f] [args: %s]\n",
-            getTimeStamp().c_str(), duration_time, args_str.c_str());
-    fclose(writeFile);
-#endif
     delete[] S_Q_ptr;
     delete[] S_Q_pack;
     return 0;

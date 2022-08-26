@@ -48,7 +48,8 @@ def do_exp(conn, cmd, timeout, overwrite, clear):
             exp_json_str = get_join_exp_json_str(cmd)
             conn.set(exp_key, exp_json_str)
             print("[py]", "set result:", exp_json_str)
-            print("[py]", "output:", output)
+            print("[py]", "output:")
+            print(output)
             return 2
         except TimeoutExpired as e:
             print("[py]", "Error msg:", e)
@@ -137,7 +138,7 @@ if __name__ == "__main__":
 
                         if join_info:
                             timeout_h = timeout // 3600
-                            cmd = f"./main_info 1.0 1.0 {alg} {db_path} {qs_path} {threshold} {prefix} {try_id}"
+                            cmd = f"./main_info {alg} {db_path} {qs_path} {threshold} {prefix} {try_id}"
                             print(f"[py TO:{timeout_h}h]", cmd)
                             if not preview:
                                 code = do_exp(
@@ -145,7 +146,7 @@ if __name__ == "__main__":
                                 )
                             continue
 
-                        cmd = f"./main 1.0 1.0 {alg} {db_path} {qs_path} {threshold} {prefix} {try_id}"
+                        cmd = f"./main {alg} {db_path} {qs_path} {threshold} {prefix} {try_id}"
                         timeout_h = timeout // 3600
                         print(f"[py TO:{timeout_h}h]", cmd)
                         if not preview:

@@ -22,8 +22,6 @@
 #include "util.h"
 #include "wSED.h"
 
-#define JOIN_INFO_PATH "stat/join_info.txt"
-#define JOIN_TIME_PATH "stat/join_time.txt"
 #define PRIME 2147483647  // (1 << 31) - 1
 #define TOPK_HASH_SIZE 10000
 #define TASTE_HASH_SIZE 10000
@@ -173,21 +171,8 @@ vector<vector<int>> all_pair_join(vector<u32string> &S_Q, vector<u32string> &S_D
     printf("Computed cell: %15ld\n", compute_cell);
     printf("Pruned cell  : %15ld\n", prune_cell);
 
-    auto writeFile = fopen(JOIN_INFO_PATH, "a");
-    fprintf(writeFile, "r_max        : %15d\n", R_max);
-    fprintf(writeFile, "r_total      : %15ld\n", r_total);
-    fprintf(writeFile, "s_total      : %15ld\n", s_total);
-    fprintf(writeFile, "Total line   : %15ld\n", total_line);
-    fprintf(writeFile, "Computed line: %15ld\n", compute_line);
-    fprintf(writeFile, "Pruned line  : %15ld\n", prune_line);
-    fprintf(writeFile, "Total cell   : %15ld\n", total_cell);
-    fprintf(writeFile, "Computed cell: %15ld\n", compute_cell);
-    fprintf(writeFile, "Pruned cell  : %15ld\n", prune_cell);
-    fprintf(writeFile, "\n");
-    fclose(writeFile);
-
     string statFileName = "stat/" + args_str + ".txt";
-    writeFile = fopen(statFileName.c_str(), "w");
+    auto writeFile = fopen(statFileName.c_str(), "w");
     fprintf(writeFile, "[%s] %s\n",
             getTimeStamp().c_str(), args_str.c_str());
     fprintf(writeFile, "Total line   : %15ld\n", total_line);
@@ -368,24 +353,8 @@ vector<vector<int>> Ablation_join(vector<u32string> &R, vector<u32string> &S, in
     printf("Computed cell: %15ld\n", compute_cell);
     printf("Pruned cell  : %15ld\n", prune_cell);
 
-    auto writeFile = fopen(JOIN_INFO_PATH, "a");
-    fprintf(writeFile, "r_max        : %15d\n", R_max);
-    fprintf(writeFile, "r_total      : %15ld\n", r_total);
-    fprintf(writeFile, "s_total      : %15ld\n", s_total);
-    // fprintf(writeFile, "n_prfx       : %15ld\n", n_prfx);
-    fprintf(writeFile, "Total line   : %15ld\n", total_line);
-    fprintf(writeFile, "Shared line  : %15ld\n", share_line);
-    fprintf(writeFile, "Computed line: %15ld\n", compute_line);
-    fprintf(writeFile, "Pruned line  : %15ld\n", prune_line);
-    fprintf(writeFile, "Total cell   : %15ld\n", total_cell);
-    fprintf(writeFile, "Shared cell  : %15ld\n", share_cell);
-    fprintf(writeFile, "Computed cell: %15ld\n", compute_cell);
-    fprintf(writeFile, "Pruned cell  : %15ld\n", prune_cell);
-    fprintf(writeFile, "\n");
-    fclose(writeFile);
-
     string statFileName = "stat/" + args_str + ".txt";
-    writeFile = fopen(statFileName.c_str(), "w");
+    auto writeFile = fopen(statFileName.c_str(), "w");
     fprintf(writeFile, "[%s] %s\n",
             getTimeStamp().c_str(), args_str.c_str());
     fprintf(writeFile, "Total line   : %15ld\n", total_line);
@@ -698,24 +667,8 @@ vector<vector<int>> SODDY_join(int R_size, vector<u32string> &S, int delta, int 
     printf("Computed cell: %15ld\n", compute_cell);
     printf("Pruned cell  : %15ld\n", prune_cell);
 
-    auto writeFile = fopen(JOIN_INFO_PATH, "a");
-    fprintf(writeFile, "r_max        : %15d\n", R_max);
-    fprintf(writeFile, "r_total      : %15ld\n", r_total);
-    fprintf(writeFile, "s_total      : %15ld\n", s_total);
-    fprintf(writeFile, "n_prfx       : %15ld\n", n_prfx);
-    fprintf(writeFile, "Total line   : %15ld\n", total_line);
-    fprintf(writeFile, "Shared line  : %15ld\n", share_line);
-    fprintf(writeFile, "Computed line: %15ld\n", compute_line);
-    fprintf(writeFile, "Pruned line  : %15ld\n", prune_line);
-    fprintf(writeFile, "Total cell   : %15ld\n", total_cell);
-    fprintf(writeFile, "Shared cell  : %15ld\n", share_cell);
-    fprintf(writeFile, "Computed cell: %15ld\n", compute_cell);
-    fprintf(writeFile, "Pruned cell  : %15ld\n", prune_cell);
-    fprintf(writeFile, "\n");
-    fclose(writeFile);
-
     string statFileName = "stat/" + args_str + ".txt";
-    writeFile = fopen(statFileName.c_str(), "w");
+    auto writeFile = fopen(statFileName.c_str(), "w");
     fprintf(writeFile, "[%s] %s\n",
             getTimeStamp().c_str(), args_str.c_str());
     fprintf(writeFile, "Total line   : %15ld\n", total_line);
@@ -1049,24 +1002,8 @@ vector<vector<int>> TEDDY_join(vector<u32string> &R, vector<u32string> &S, int d
     printf("Computed cell: %15ld\n", compute_cell);
     printf("Pruned cell  : %15ld\n", prune_cell);
 
-    auto writeFile = fopen(JOIN_INFO_PATH, "a");
-    fprintf(writeFile, "r_max        : %15d\n", R_max);
-    fprintf(writeFile, "r_total      : %15ld\n", r_total);
-    fprintf(writeFile, "s_total      : %15ld\n", s_total);
-    fprintf(writeFile, "n_prfx       : %15ld\n", n_prfx);
-    fprintf(writeFile, "Total line   : %15ld\n", total_line);
-    fprintf(writeFile, "Shared line  : %15ld\n", share_line);
-    fprintf(writeFile, "Computed line: %15ld\n", compute_line);
-    fprintf(writeFile, "Pruned line  : %15ld\n", prune_line);
-    fprintf(writeFile, "Total cell   : %15ld\n", total_cell);
-    fprintf(writeFile, "Shared cell  : %15ld\n", share_cell);
-    fprintf(writeFile, "Computed cell: %15ld\n", compute_cell);
-    fprintf(writeFile, "Pruned cell  : %15ld\n", prune_cell);
-    fprintf(writeFile, "\n");
-    fclose(writeFile);
-
     string statFileName = "stat/" + args_str + ".txt";
-    writeFile = fopen(statFileName.c_str(), "w");
+    auto writeFile = fopen(statFileName.c_str(), "w");
     fprintf(writeFile, "[%s] %s\n",
             getTimeStamp().c_str(), args_str.c_str());
     fprintf(writeFile, "Total line   : %15ld\n", total_line);
@@ -1294,21 +1231,8 @@ vector<vector<int>> taste_join(vector<u32string> &R, vector<u32string> &S, int d
     printf("Computed cell: %15ld\n", compute_cell);
     printf("Pruned cell  : %15ld\n", prune_cell);
 
-    auto writeFile = fopen(JOIN_INFO_PATH, "a");
-    fprintf(writeFile, "r_max        : %15d\n", R_max);
-    fprintf(writeFile, "r_total      : %15ld\n", r_total);
-    fprintf(writeFile, "s_total      : %15ld\n", s_total);
-    fprintf(writeFile, "Total line   : %15ld\n", total_line);
-    fprintf(writeFile, "Computed line: %15ld\n", compute_line);
-    fprintf(writeFile, "Pruned line  : %15ld\n", prune_line);
-    fprintf(writeFile, "Total cell   : %15ld\n", total_cell);
-    fprintf(writeFile, "Computed cell: %15ld\n", compute_cell);
-    fprintf(writeFile, "Pruned cell  : %15ld\n", prune_cell);
-    fprintf(writeFile, "\n");
-    fclose(writeFile);
-
     string statFileName = "stat/" + args_str + ".txt";
-    writeFile = fopen(statFileName.c_str(), "w");
+    auto writeFile = fopen(statFileName.c_str(), "w");
     fprintf(writeFile, "[%s] %s\n",
             getTimeStamp().c_str(), args_str.c_str());
     fprintf(writeFile, "Total line   : %15ld\n", total_line);
@@ -1936,21 +1860,8 @@ vector<vector<int>> topk_join(vector<u32string> &R, vector<u32string> &S, int de
     printf("Computed cell: %15ld\n", compute_cell);
     printf("Pruned cell  : %15ld\n", prune_cell);
 
-    auto writeFile = fopen(JOIN_INFO_PATH, "a");
-    fprintf(writeFile, "r_max        : %15d\n", R_max);
-    fprintf(writeFile, "r_total      : %15ld\n", r_total);
-    fprintf(writeFile, "s_total      : %15ld\n", s_total);
-    fprintf(writeFile, "Total line   : %15ld\n", total_line);
-    fprintf(writeFile, "Computed line: %15ld\n", compute_line);
-    fprintf(writeFile, "Pruned line  : %15ld\n", prune_line);
-    fprintf(writeFile, "Total cell   : %15ld\n", total_cell);
-    fprintf(writeFile, "Computed cell: %15ld\n", compute_cell);
-    fprintf(writeFile, "Pruned cell  : %15ld\n", prune_cell);
-    fprintf(writeFile, "\n");
-    fclose(writeFile);
-
     string statFileName = "stat/" + args_str + ".txt";
-    writeFile = fopen(statFileName.c_str(), "w");
+    auto writeFile = fopen(statFileName.c_str(), "w");
     fprintf(writeFile, "[%s] %s\n",
             getTimeStamp().c_str(), args_str.c_str());
     fprintf(writeFile, "Total line   : %15ld\n", total_line);
