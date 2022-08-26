@@ -39,7 +39,8 @@ For ablation studies, ```<algorithm_name>``` can be TEDDY-S or TEDDY-R which is 
 * <max_hours_to_execute>: the time to be allowed for generating training data (1 means an hour.)  
 If the algorithm does not finish within ```<max_hours_to_execute>```, we stop and generate nothing.
 
-For example, if we use the following command, the output will provide the training data and its generation time. The training data will be stored in ```res/``` folder. In this case, the TEDDY algorithm took 151.777 (seconds).
+For example, if we use the following command, we run the TEDDY algorithm to generate base training data for the DBLP dataset.
+The output will provide where the generated training data is stored, the generation algorithm name, the training data type and its generation time. The training data will be stored in ```res/``` folder. In this case, the TEDDY algorithm took 151.777 (seconds).
 
 ```
 $ python for.py -d DBLP -a TEDDY -pr 0 -pt 1.0 -th 3 -nt 1 -hr 30
