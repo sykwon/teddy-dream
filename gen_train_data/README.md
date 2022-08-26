@@ -40,12 +40,10 @@ If the algorithm does not finish within ```<max_hours_to_execute>```, we stop an
 
 For ablation studies, ```<algorithm_name>``` can be TEDDY-S or TEDDY-R which is described in Section 6.1.
 
-For example,
-
-The output will provide the training data and its generation time.
+For example, if we use the following command, the output will provide the training data and its generation time.
 
 ```bash
-python for.py -d DBLP -a TEDDY -pr 0 -pt 1.0 -th 3 -nt 1 -hr 30
+$ python for.py -d DBLP -a TEDDY -pr 0 -pt 1.0 -th 3 -nt 1 -hr 30
 You have entered 7 argument(s)
 ./main TEDDY data/DBLP.txt data/qs_DBLP_1.0.txt 3 0 0 
 JOIN_INFO is not defined
