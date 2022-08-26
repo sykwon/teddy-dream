@@ -41,9 +41,9 @@ If the algorithm does not finish within ```<max_hours_to_execute>```, we stop an
 
 For example, if we use the following command, the output will provide the training data and its generation time. The training data will be stored in ```res/``` folder. In this case, the TEDDY algorithm took 151.777 (seconds).
 
-```bash
+```
 $ python for.py -d DBLP -a TEDDY -pr 0 -pt 1.0 -th 3 -nt 1 -hr 30
-saving at res/qs_DBLP_1.0_TEDDY_03.txt
+The training data is stored in res/qs_DBLP_1.0_TEDDY_03.txt
 [Fri Aug 26 16:38:51 2022] TEDDY   Base     151.777
 ```
 
