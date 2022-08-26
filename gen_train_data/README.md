@@ -46,6 +46,17 @@ The output will provide the training data and its generation time.
 
 ```bash
 python for.py -d DBLP -a TEDDY -pr 0 -pt 1.0 -th 3 -nt 1 -hr 30
+You have entered 7 argument(s)
+./main TEDDY data/DBLP.txt data/qs_DBLP_1.0.txt 3 0 0 
+JOIN_INFO is not defined
+num S_Q, S_D [22287, 49981]
+time/TEDDY data\DBLP.txt data\qs_DBLP_1.0.txt 3 0 0.txt
+[Fri Aug 26 16:36:19 2022] TEDDY   22287   49981    22287   3 False      -1.000
+Start algorihtm
+start iterate database strings
+saving at res/qs_DBLP_1.0_TEDDY_0022287_0049981_03.txt
+time/TEDDY data\DBLP.txt data\qs_DBLP_1.0.txt 3 0 0.txt
+[Fri Aug 26 16:38:51 2022] TEDDY   22287   49981    22287   3 False     151.777
 ```
 
 To run all algorithms to generate the training data for a dataset, run the following command:
