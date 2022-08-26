@@ -43,8 +43,6 @@ For example, if we use the following command, the output will provide the traini
 
 ```bash
 $ python for.py -d DBLP -a TEDDY -pr 0 -pt 1.0 -th 3 -nt 1 -hr 30
-You have entered 7 argument(s)
-./main TEDDY data/DBLP.txt data/qs_DBLP_1.0.txt 3 0 0 
 saving at res/qs_DBLP_1.0_TEDDY_03.txt
 [Fri Aug 26 16:38:51 2022] TEDDY   Base     151.777
 ```
