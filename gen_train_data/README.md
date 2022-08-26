@@ -51,7 +51,7 @@ The training data is written as res/qs_DBLP_1.0_TEDDY_03.txt
 The above output says that the training data is stored in the directory ```res/``` and its name is ```qs_DBLP_1.0_TEDDY_03.txt```.
 Furthermore, it says that the TEDDY algorithm took 151.777 (seconds) to generate the base training data.
 
-To run all algorithms to generate the training data for a dataset, run the following command:
+To measure the execution times of all algorithms for generating the training data for a dataset, run the following command:
 
 ```bash
 ./run.sh <data_name>
