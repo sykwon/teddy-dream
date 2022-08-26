@@ -7,7 +7,7 @@
 
 ## Installation
 
-This code needs Python-3.7 or higher.
+This code needs Python-3.7 or higher as well as gcc-7.5 or higher.
 
 ```bash
 sudo apt-get install redis-server
@@ -42,13 +42,13 @@ If the algorithm does not finish within ```<max_hours_to_execute>```, we stop an
 For example, if we use the following command, we run the TEDDY algorithm to generate base training data for the DBLP dataset.
 The output will provide where the generated training data is stored, the generation algorithm name, the training data type and its generation time. The training data will be stored in ```res/``` folder.
 
-```
+```bash
 $ python for.py -d DBLP -a TEDDY -pr 0 -pt 1.0 -th 3 -nt 1 -hr 30
-The training data is written as res/qs_DBLP_1.0_TEDDY_03.txt
-[Fri Aug 26 16:38:51 2022] TEDDY   Base     151.777
+The training data is written as res/qs_DBLP_1.0_TEDDY_03_base.txt
+TEDDY   base     151.777
 ```
 
-The above output says that the training data is stored in the directory ```res/``` and its name is ```qs_DBLP_1.0_TEDDY_03.txt```.
+The above output says that the training data is stored in the directory ```res/``` and its name is ```qs_DBLP_1.0_TEDDY_03_base.txt```.
 Furthermore, it says that the TEDDY algorithm took 151.777 (seconds) to generate the base training data.
 
 To measure the execution times of all algorithms for generating the training data for a dataset, run the following command:

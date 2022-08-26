@@ -152,23 +152,25 @@ vector<u32string> read_string_data(const char *filePath, int n, bool is_sort) {
 
 void write_log(string logFileName, string algName, int nq, int nr, int S_Q_size, int delta_M, bool prefix_mode, float time = -1.0, char const *mode = "w") {
     FILE *writeFile;
-    cout << logFileName << endl;
+    // cout << logFileName << endl;
 
     writeFile = fopen(logFileName.c_str(), mode);
-    printf("[%s] %5s %7d %7d %8d %3d %5s %11.3f\n",
-           getTimeStamp().c_str(), algName.c_str(), nq, nr, S_Q_size, delta_M, prefix_mode ? "True" : "False", time);
-    fprintf(writeFile, "[%s] %5s %7d %7d %8d %3d %5s %11.3f\n",
+    if (time > 0.0) {
+        printf("%6s %5s %11.3f\n",
+               algName.c_str(), prefix_mode ? "prefix-aug" : "base", time);
+    }
+    fprintf(writeFile, "[%s] %6s %7d %7d %8d %3d %5s %11.3f\n",
             getTimeStamp().c_str(), algName.c_str(), nq, nr, S_Q_size, delta_M, prefix_mode ? "True" : "False", time);
     fclose(writeFile);
 }
 
 int main(int argc, char *argv[]) {
     // command line arguments
-    cout << "You have entered " << argc << " argument(s)" << endl;
-    for (int i = 0; i < argc; i++) {
-        cout << argv[i] << " ";
-    }
-    cout << endl;
+    // cout << "You have entered " << argc << " argument(s)" << endl;
+    // for (int i = 0; i < argc; i++) {
+    //     cout << argv[i] << " ";
+    // }
+    // cout << endl;
     if (argc < 7) {
         cout << "Please enter ./main [alg] [data path] [query path] [delta] [prefix] [trial_id]" << endl;
         cout << "example: ./main TEDDY data/DBLP.txt data/qs_DBLP.txt 3 0 0" << endl;
@@ -184,7 +186,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    print_envs();
+    // print_envs();
 
     string args_str = get_args_str(argc, argv);
     join::args_str = args_str;
@@ -225,9 +227,9 @@ int main(int argc, char *argv[]) {
 
     int delta_M = stoi(arg_del);
     bool prefix_mode = stoi(arg_prfx);
-    if (prefix_mode) {
-        cout << "prefix_mode" << endl;
-    }
+    // if (prefix_mode) {
+    //     cout << "prefix_mode" << endl;
+    // }
 
     tps = system_clock::now();
     sort(S_Q.begin(), S_Q.end());
@@ -247,12 +249,12 @@ int main(int argc, char *argv[]) {
     }
     double sort_time = duration<double>(tpe - tps).count();
     // cout << "sort time: " << sort_time << endl;
-    cout << "num S_Q, S_D [" << S_Q.size() << ", " << S_D.size() << "]" << endl;
+    // cout << "num S_Q, S_D [" << S_Q.size() << ", " << S_D.size() << "]" << endl;
 
     string logFileName = "time/" + args_str + ".txt";
     write_log(logFileName, algName, nq, nr, int(S_Q.size()), delta_M, prefix_mode, -1.0);
 
-    cout << "Start algorihtm" << endl;
+    // cout << "Start algorihtm" << endl;
     double duration_time = 0.0;
     vector<vector<int>> join_result;
 

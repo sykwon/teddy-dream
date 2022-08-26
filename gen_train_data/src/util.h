@@ -191,11 +191,14 @@ string csv_token(string& x) {
 string get_save_name(string filename, string name, int nq, int nr, int delta_M, bool prefix_mode, int np) {
     stringstream filename_stream;
 
-    filename_stream << "res/" << filename << '_' << name << '_' << setfill('0') << setw(7) << nq << '_' << setfill('0') << setw(7) << nr;
+    // filename_stream << "res/" << filename << '_' << name << '_' << setfill('0') << setw(7) << nq << '_' << setfill('0') << setw(7) << nr;
+    filename_stream << "res/" << filename << '_' << name;
     filename_stream << '_' << setfill('0') << setw(2) << delta_M;
     if (prefix_mode) {
-        filename_stream << '_' << setfill('0') << setw(8) << np;
-        filename_stream << "_prfx";
+        // filename_stream << '_' << setfill('0') << setw(8) << np;
+        filename_stream << "_prefix";
+    } else {
+        filename_stream << "_base";
     }
     filename_stream << ".txt";
     string save_path = filename_stream.str();

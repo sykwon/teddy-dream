@@ -16,10 +16,6 @@ status_dict = {
 }
 
 
-def get_git_revision_hash():
-    return subprocess.check_output(["git", "rev-parse", "HEAD"]).decode().rstrip()
-
-
 def get_git_revision_short_hash():
     return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode().rstrip()
 

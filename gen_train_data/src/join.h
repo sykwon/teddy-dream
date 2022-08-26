@@ -247,7 +247,7 @@ vector<vector<int>> Ablation_join(vector<u32string> &R, vector<u32string> &S, in
     int sed;
 
     // start iterating database strings
-    cout << "start iterate database strings" << endl;
+    // cout << "start iterate database strings" << endl;
     for (int sid = 0; sid < (int)S.size(); sid++) {
         // fetching
         s = S[sid];
@@ -489,7 +489,7 @@ vector<vector<int>> SODDY_join(int R_size, vector<u32string> &S, int delta, int 
     int rid_prime;
 
     // start iterating database strings
-    cout << "start iterate database strings" << endl;
+    // cout << "start iterate database strings" << endl;
     for (int sid = 0; sid < (int)S.size(); sid++) {
         // fetching
         s = S[sid];
@@ -812,7 +812,7 @@ vector<vector<int>> TEDDY_join(vector<u32string> &R, vector<u32string> &S, int d
     // RadixTreeNode<> **node_stack_ptr = node_stack;
 
     // start iterating database strings
-    cout << "start iterate database strings" << endl;
+    // cout << "start iterate database strings" << endl;
     RadixTreeNode<char32_t> *curr_node = nullptr;
     // RadixTreeNode<char32_t> *child_node;
     for (int sid = 0; sid < (int)S.size(); sid++) {
@@ -1986,7 +1986,7 @@ void write_train_instance(vector<u32string> &S_Q, int delta_M, CT ct, bool prefi
         cout << "is not open at " << ofname << endl;
         exit(0);
     }
-    cout << "saving at " << ofname << endl;
+    cout << "The training data is written as " << ofname << endl;
 
     // write header
     writeFile << "word, delta, card(s)" << endl;
