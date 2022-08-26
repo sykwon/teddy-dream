@@ -30,6 +30,7 @@ The meaning of each parameter value in the above is as follows.
 The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our paper.
 * <algorithm_name>: the name of the training data generation algorithm (NaiveGen, Qgram, TASTE, SODDY or TEDDY)  
 The meanings of NaiveGen, Qgram, TASTE, SODDY, TEDDY are described in Section 6 of our paper.
+For ablation studies, ```<algorithm_name>``` can be TEDDY-S or TEDDY-R which is described in Section 6.1.
 * <prefix_aug_flag>: the flag to represent whether to generate the prefix-aug training data (0: base training data; 1: prefix-aug training data)
 * <ratio_training>: the sampling ratio of query strings used to generate the training data
 * <delta_M>: the maximum substring edit distance threshold
@@ -37,8 +38,6 @@ The meanings of NaiveGen, Qgram, TASTE, SODDY, TEDDY are described in Section 6 
   This parameter value is used to compute average execution time for experiments.
 * <max_hours_to_execute>: the time to be allowed for generating training data (1 means an hour.)  
 If the algorithm does not finish within ```<max_hours_to_execute>```, we stop and generate nothing.
-
-For ablation studies, ```<algorithm_name>``` can be TEDDY-S or TEDDY-R which is described in Section 6.1.
 
 For example, if we use the following command, the output will provide the training data and its generation time.
 
