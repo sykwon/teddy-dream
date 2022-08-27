@@ -36,24 +36,9 @@ def get_query_result(dname, max_d, prfx=False):
     return output
 
 
-def fetch_cardinality(queries, query_results, max_d=None, prfx=False, test=False, Eprfx=False, btS=False, btA=False, delta=None):
-    if max_d is None:
-        max_d = 3
-
-    if delta is not None:
-        max_d = 0
+def fetch_cardinality(queries, query_results, max_d, prfx=False, test=False, Eprfx=False):
 
     output = []
-
-    assert not (btS and btA)
-    bt_mode = btS or btA
-
-    if bt_mode:
-        if not test:
-            query_set = set(queries)
-        if btS:
-            raise NotImplementedError
-        assert not prfx
 
     if Eprfx:
         tmp_queries = queries
@@ -68,42 +53,15 @@ def fetch_cardinality(queries, query_results, max_d=None, prfx=False, test=False
     for query in queries:
         card = []
         if prfx and not test:
-            # if test:
-            #     # card.append(query_results[query][:max_d+1])
-            #     # card = query_results[query][-1][:max_d + 1]
-            #     card = query_results[query][:max_d + 1]
-            #     # output.append([query, card])
-            # else:
             for i in range(1, len(query) + 1):
-                if delta is not None:
-                    card.append(query_results[query[:i]][delta:delta + 1])
-                else:
-                    card.append(query_results[query[:i]][:max_d + 1])
-                # for qr in query_results[query]:
-                #     card.append(qr[:max_d + 1])
-                # output.append([query, card])
-                # card = query_results[query]
-        elif bt_mode and not test:
-            for i in range(1, len(query) + 1):
-                prfx_qry = query[:i]
-                if prfx_qry in query_set:
-                    if delta is not None:
-                        card.append(query_results[prfx_qry][delta:delta + 1])
-                    else:
-                        card.append(query_results[prfx_qry][:max_d + 1])
-                else:
-                    card.append([-1 for _ in range(max_d + 1)])
+                card.append(query_results[query[:i]][:max_d + 1])
         else:
-            if delta is not None:
-                card = query_results[query][delta:delta + 1]
-            else:
-                card = query_results[query][:max_d + 1]
-            # output.append([query, card])
+            card = query_results[query][:max_d + 1]
         output.append([query, card])
     return output
 
 
-def get_cardinalities_train_test_valid(q_train, q_valid, q_test, split_seed, args):
+def get_cardinalities_train_test_valid(q_train, q_valid, q_test, args):
     dname = args.dname
     # seed = args.seed
     analysis = args.analysis  # analysis
@@ -116,18 +74,18 @@ def get_cardinalities_train_test_valid(q_train, q_valid, q_test, split_seed, arg
     delta = args.max_d
     query_results = get_query_result(dname, delta, prfx_mode)
     if analysis and analysis_latency:
-        test_data = fetch_cardinality(q_test, query_results, max_d=args.max_d, prfx=True, test=False, delta=args.delta)
+        test_data = fetch_cardinality(q_test, query_results, max_d=args.max_d, prfx=True, test=False)
         assert len(q_test) == len(test_data), f"{len(q_test)}, {len(test_data)}"
         assert sum([len(x) for x in q_test]) == sum([len(v_list) for q_s, v_list in test_data]), "length sum"
     else:
         test_data = fetch_cardinality(q_test, query_results, max_d=args.max_d,
-                                      prfx=args.prfx, test=True, delta=args.delta)
+                                      prfx=args.prfx, test=True)
     valid_data = fetch_cardinality(q_valid, query_results, max_d=args.max_d,
-                                   prfx=args.prfx, test=True, delta=args.delta)
+                                   prfx=args.prfx, test=True)
     if q_train is None:
         train_data = None
     else:
         train_data = fetch_cardinality(q_train, query_results, max_d=args.max_d, prfx=args.prfx,
-                                       Eprfx=args.Eprfx, btS=args.btS, btA=args.btA, delta=args.delta)
+                                       Eprfx=args.Eprfx)
 
     return train_data, valid_data, test_data

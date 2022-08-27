@@ -51,14 +51,6 @@ def get_config_manager_and_exp_name(args):
             cm["alg"]["prfx"] = args.prfx
             exp_suffix += f"_prfx"
 
-        if args.btS:
-            cm["alg"]["btS"] = args.btS
-            exp_suffix += f"_btS"
-
-        if args.btA:
-            cm["alg"]["btA"] = args.btA
-            exp_suffix += f"_btA"
-
         if args.Eprfx:
             exp_suffix += f"_Eprfx"
 
@@ -202,7 +194,7 @@ if __name__ == "__main__":
         ut.store_train_valid_query_string(q_train, q_valid, train_qry_outdir, args)
         exit()
 
-    train_data, valid_data, test_data = get_cardinalities_train_test_valid(q_train, q_valid, q_test, split_seed, args)
+    train_data, valid_data, test_data = get_cardinalities_train_test_valid(q_train, q_valid, q_test, args)
     data = []
     if is_learning_model(args.model):
         data.append(train_data)

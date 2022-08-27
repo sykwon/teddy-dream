@@ -80,10 +80,8 @@ class DREAMEstimator(Estimator):
         self.best_epoch = 0
         self.last_epoch = 0
         self.prfx = conf.prfx
-        self.btS = conf.btS
-        self.btA = conf.btA
         self.l2 = conf.l2
-        self.seq_out = self.prfx or self.btS or self.btA
+        self.seq_out = self.prfx
         self.clip_gr = conf.clip_gr
 
     def build(self, train_data, valid_data=None, test_data=None, over_write=False):
@@ -105,8 +103,6 @@ class DREAMEstimator(Estimator):
         num_pred_layer = conf.pred_layer
         max_d = conf.max_d
         prfx = self.prfx
-        btS = self.btS
-        btA = self.btA
 
         self.device = device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         # assert torch.cuda.is_available()
@@ -122,7 +118,7 @@ class DREAMEstimator(Estimator):
         # torch.backends.cudnn.benchmark = False
         self.model = RNN_module(n_char + 1, pred_hs, cell_hs, embed_size, num_pred_layer=num_pred_layer,
                                 max_d=max_d,  num_rnn_layer=num_rnn_layer,
-                                prfx=prfx, max_len=max_len, btS=btS, btA=btA)  # +1 means [UNK] token
+                                prfx=prfx, max_len=max_len)  # +1 means [UNK] token
         # simple_input = (torch.LongTensor([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]]), torch.LongTensor([12]))
 
         ut.print_torch_summarize(self.model)
@@ -499,7 +495,7 @@ class MSLELoss(nn.Module):
         return F.mse_loss(first_log, second_log, reduction=self.reduction)
 
 
-def mean_squared_logarithmic_loss(pred, actual, lengths=None, reduction='mean', bt_mode=False):
+def mean_squared_logarithmic_loss(pred, actual, lengths=None, reduction='mean'):
     """
 
     :param pred:
@@ -515,11 +511,8 @@ def mean_squared_logarithmic_loss(pred, actual, lengths=None, reduction='mean', 
         assert len(loss) == len(lengths), "length consistency fails"
         max_len = max(lengths)
         # mask = np.arange(max_len).reshape(1,-1).repeat(len(lengths),0) # np
-        if bt_mode:
-            mask = (actual > 0)
-        else:
-            mask = torch.arange(max_len).repeat(len(lengths), 1).to(loss.device)
-            mask = mask < lengths.reshape(-1, 1)
+        mask = torch.arange(max_len).repeat(len(lengths), 1).to(loss.device)
+        mask = mask < lengths.reshape(-1, 1)
         mask = mask.to(loss.device)
         loss = mask * loss
     return loss
@@ -581,14 +574,11 @@ class ConcatEmbed(nn.Module):
 
 class RNN_module(nn.Module):
     def __init__(self, n_char, pred_hs, rnn_hs, embed_size, num_pred_layer=5,  max_d=3,
-                 num_rnn_layer=1, prfx=False, max_len=None, btS=None, btA=None):
+                 num_rnn_layer=1, prfx=False, max_len=None):
         super().__init__()
         self.num_rnn_layer = num_rnn_layer
         self.prfx = prfx
-        self.btS = btS
-        self.btA = btA
-        self.bt_mode = btS or btA
-        self.seq_out = self.prfx or self.btS or self.btA
+        self.seq_out = self.prfx
         self.max_len = max_len
 
         # input_size = n_char+1
@@ -709,7 +699,7 @@ class RNN_module(nn.Module):
 
         if seq_train:
             data, delta, lengths = x
-            loss = mean_squared_logarithmic_loss(pred_y, y, lengths, bt_mode=self.bt_mode, reduction='none')
+            loss = mean_squared_logarithmic_loss(pred_y, y, lengths, reduction='none')
             if self.prfx:
                 # y_last = torch.gather(y, 1, (lengths - 1).unsqueeze(-1).cuda()).squeeze()
                 # loss = mean_squared_logarithmic_loss(pred_y, y_last)
@@ -1254,12 +1244,6 @@ class CardNetEstimator(Estimator):
                 if step % 1000 == 0:
                     sw.add_scalar("Batch_vae_loss", instance_loss, global_step=step)
                 opt_vae.step()
-                if is_debug:
-                    for name, param in self.model.vae.named_parameters():
-                        if bool(torch.isnan(param).any()):
-                            print(name, param)
-                            # print("grad:", param.grad)
-                            assert False, "Value explode"
 
             # ---- evaluation
 

@@ -1085,17 +1085,12 @@ def get_parser_with_ignores():
                         help="maximum epoch (default=100 for RNN 800 for CardNet)")
     parser.add_argument('--patience', type=int, help="patience for training neural network")
 
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('--max-d', type=int, help="maximum distance threshold")
-    group.add_argument('--delta', type=int, help="single distance threshold")
+    parser.add_argument('--max-d', type=int, help="maximum distance threshold")
     parser.add_argument('--max-char', type=int, help="maximum # of characters to support (default=200)")
     parser.add_argument('--sep-emb', action='store_true', help="char dist sep embed?")
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--prfx', action='store_true', help="additional prefix information")
     group.add_argument('--Eprfx', action='store_true', help="additional prefix & enumerate prefixes")
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('--btS', action='store_true', help="bulk training with sharing")
-    group.add_argument('--btA', action='store_true', help="additionally bulk training")
 
     parser.add_argument('--bs', type=int, help="batch size (default=32)")
     parser.add_argument('--vbs', type=int, help="batch size (default=256)")
@@ -1108,7 +1103,7 @@ def get_parser_with_ignores():
     parser.add_argument('--vclip-lv', type=float, help='vae soft value clipping on logvar')
     parser.add_argument('--vclip-gr', type=float, help='vae hard value clipping on gradient')
     parser.add_argument('--clip-gr', default=0.0, type=float, help='estimation model hard value clipping on gradient')
-    parser.add_argument('--n-heads', type=int, help='number of heads for attention models')
+    # parser.add_argument('--n-heads', type=int, help='number of heads for attention models')
 
     # ignored options
     ignore_opt_list = []
