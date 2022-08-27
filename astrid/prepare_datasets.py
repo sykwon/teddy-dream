@@ -159,20 +159,3 @@ def prepare_dataset(folder_path, train_qs_prefix, total_prefix, file_name_prefix
 
 # The following functions generates the frequencies and triplets
 # This function might take few minutes for large datasets :)
-if __name__ == "__main__":
-    delta_list = [1, 2, 3]
-    delta_list = [1]
-    maxl_list = [2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20]
-    maxl_list = [0.1]
-
-    folder_path = "datasets/wiki2/"
-    dataset_prefix = "qs_wiki2"
-    # prepare_dataset(folder_path, dataset_prefix, 1, 0.99)
-    # for maxl in maxl_list:
-    #     for delta in delta_list:
-    #         prepare_dataset(folder_path, dataset_prefix, delta, maxl)
-    # prepare_dataset("datasets/dblp/", "dblp_authors")
-    # prepare_dataset("datasets/dblp/", "dblp_titles")
-    # prepare_dataset("datasets/imdb/", "imdb_movie_actors")
-    # prepare_dataset("datasets/imdb/", "imdb_movie_titles")
-    # prepare_dataset("datasets/tpch/", "tpch_part_names")

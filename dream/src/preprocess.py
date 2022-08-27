@@ -36,7 +36,7 @@ def get_query_result(dname, max_d, prfx=False):
     return output
 
 
-def fetch_cardinality(queries, query_results, max_d=None, prfx=False, test=False, Sprfx=False, Eprfx=False, btS=False, btA=False, delta=None):
+def fetch_cardinality(queries, query_results, max_d=None, prfx=False, test=False, Eprfx=False, btS=False, btA=False, delta=None):
     if max_d is None:
         max_d = 3
 
@@ -55,13 +55,6 @@ def fetch_cardinality(queries, query_results, max_d=None, prfx=False, test=False
             raise NotImplementedError
         assert not prfx
 
-    if Sprfx:
-        queries = list(ut.distinct_prefix(queries))
-        np.random.seed(0)
-        np.random.shuffle(queries)
-        assert not prfx
-        assert not Eprfx
-
     if Eprfx:
         tmp_queries = queries
         queries = []
@@ -71,7 +64,6 @@ def fetch_cardinality(queries, query_results, max_d=None, prfx=False, test=False
         np.random.seed(0)
         np.random.shuffle(queries)
         assert not prfx
-        assert not Sprfx
 
     for query in queries:
         card = []
@@ -116,7 +108,7 @@ def get_cardinalities_train_test_valid(q_train, q_valid, q_test, split_seed, arg
     # seed = args.seed
     analysis = args.analysis  # analysis
     analysis_latency = args.latency  # latency
-    prfx_mode = args.prfx or args.Sprfx or args.Eprfx
+    prfx_mode = args.prfx or args.Eprfx
     if analysis and analysis_latency:
         prfx_mode = True
 
@@ -135,7 +127,7 @@ def get_cardinalities_train_test_valid(q_train, q_valid, q_test, split_seed, arg
     if q_train is None:
         train_data = None
     else:
-        train_data = fetch_cardinality(q_train, query_results, max_d=args.max_d, prfx=args.prfx, Sprfx=args.Sprfx,
+        train_data = fetch_cardinality(q_train, query_results, max_d=args.max_d, prfx=args.prfx,
                                        Eprfx=args.Eprfx, btS=args.btS, btA=args.btA, delta=args.delta)
 
     return train_data, valid_data, test_data

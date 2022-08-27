@@ -59,12 +59,6 @@ def get_config_manager_and_exp_name(args):
             cm["alg"]["btA"] = args.btA
             exp_suffix += f"_btA"
 
-        if args.Mprfx:
-            exp_suffix += f"_Mprfx"
-
-        if args.Sprfx:
-            exp_suffix += f"_Sprfx"
-
         if args.Eprfx:
             exp_suffix += f"_Eprfx"
 

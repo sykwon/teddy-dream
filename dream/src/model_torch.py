@@ -87,56 +87,6 @@ class DREAMEstimator(Estimator):
         self.clip_gr = conf.clip_gr
 
     def build(self, train_data, valid_data=None, test_data=None, over_write=False):
-        #
-        # econf = self.conf
-        # dconf = dfact.conf
-        # qconf = dfact.query_strategy.conf
-        # ntrain = econf.ntrain
-        # nvalid = econf.nvalid
-        # ntotal = ntrain + nvalid
-        # ntest = econf.ntest
-        # self.lr = lr = econf.lr
-        # self.bs = bs = econf.bs
-        #
-        # gen_total = dfact.get_query(ntotal)
-        # gen_test = dfact.get_test_query(ntest)
-        # pos_queries = None
-        # engram = None
-        # n = dconf.n
-        # N = 5
-        # PT = 20
-        # L = 20
-        # dname = dconf.name
-        # l_range = qconf.l_range
-        # w = qconf.w
-        # neg_ratio = econf.neg_ratio
-        # seed = econf.seed
-        # n_pos, n_neg = ut.split_total_with_ratio(ntotal, neg_ratio)
-        #
-        # is_count = True
-        # is_sep = False
-        # pos_queries = ut.load_filter_empty_query(pos_queries, engram, n=n, N=N, PT=PT, dname=dname, is_pos=True,
-        #                                          seed=None,
-        #                                          l_range=l_range, w=w)
-        # neg_queries = None
-        # if n_pos > len(pos_queries):
-        #     n_pos = len(pos_queries)
-        #     n_neg = round(n_pos * neg_ratio)
-        #     ntotal = n_pos + n_neg
-        #     ntrain = ntotal - nvalid
-        # total_q, total_x, total_y = ut.load_total_train_data(pos_queries, neg_queries, db, engram, n=n, N=N, PT=PT, L=L,
-        #                                                      dname=dname,
-        #                                                      ntotal=ntotal, n_pos=n_pos, is_sep=is_sep,
-        #                                                      is_count=is_count, neg_ratio=neg_ratio, seed=0)
-        # del total_x
-        #
-        # data_total = []
-        # for (q_s, d), y in zip(total_q, total_y):
-        #     x = ut.string_query_encoding(q_s, d, char_dict)
-        #     data_total.append((x, y))
-        #
-        # data_train, data_valid = data_total[:ntrain], data_total[ntrain:]
-
         dfact = self.db_factory
         db = dfact.get_db()
         self.char_dict = ut.char_dict_from_db(db, max_char=self.conf.max_char)
@@ -884,33 +834,18 @@ class VAE_CardNet(nn.Module):
 
     def loss(self, x, output_both=False):
         mu, logvar = self.encode_param(x)  # if the value of logvar is larger than 100, it makes infinity error.
-        if is_debug:
-            ut.check_nan_inf(mu)
-        if is_debug:
-            ut.check_nan_inf(logvar)
-        if is_debug:
-            var = logvar.exp()
-            ut.check_nan_inf(var)
 
         z = self.reparameterize(mu, logvar)
-        if is_debug:
-            ut.check_nan_inf(z)
 
         recon_x_logits = self.decoder(z)
-        if is_debug:
-            ut.check_nan_inf(recon_x_logits)
 
         # ---- Reconstruction loss
         # BCE2 = F.binary_cross_entropy(recon_x, x, reduction='sum')
         bce_loss = F.binary_cross_entropy_with_logits(recon_x_logits, x, reduction='sum')
-        if is_debug:
-            ut.check_nan_inf(bce_loss)
 
         # ---- Regularize loss (normal distribution)
         # kld_loss = torch.mul(torch.sum(1 + logvar - mu.pow(2) - logvar.exp()), -0.5)
         kld_loss = 0.5 * torch.sum(-1 - logvar + mu.pow(2) + logvar.exp())
-        if is_debug:
-            ut.check_nan_inf(kld_loss)
         output_loss = bce_loss + kld_loss
 
         # normalized by the corresponding vector size
@@ -1124,7 +1059,6 @@ class CardNetEstimator(Estimator):
         self.vclip_gr = self.conf.vclip_gr
         self.clip_gr = self.conf.clip_gr
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        # self.ncores = self.conf.ncores
         self.save_dir = None
         self.save_path = None
         self.log_dir = None
@@ -1297,12 +1231,6 @@ class CardNetEstimator(Estimator):
         curr_min_loss = 10000
         self.vae_path_curr = self.save_dir + "/_best_vae.pt"
         sw = SummaryWriter(self.logdir)
-        if is_debug:
-            logdir_debug = "debug_log/"
-            os.makedirs(logdir_debug, exist_ok=True)
-            count_debug = len(os.listdir(logdir_debug)) + 1
-            sw_debug = SummaryWriter(
-                logdir_debug + f"{count_debug}_vlr_{self.vlr}_vl2_{self.vl2}_vclipLv_{self.vclip_lv}_vclipGr_{self.vclip_gr}/")
         step = 0
         torch.save(self.model.vae.state_dict(), self.vae_path_curr)
         for epoch in range(1, self.max_epoch_vae + 1):
@@ -1318,31 +1246,9 @@ class CardNetEstimator(Estimator):
                 # print("model:")
                 # print(ut.torch_summarize(self.model.vae))
                 loss = self.model.vae.loss(x)
-                if is_debug:
-                    loss, bce_loss, kld_loss = self.model.vae.loss(x, output_both=True)
-                    loss_val = float(loss) / len(batch)
-                    bce_val = float(bce_loss) / len(batch)
-                    kld_val = float(kld_loss) / len(batch)
-                    sw_debug.add_scalar("VAE_loss", loss_val, global_step=step)
-                    sw_debug.add_scalar("VAE_BCE", bce_val, global_step=step)
-                    sw_debug.add_scalar("VAE_KLD", kld_val, global_step=step)
                 loss.backward()
                 if self.vclip_gr > 0:
                     torch.nn.utils.clip_grad_value_(self.model.vae.parameters(), self.vclip_gr)
-                if is_debug:
-                    is_grad_explode = ut.is_grad_explode_in_model(self.model.vae)
-                    if is_grad_explode:
-                        for name, param in self.model.vae.named_parameters():
-                            print(name, param)
-                            print("grad:", param.grad)
-                        print("loss:", loss)
-                        print("KLD:", kld_loss)
-                        print("BCE:", bce_loss)
-                        assert False, "Grad explode"
-                # for name, param in self.model.vae.named_parameters():
-                #     print(name, param)
-                #     print("grad:", param.grad)
-                # exit()
                 instance_loss = loss.item() / len(batch)
                 tqdm_train.set_description(f"[Epoch {epoch:02d}] loss: {instance_loss:7.4f}", refresh=False)
                 if step % 1000 == 0:

@@ -316,7 +316,7 @@ arg_str_format_dict = {
     'DREAM': "--model DREAM --dname {dataName}",
     'CardNet': "--model CardNet --dname {dataName}",
     'LBS': "--model LBS --dname {dataName} --seed {seed} --Ntbl {Ntbl} --PT {PT}",
-    'Astrid': "--path datasets/{dataName}/ --prfx qs_{dataName} --delta {delta} --pt-r {pt_r} --max-l {max_l} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
+    'Astrid': "--path datasets/{dataName}/ --prfx qs_{dataName} --delta {delta} --pt-r {pt_r} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
 }
 
 arg_model_format_dict = {
@@ -1038,10 +1038,6 @@ def get_parser_with_ignores_astrid(required=True):
     parser.add_argument("--delta", required=required, type=int, help="train model")
     parser.add_argument("--pt-r", required=required, type=float,
                         help="pretraining ratio of nodes in a trie")
-    parser.add_argument("--maxl", required=required, type=str,
-                        help="pretraining ratio of nodes in a trie (old)")
-    parser.add_argument("--max-l", required=required, type=int,
-                        help="maximum length for query strings to use")
     parser.add_argument("--p-train", required=required, type=float, help="ratio of training data")
     parser.add_argument("--p-val", default=0.1, type=float, help="ratio of valid data")
     parser.add_argument("--p-test", default=0.1, type=float, help="ratio of test data")
@@ -1070,14 +1066,11 @@ def get_parser_with_ignores():
     parser = argparse.ArgumentParser(description="parse")
     parser.add_argument('--model', type=str, help='model name')
     parser.add_argument('--dname', type=str, help='data name')
-    # parser.add_argument('--n-train', type=int, help='number of training data')
     parser.add_argument('--p-train', type=float, help='ratio of augmented training data')
     parser.add_argument('--p-val', type=float, help='ratio of valid')
     parser.add_argument('--p-test', type=float, help='ratio of test')
     group = parser.add_mutually_exclusive_group()
     parser.add_argument('--seed', type=int, help='estimator seed')
-    # parser.add_argument('--short', action='store_true', help='short train test query')
-    # parser.add_argument('--ncores', default=6, type=int, help='number of cores to multi-process')
     parser.add_argument('--l2', type=float, help='L2 regularization ')
     parser.add_argument('--lr', type=float, help='train learning rate [default (RNN=0.001), (CardNet=0.001)]')
     parser.add_argument('--vlr', type=float, help='train learning rate for VAE in CardNet [default 0.0001]')
@@ -1091,8 +1084,6 @@ def get_parser_with_ignores():
     parser.add_argument('--max-epoch', type=int,
                         help="maximum epoch (default=100 for RNN 800 for CardNet)")
     parser.add_argument('--patience', type=int, help="patience for training neural network")
-    parser.add_argument('--min-l', type=int, help="minimum length of query")
-    parser.add_argument('--max-l', type=int, help="maximum length of query")
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--max-d', type=int, help="maximum distance threshold")
@@ -1101,12 +1092,10 @@ def get_parser_with_ignores():
     parser.add_argument('--sep-emb', action='store_true', help="char dist sep embed?")
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--prfx', action='store_true', help="additional prefix information")
-    group.add_argument('--Sprfx', action='store_true', help="additional prefix & separate prefixes")
     group.add_argument('--Eprfx', action='store_true', help="additional prefix & enumerate prefixes")
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--btS', action='store_true', help="bulk training with sharing")
     group.add_argument('--btA', action='store_true', help="additionally bulk training")
-    parser.add_argument('--Mprfx', action='store_true', help="limit the number of additional prefixes")
 
     parser.add_argument('--bs', type=int, help="batch size (default=32)")
     parser.add_argument('--vbs', type=int, help="batch size (default=256)")

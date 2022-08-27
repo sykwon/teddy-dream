@@ -124,15 +124,12 @@ class Map(dict):
         del self.__dict__[key]
 
 
-def read_string_db_by_file_path(n, file_path):
+def read_string_db_by_file_path(file_path):
     data = []
     with open(file_path, 'r', encoding='utf-8') as f:
         count = 0
         while True:
             row = f.readline()
-            if n:
-                if count >= n:
-                    break
             if not row:
                 break
             data.append(row.rstrip())
@@ -140,9 +137,9 @@ def read_string_db_by_file_path(n, file_path):
     return data
 
 
-def read_string_db_by_name(n, db_name):
+def read_string_db_by_name(db_name):
     file_path = f"data/{db_name}.txt"
-    db = read_string_db_by_file_path(n, file_path)
+    db = read_string_db_by_file_path(file_path)
     return db
 
 
@@ -1377,15 +1374,12 @@ def get_parser_with_ignores():
     parser = argparse.ArgumentParser(description="parse")
     parser.add_argument('--model', type=str, help='model name')
     parser.add_argument('--dname', type=str, help='data name')
-    # parser.add_argument('--n-train', type=int, help='number of training data')
     parser.add_argument('--p-train', type=float, help='ratio of augmented training data')
     parser.add_argument('--p-val', type=float, help='ratio of valid')
     parser.add_argument('--p-test', type=float, help='ratio of test')
     parser.add_argument('--seed', type=int, help='estimator seed')
-    # parser.add_argument('--short', action='store_true', help='short train test query')
-    # parser.add_argument('--ncores', default=6, type=int, help='number of cores to multi-process')
     parser.add_argument('--l2', type=float, help='L2 regularization ')
-    parser.add_argument('--lr', type=float, help='train learning rate [default (RNN=0.001), (CardNet=0.001)]')
+    parser.add_argument('--lr', type=float, help='train learning rate [default (DREAM=0.001), (CardNet=0.001)]')
     parser.add_argument('--vlr', type=float, help='train learning rate for VAE in CardNet [default 0.0001]')
     parser.add_argument('--layer', type=int, help="number of RNN layers")
     parser.add_argument('--pred-layer', type=int, help="number of pred layers")
@@ -1397,7 +1391,6 @@ def get_parser_with_ignores():
     parser.add_argument('--max-epoch', type=int,
                         help="maximum epoch (default=100 for RNN 800 for CardNet)")
     parser.add_argument('--patience', type=int, help="patience for training neural network")
-    # parser.add_argument('--max-l', type=int, help="maximum length of query")
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--max-d', type=int, help="maximum distance threshold")
@@ -1406,12 +1399,10 @@ def get_parser_with_ignores():
     parser.add_argument('--sep-emb', action='store_true', help="char dist sep embed?")
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--prfx', action='store_true', help="additional prefix information")
-    group.add_argument('--Sprfx', action='store_true', help="additional prefix & separate prefixes")
     group.add_argument('--Eprfx', action='store_true', help="additional prefix & enumerate prefixes")
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--btS', action='store_true', help="bulk training with sharing")
     group.add_argument('--btA', action='store_true', help="additionally bulk training")
-    parser.add_argument('--Mprfx', action='store_true', help="limit the number of additional prefixes")
 
     parser.add_argument('--bs', type=int, help="batch size (default=32)")
     parser.add_argument('--vbs', type=int, help="batch size (default=256)")
@@ -1628,9 +1619,6 @@ def get_splited_train_valid_test_each_len(query_strings, split_seed, args):
 
     # q_train: random shuffled
     q_train = clip_query_string_each_len(q_train, p_train)
-    if args.Mprfx:
-        dist_prfx = len(distinct_prefix(q_train))
-        q_train = clip_by_limiting_number_of_prefixes(q_train, dist_prfx)
     return q_train, q_valid, q_test
 
 
@@ -1646,8 +1634,6 @@ def get_stat_query_string(q_train, args):
         if args.prfx:
             n_update = sum([len(qry) for qry in q_train])
             assert model_name not in ['CardNet']
-        if args.Sprfx:
-            n_update = n_prfx
         if args.Eprfx:
             n_update = sum([len(qry) for qry in q_train])
     return n_qry, n_prfx, n_update

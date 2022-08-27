@@ -673,7 +673,6 @@ if __name__ == "__main__":
     print("model_name_prefix:", model_name_prefix)
     print("delta:", args.delta)
     print("pt_r:", args.pt_r)
-    print("max_l:", args.max_l)
     print("p_train:", args.p_train)
     print("seed:", args.seed)
     print("overwrite:", args.overwrite)

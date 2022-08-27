@@ -226,19 +226,11 @@ def LBS_with_one_minima(engram: dict, queries, coverage, N=None, L=None, PST=Non
 
     estimations = []
     mof_bs_list = []
-    if is_debug:
-        assert res_dir is not None
-        debug_path = res_dir + "/debug_d_3_l_5.xlsx"
-        debug_info = [["PT", "s_q", "d", "len", "y", "est", "jacc", "type", "max_s", "count",
-                       *[f"L{i}" for i in range(1, L + 1)]]]
     if silent:
         query_iter = enumerate(queries)
     else:
         query_iter = tqdm(enumerate(queries), total=len(queries))
     for qid, (str_q, delta) in query_iter:
-        if is_debug:
-            if len(str_q) != 5 or delta != 3:
-                continue
         # if len(str_q) == 3 and delta == 3:
         #     print("while debug")
         mbs = ut.gen_minimal_base_substring(str_q, delta)
@@ -270,23 +262,8 @@ def LBS_with_one_minima(engram: dict, queries, coverage, N=None, L=None, PST=Non
             estimation = max_card / sim_est
             mof_info = [max_card, max_min_hash, max_str_b, sim_est]
 
-        if is_debug:
-            if len(str_q) == 5 and delta == 3:
-                debug_info.append(
-                    [PT, str_q, delta, len(str_q), y[qid], estimation, sim_est, "max", max_str_b, max_card,
-                     *max_min_hash])
-                debug_info.append(
-                    [PT, str_q, delta, len(str_q), y[qid], estimation, sim_est, "union", "None", estimation,
-                     *union_min_hash])
-                # debug_info.append(sig_list)
-
         mof_bs_list.append(mof_info)
         estimations.append(estimation)
-    if is_debug:
-        import pandas as pd
-        debug_df = pd.DataFrame(debug_info[1:], columns=debug_info[0])
-        debug_df.to_excel(debug_path, index=False)
-        exit()
     return estimations, mof_bs_list
 
 

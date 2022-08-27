@@ -61,8 +61,6 @@ def get_parser_with_ignores_astrid(required=True):
     parser.add_argument("--delta", required=required, type=int, help="train model")
     parser.add_argument("--pt-r", required=required, type=float,
                         help="pretraining ratio of nodes in a trie")
-    parser.add_argument("--max-l", required=required, type=int,
-                        help="maximum length for query strings to use")
     parser.add_argument("--p-train", required=required, type=float, help="ratio of training data")
     parser.add_argument("--p-val", default=0.1, type=float, help="ratio of valid data")
     parser.add_argument("--p-test", default=0.1, type=float, help="ratio of test data")

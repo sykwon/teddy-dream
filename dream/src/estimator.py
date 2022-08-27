@@ -89,24 +89,18 @@ class DBFactory(object):
 
     def __init__(self, conf: Map):
         self.conf = conf
-        self.conf.n = 0
         self.db = None
         self.db = self.get_db()
         self.validate_conf()
 
     def get_db(self):
         if self.db is None:
-            db = ut.read_string_db_by_name(self.conf.n, self.conf.name)
+            db = ut.read_string_db_by_name(self.conf.name)
             self.db = db
         return self.db
 
     def validate_conf(self):
-        if self.conf.n > 0:
-            assert self.conf.n == len(self.db)
-        elif self.conf.n == 0:
-            self.conf.n = len(self.db)
-        else:
-            raise ValueError
+        self.conf.n = len(self.db)
 
 
 def learn_Deep_Learning_model_rewrite(model_name, dname, exp_name, logger=None):
