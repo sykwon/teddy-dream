@@ -20,7 +20,7 @@ pip install -r requirements.txt # For python packages, see requirements.txt
 To train and evaluate the cardinality estimators, run the following command:
 
 ```bash
-python run.py --model <model_name> --dname <data_name> --p-train <ratio_training> --p-val <ratio_validation> --p-test <ratio_test> --seed <seed> --l2 <l2_regularization> --lr <learning_rate> --layer <number_encoder_layers> --pred-layer <number_decoder_layers> --cs <model_scale> --max-epoch <max_epoch> --patience <patience> --max-d <delta_M> --max-char <max_char> --bs <batch_size> --h-dim 512 --es <embedding_size> --clip-gr <gradient_clipping> 
+python run.py --model <model_name> --dname <data_name> --p-train <ratio_training> --p-val <ratio_validation> --p-test <ratio_test> --seed <seed_number> --l2 <l2_regularization> --lr <learning_rate> --layer <number_encoder_layers> --pred-layer <number_decoder_layers> --cs <model_scale> --max-epoch <max_epoch> --patience <patience> --max-d <delta_M> --max-char <max_char> --bs <batch_size> --h-dim 512 --es <embedding_size> --clip-gr <gradient_clipping> 
 ```
 
 * <model_name>: the name of the cardinality estimator (DREAM, CardNet or LBS)  
@@ -28,7 +28,7 @@ The meanings of DREAM, Qgram and LBS are described in Section 6 of our paper.
 * <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
 The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our paper.
 * <delta_M>: the maximum substring edit distance threshold
-* <seed_xx>: the random seed to generate the initial weights of the estimator model
+* <seed_number>: the random seed to generate the initial weights of the estimator model
 
 For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model with test data.
 The model parameters of the DREAM model will be printed by using the ```summary``` function by importing ```torchsummary``` before training the model. The description of the ```summary``` function can be found in <https://pypi.org/project/torch-summary/>.
