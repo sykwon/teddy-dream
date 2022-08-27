@@ -9,9 +9,9 @@ def get_table_accuracy_of_estimators_in_default_setting(delta=3, verbose_level=0
     if "dataNames" in kwargs:
         eu._dataNames = kwargs["dataNames"].copy()
 
-    trad_algs = ['eqt']
-    base_algs = ['card', 'rnn']
-    prfx_algs = ['Pastrid', 'Pcard', 'Prnn']
+    trad_algs = ['LBS']
+    base_algs = ['CardNet', 'DREAM']
+    prfx_algs = ['PAstrid', 'PCardNet', 'PDREAM']
 
     eu._xvals = [1.0]
     eu._xvals_dict = {
@@ -27,7 +27,7 @@ def get_table_accuracy_of_estimators_in_default_setting(delta=3, verbose_level=0
 
     eu._default_map_dict = arg_default_map_dict.copy()
     eu._default_map_dict['Pastrid']['delta'] = -delta
-    for alg in ['card', 'Pcard', 'rnn', 'Prnn', 'eqt']:
+    for alg in ['card', 'Pcard', 'DREAM', 'PDREAM', 'eqt']:
         eu._default_map_dict[alg]['max_d'] = delta
 
     formatter_dict = default_dict({
@@ -238,8 +238,8 @@ def transform_raw_df_with_multicolumns(df, selected=['est:err', 'est:q90']):
 
 
 def refine_default_err_df(df, tag=None, formatter_dict=None):
-    algs = eu._algs  # ['eqt', 'card', 'rnn', 'Pastrid', 'Pcard', 'Prnn']
-    dataNames = eu._dataNames  # ['wiki2', 'imdb2', 'dblp']
+    algs = eu._algs
+    dataNames = eu._dataNames
     selected = eu._ylabels  # ['est:err', 'est:q90']
 
     df = aggregate_df(df)

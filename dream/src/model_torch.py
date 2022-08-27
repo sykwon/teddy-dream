@@ -153,7 +153,6 @@ class DREAMEstimator(Estimator):
         pred_hs = conf.h_dim
         cell_hs = conf.cs
         embed_size = conf.es
-        bi_direct = conf.bi_direct
         seed = conf.seed
         num_rnn_layer = conf.layer
         num_pred_layer = conf.pred_layer
@@ -162,8 +161,6 @@ class DREAMEstimator(Estimator):
         delta = conf.delta
         if delta is not None:
             max_d = 0
-        sep_emb = self.sep_emb
-        multi = self.multi
         prfx = self.prfx
         btS = self.btS
         btA = self.btA
@@ -181,7 +178,7 @@ class DREAMEstimator(Estimator):
         # torch.backends.cudnn.deterministic = True
         # torch.backends.cudnn.benchmark = False
         self.model = RNN_module(n_char + 1, pred_hs, cell_hs, embed_size, num_pred_layer=num_pred_layer,
-                                bi_direct=bi_direct, max_d=max_d, multi=multi, num_rnn_layer=num_rnn_layer, sep_emb=sep_emb,
+                                max_d=max_d,  num_rnn_layer=num_rnn_layer,
                                 prfx=prfx, max_len=max_len, btS=btS, btA=btA)  # +1 means [UNK] token
         # simple_input = (torch.LongTensor([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]]), torch.LongTensor([12]))
 
@@ -673,16 +670,10 @@ class ConcatEmbed(nn.Module):
 
 
 class RNN_module(nn.Module):
-    def __init__(self, n_char, pred_hs, rnn_hs, embed_size, num_pred_layer=5, bi_direct=False, max_d=3, multi=False,
-                 num_rnn_layer=1, sep_emb=False, prfx=False, max_len=None, n_channel=1, btS=None, btA=None):
+    def __init__(self, n_char, pred_hs, rnn_hs, embed_size, num_pred_layer=5,  max_d=3,
+                 num_rnn_layer=1, prfx=False, max_len=None, n_channel=1, btS=None, btA=None):
         super().__init__()
-        if multi or sep_emb:
-            input_size = n_char + 1
-        else:
-            input_size = n_char * (max_d + 1) + 1  # pad and all characters for each delta
-        self.multi = multi
         self.num_rnn_layer = num_rnn_layer
-        self.sep_emb = sep_emb
         self.prfx = prfx
         self.btS = btS
         self.btA = btA
@@ -690,38 +681,26 @@ class RNN_module(nn.Module):
         self.seq_out = self.prfx or self.btS or self.btA
         self.max_len = max_len
 
-        if sep_emb:
-            # input_size = n_char+1
-            # self.char_embedding = nn.Embedding(input_size, embed_size - 5, padding_idx=0)
-            # self.dist_embedding = nn.Embedding(max_d+1, 5)
-            # nn.init.uniform_(self.char_embedding.weight)
-            # nn.init.uniform_(self.dist_embedding.weight)
-            dist_emb_size = 5
-            assert embed_size > dist_emb_size
-            self.embedding = ConcatEmbed(n_char, max_d, embed_size, dist_emb_size=dist_emb_size)
-            # nn.init.uniform_(self.embedding.char_embedding.weight)
-            # nn.init.uniform_(self.embedding.dist_embedding.weight)
-            nn.init.xavier_normal_(self.embedding.char_embedding.weight)
-            nn.init.xavier_normal_(self.embedding.dist_embedding.weight)
-        else:
-            self.embedding = nn.Embedding(input_size, embed_size, padding_idx=0)
-            # nn.init.uniform_(self.embedding.weight)
-            nn.init.xavier_normal_(self.embedding.weight)
+        # input_size = n_char+1
+        # self.char_embedding = nn.Embedding(input_size, embed_size - 5, padding_idx=0)
+        # self.dist_embedding = nn.Embedding(max_d+1, 5)
+        # nn.init.uniform_(self.char_embedding.weight)
+        # nn.init.uniform_(self.dist_embedding.weight)
+        dist_emb_size = 5
+        assert embed_size > dist_emb_size
+        self.embedding = ConcatEmbed(n_char, max_d, embed_size, dist_emb_size=dist_emb_size)
+        # nn.init.uniform_(self.embedding.char_embedding.weight)
+        # nn.init.uniform_(self.embedding.dist_embedding.weight)
+        nn.init.xavier_normal_(self.embedding.char_embedding.weight)
+        nn.init.xavier_normal_(self.embedding.dist_embedding.weight)
 
         assert rnn_hs % 2 == 0, f"rnn hidden size should be even, but {rnn_hs} are given"
         self.rnn_hs = rnn_hs
 
-        cell_size = rnn_hs // 2 if bi_direct else rnn_hs
+        cell_size = rnn_hs
         self.rnns = nn.ModuleList()
-        if multi:
-            for i in range(max_d + 1):
-                rnn = nn.LSTM(embed_size, cell_size, batch_first=True, bidirectional=bi_direct,
-                              num_layers=num_rnn_layer)
-                self.rnns.append(rnn)
-        else:
-            self.rnn = nn.LSTM(embed_size, cell_size, batch_first=True, bidirectional=bi_direct,
-                               num_layers=num_rnn_layer)
-            self.rnns.append(self.rnn)
+        self.rnn = nn.LSTM(embed_size, cell_size, batch_first=True, num_layers=num_rnn_layer)
+        self.rnns.append(self.rnn)
         for rnn in self.rnns:
             for name, param in rnn.named_parameters():
                 if "bias" in name:
@@ -733,86 +712,30 @@ class RNN_module(nn.Module):
                 else:
                     raise ValueError("parameter is not initialized")
 
-        if False:
-            self.preds = torch.nn.ModuleList()
-            assert self.max_len is not None
-            for i in range(max_len):
-                pred = nn.Sequential()
-                for id in range(num_pred_layer):
-                    id += 1
-                    if id == 1:
-                        pred.add_module(f"PRED-{id}-{i}", nn.Linear(rnn_hs, pred_hs))
-                    else:
-                        pred.add_module(f"PRED-{id}-{i}", nn.Linear(pred_hs, pred_hs))
-                    pred.add_module(f"LeakyReLU-{id}-{i}", nn.LeakyReLU())
-                pred.add_module(f"PRED-OUT", nn.Linear(pred_hs, 32))
-                pred.apply(init_weights)
-                self.preds.append(pred)
-        else:
-            self.pred = nn.Sequential()
-            for id in range(num_pred_layer):
-                id += 1
-                if id == 1:
-                    self.pred.add_module(f"PRED-{id}", nn.Linear(rnn_hs, pred_hs))
-                else:
-                    self.pred.add_module(f"PRED-{id}", nn.Linear(pred_hs, pred_hs))
-                self.pred.add_module(f"LeakyReLU-{id}", nn.LeakyReLU())
-            self.pred.add_module(f"PRED-OUT", nn.Linear(pred_hs, n_channel))
-            self.pred.apply(init_weights)
-        # self.last = nn.Linear(pred_hs, 1)
-        # last.bias.data.fill_(0.00)
-        # print("last:", self.last.weight)
-        # self.pred.add_module(f"PRED-OUT", self.last)
-
-        # self.pred.add_module(f"PRED-OUT", nn.Linear(pred_hs, 32))
-        # self.pred.add_module(f"DROPOUT", ENS_module(drop_p=0.5))
-        # self.pred.add_module(f"DROPOUT", nn.Dropout())
-        # d = nn.Dropout()
-        # d.train()
-        # d.training
-        # self.pred.apply(init_weights)
+        self.pred = nn.Sequential()
+        for id in range(num_pred_layer):
+            id += 1
+            if id == 1:
+                self.pred.add_module(f"PRED-{id}", nn.Linear(rnn_hs, pred_hs))
+            else:
+                self.pred.add_module(f"PRED-{id}", nn.Linear(pred_hs, pred_hs))
+            self.pred.add_module(f"LeakyReLU-{id}", nn.LeakyReLU())
+        self.pred.add_module(f"PRED-OUT", nn.Linear(pred_hs, n_channel))
+        self.pred.apply(init_weights)
 
     def logit(self, x, hidden=None, prfx_train=False):
-        # if self.prfx:
-        #     data, delta, lengths = x
-        #     embed = None
-        # else:
         data, delta, lengths = x
-        if self.sep_emb:
-            embed = self.embedding(data, delta)
+        embed = self.embedding(data, delta)
+        packed = pack_padded_sequence(embed, lengths.cpu(), batch_first=True, enforce_sorted=False)
+        # rnn = self.rnn
+        output, hidden = self.rnn(packed, hx=hidden)
+        if self.seq_out:
+            hidden = pad_packed_sequence(output)[0].transpose(0, 1)
         else:
-            embed = self.embedding(data)
-        # lengths: torch.Tensor
-        # print("length")
-        # print(lengths.cpu())
-        # for length in lengths.cpu().tolist():
-        #     assert length > 0, f"length>0, but {length} is given"
-        # if self.multi:
-        assert not self.multi
-        if False:
-            raise NotImplementedError
-            hiddens = []
-            for single_embed, d, length in zip(embed, delta, lengths):
-                single_embed = single_embed.unsqueeze(0)
-                length = length.unsqueeze(0)
-                single_packed = pack_padded_sequence(single_embed, length, batch_first=True)
-                output, hidden_out = self.rnns[d](single_packed, hidden)
-                if isinstance(self.rnns[d], torch.nn.LSTM):
-                    hidden_out, cell = hidden_out
-                    hidden_out = torch.transpose(hidden_out, 0, 1).reshape(-1, self.rnn_hs)
-                hiddens.append(hidden_out)
-            hidden = torch.stack(hiddens)
-        else:
-            packed = pack_padded_sequence(embed, lengths.cpu(), batch_first=True, enforce_sorted=False)
-            # rnn = self.rnn
-            output, hidden = self.rnn(packed, hx=hidden)
-            if self.seq_out:
-                hidden = pad_packed_sequence(output)[0].transpose(0, 1)
-            else:
-                if isinstance(self.rnn, torch.nn.LSTM):
-                    hidden, cell = hidden
-                    hidden = torch.transpose(hidden, 0, 1)
-                    # hidden = hidden.reshape(-1, self.rnn_hs)
+            if isinstance(self.rnn, torch.nn.LSTM):
+                hidden, cell = hidden
+                hidden = torch.transpose(hidden, 0, 1)
+                # hidden = hidden.reshape(-1, self.rnn_hs)
         if not self.seq_out:
             hidden = hidden[:, -1, :]  # select last output (cf., include the case when single layered rnn)
 

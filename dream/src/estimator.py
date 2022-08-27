@@ -102,10 +102,7 @@ class DBFactory(object):
         return self.db
 
     def set_n_from_dsize(self):
-        if self.conf.n is None:
-            dsize = self.conf.dsize
-            assert dsize is not None
-            self.conf.n = ut.get_dbsize_from_dsize(dsize)
+        self.conf.n = 0
 
     def validate_conf(self):
         if self.conf.n > 0:

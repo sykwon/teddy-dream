@@ -1529,11 +1529,11 @@ def varify_args(args):
     assert args.p_test > 0 and args.p_test <= 1.0
 
     if args.prfx:
-        assert 'rnn' in model_name or 'attn' in model_name, model_name
+        assert 'DREAM' in model_name
         # assert args.dname == 'wiki', args.dname
 
     if args.csc or args.vsc:
-        assert model_name == 'card', model_name
+        assert model_name == 'CardNet', model_name
 
     if is_learning_model(args.model):
         assert args.l2 is not None
@@ -1604,15 +1604,6 @@ def varify_args(args):
         assert args.L is None
 
 
-def get_n_rec_from_args(args):
-    if args.dsize:
-        n_rec = get_dbsize_from_dsize(args.dsize)
-    else:
-        assert args.n_rec is not None
-        n_rec = args.n_rec
-    return n_rec
-
-
 def get_exp_key(verbose=1):
     cmd_list = sys.argv[1:]
     exp_key = " ".join(cmd_list)
@@ -1681,13 +1672,13 @@ def get_stat_query_string(q_train, args):
     n_prfx = None
     n_update = None
     model_name = args.model
-    if model_name in ['rnn', 'card']:
+    if is_learning_model(model_name):
         n_qry = len(q_train)
         n_prfx = num_distinct_prefix(q_train)
         n_update = n_qry
         if args.prfx:
             n_update = sum([len(qry) for qry in q_train])
-            assert model_name not in ['card']
+            assert model_name not in ['CardNet']
         if args.Sprfx:
             n_update = n_prfx
         if args.Eprfx:

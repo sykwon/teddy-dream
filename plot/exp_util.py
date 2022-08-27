@@ -168,8 +168,8 @@ arg_default_map_dict = {
         'emb_epoch': 8,
         'dsc': 1024,
     },
-    'rnn': {
-        'model': 'rnn',
+    'DREAM': {
+        'model': 'DREAM',
         'dname': 'wiki2',
         'p_train': 1.0,
         'p_val': 0.1,
@@ -193,8 +193,8 @@ arg_default_map_dict = {
         'es': 100,
         'clip_gr': 10.0,
     },
-    'Prnn': {
-        'model': 'rnn',
+    'PDREAM': {
+        'model': 'DREAM',
         'dname': 'wiki2',
         'p_train': 1.0,
         'p_val': 0.1,
@@ -218,8 +218,8 @@ arg_default_map_dict = {
         'es': 100,
         'clip_gr': 10.0,
     },
-    'Ernn': {
-        'model': 'rnn',
+    'EDREAM': {
+        'model': 'DREAM',
         'dname': 'wiki2',
         'p_train': 1.0,
         'p_val': 0.1,
@@ -318,21 +318,21 @@ arg_default_map_dict = {
 
 arg_str_format_dict = {
     'join': "{ps} {pq} {alg} data/{dataName}.txt data/qs_{dataName}_{seed}_{max_l}.txt {thrs} {prfx}",
-    'rnn': "--model rnn --dname {dataName}",
+    'DREAM': "--model DREAM --dname {dataName}",
     'card': "--model card --dname {dataName}",
     'eqt': "--model eqt --dname {dataName} --dsize max --seed {seed} --Ntbl {Ntbl} --PT {PT}",
     'astrid': "--path datasets/{dataName}/ --prfx qs_{dataName} --delta {delta} --pt-r {pt_r} --max-l {max_l} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
 }
 
 arg_model_format_dict = {
-    'rnn': "RNN_{dataName}_max_cs_{cs}_layer_1_predL_{predLayer}_sep",
+    'DREAM': "DREAM_{dataName}_max_cs_{cs}_layer_1_predL_{predLayer}",
     'card': "CardNET_{dataName}_max_csc_{csc}_vsc_{vsc}",
     'eqt': "L_10_N_{Ntbl}_PT_{PT}_n_*_name_{dataName}_seed_{seed}.bin",
     'astrid': "",
 }
 
 model_dir_dict = {
-    'rnn': "../model/",
+    'DREAM': "../model/",
     'Prnn': "../model/",
     'card': "../model/",
     'Pcard': "../model/",

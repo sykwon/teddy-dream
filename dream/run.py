@@ -36,7 +36,7 @@ def get_config_manager_and_exp_name(args):
     cm['alg']['name'] = model_name
     dname = args.dname
 
-    if model_name == 'rnn':
+    if model_name == 'DREAM':
         assert args.cs, "In RNN training, cell size should be given"
         cm["alg"]["cs"] = args.cs
         exp_suffix += f"_cs_{args.cs}"

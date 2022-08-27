@@ -5,6 +5,7 @@ __pycache__/
 **/result.*
 **/stat/
 **/time/
+**/model/
 obj/
 time/
 res/
