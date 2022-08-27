@@ -23,10 +23,10 @@ To train and evaluate the cardinality estimators, run the following command:
 python run.py --model <model_name> --dname <data_name> --p-train <ratio_training> --p-val <ratio_validation> --p-test <ratio_test> --seed <seed> --l2 <l2_regularization> --lr <learning_rate> --layer <number_encoder_layers> --pred-layer <number_decoder_layers> --cs <model_scale> --max-epoch <max_epoch> --patience <patience> --max-d <delta_M> --max-char <max_char> --bs <batch_size> --h-dim 512 --es <embedding_size> --clip-gr <gradient_clipping> 
 ```
 
-For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model.
-The output will show the model parameters before training the model.
-After the training is done, it provide where the estimated cardinalities for test data and the trained model are stored.
-In addition, it outputs the average q-error of estimated cardinalities.
+For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model with test data.
+The model parameters of the DREAM model will be printed before training the model.
+After training as well as evaluation of the DREAM model are done, the file pathes where the output file of the estimated cardinalities for test data and the trained model are printed.
+In addition, the average q-error of estimated cardinalities is printed.
 
 ```bash
 python run.py --model DREAM --dname DBLP --p-train 1.0 --p-val 0.1 --p-test 0.1 --seed 0 --l2 0.00000001 --lr 0.001 --layer 1 --pred-layer 3 --cs 512 --max-epoch 100 --patience 5 --max-d 3 --max-char 200 --bs 32 --h-dim 512 --es 100 --clip-gr 10.0
