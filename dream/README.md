@@ -28,7 +28,7 @@ The meanings of DREAM, Qgram and LBS are described in Section 6 of our paper.
 * <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
 The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our paper.
 * <delta_M>: the maximum substring edit distance threshold
-* <seed>: the random seed to generate the initial weights of the estimator model
+* <seed_xx>: the random seed to generate the initial weights of the estimator model
 
 For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model with test data.
 The model parameters of the DREAM model will be printed by using the ```summary``` function by importing ```torchsummary``` before training the model. The description of the ```summary``` function can be found in <https://pypi.org/project/torch-summary/>.
