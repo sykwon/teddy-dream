@@ -24,7 +24,7 @@ python run.py --model <model_name> --dname <data_name> --p-train <ratio_training
 ```
 
 For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model with test data.
-The model parameters of the DREAM model will be printed before training the model.
+The model parameters of the DREAM model will be printed by using the ```summary``` function by importing ```torchsummary``` before training the model. The description of the summary function can be found in [[link](https://pypi.org/project/torch-summary/)].
 After training as well as evaluation of the DREAM model are done, the file pathes where the output file of the estimated cardinalities for test data and the trained model are printed.
 In addition, the average q-error of estimated cardinalities is printed.
 
