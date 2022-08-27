@@ -51,18 +51,11 @@ RNN_module (
   ), weights=((512, 512), (512,), (512, 512), (512,), (512, 512), (512,), (1, 512), (1,)), parameters=788481
 )
 total params: 3309620
-train_loss: 001.342 train_q_error: 003.211: 100%|██████████| 2477/2477 [00:13<00:00, 186.27it/s]
-[epoch 01] valid_loss: 001.234, valid_q_error: 004.310
-train_loss: 001.390 train_q_error: 003.854: 100%|██████████| 2477/2477 [00:13<00:00, 186.10it/s]
-[epoch 02] valid_loss: 001.121, valid_q_error: 003.904
-...
-[epoch 14] valid_loss: 000.587, valid_q_error: 002.716
-train_loss: 000.062 train_q_error: 001.197: 100%|██████████| 2477/2477 [00:13<00:00, 184.92it/s]
-[epoch 15] valid_loss: 000.581, valid_q_error: 002.658
+
 The trained model are written as model/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32/saved_model.pth 
 The estimated cardinalities are written as exp_result/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32/analysis_lat_gpu.csv
-         q_err
-mean  2.859777
+
+average q-error: 2.859777
 ```
 
 The above output says that the trained model is stored in the directory ```model/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32``` and its name is ```saved_model.pth```.
