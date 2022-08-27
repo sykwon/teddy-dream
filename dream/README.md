@@ -61,6 +61,8 @@ average q-error: 2.859777
 The above output says that the trained model is stored at the file with the name ```saved_model.pth``` in the directory ```model/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32```.
 Furthermore, it says that the average q-error of estimated cardinalities is 2.859777 for the DREAM model.
 
+To measure the estimation errors of all estimators except Astrid for a dataset, run the following command:
+
 ```bash
 ./run.sh <data_name>
 ```
