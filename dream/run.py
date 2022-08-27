@@ -74,10 +74,6 @@ def get_config_manager_and_exp_name(args):
         cm["alg"]["es"] = args.es
         exp_suffix += f"_es_{args.es}"
 
-        # cm["alg"]["n_channel"] = args.n_channel
-        # if args.n_channel > 0:
-        #     exp_suffix += f"_nChan_{args.n_channel}"
-
     if model_name == 'card':
         cm["alg"]["csc"] = args.csc
         exp_suffix += f"_csc_{args.csc}"

@@ -79,7 +79,6 @@ class DREAMEstimator(Estimator):
         self.patience = conf.patience
         self.best_epoch = 0
         self.last_epoch = 0
-        self.multi = conf.multi
         self.prfx = conf.prfx
         self.btS = conf.btS
         self.btA = conf.btA
@@ -632,7 +631,7 @@ class ConcatEmbed(nn.Module):
 
 class RNN_module(nn.Module):
     def __init__(self, n_char, pred_hs, rnn_hs, embed_size, num_pred_layer=5,  max_d=3,
-                 num_rnn_layer=1, prfx=False, max_len=None, n_channel=1, btS=None, btA=None):
+                 num_rnn_layer=1, prfx=False, max_len=None, btS=None, btA=None):
         super().__init__()
         self.num_rnn_layer = num_rnn_layer
         self.prfx = prfx
@@ -681,7 +680,7 @@ class RNN_module(nn.Module):
             else:
                 self.pred.add_module(f"PRED-{id}", nn.Linear(pred_hs, pred_hs))
             self.pred.add_module(f"LeakyReLU-{id}", nn.LeakyReLU())
-        self.pred.add_module(f"PRED-OUT", nn.Linear(pred_hs, n_channel))
+        self.pred.add_module(f"PRED-OUT", nn.Linear(pred_hs, 1))
         self.pred.apply(init_weights)
 
     def logit(self, x, hidden=None, prfx_train=False):

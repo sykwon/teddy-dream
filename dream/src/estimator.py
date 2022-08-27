@@ -84,13 +84,12 @@ class Estimator(metaclass=ABCMeta):
 
 class DBFactory(object):
     """
-        conf: Map (extended dictionary) contains 'name' and ('n' or 'dsize')
-
+        conf: Map (extended dictionary) contains 'name'
     """
 
     def __init__(self, conf: Map):
         self.conf = conf
-        self.set_n_from_dsize()
+        self.conf.n = 0
         self.db = None
         self.db = self.get_db()
         self.validate_conf()
@@ -100,9 +99,6 @@ class DBFactory(object):
             db = ut.read_string_db_by_name(self.conf.n, self.conf.name)
             self.db = db
         return self.db
-
-    def set_n_from_dsize(self):
-        self.conf.n = 0
 
     def validate_conf(self):
         if self.conf.n > 0:

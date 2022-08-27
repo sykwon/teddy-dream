@@ -174,7 +174,6 @@ arg_default_map_dict = {
         'p_train': 1.0,
         'p_val': 0.1,
         'p_test': 0.1,
-        'dsize': 'max',
         'seed': 0,
         'l2': 1e-8,
         'lr': 0.001,
@@ -199,7 +198,6 @@ arg_default_map_dict = {
         'p_train': 1.0,
         'p_val': 0.1,
         'p_test': 0.1,
-        'dsize': 'max',
         'seed': 0,
         'l2': 1e-8,
         'lr': 0.001,
@@ -224,7 +222,6 @@ arg_default_map_dict = {
         'p_train': 1.0,
         'p_val': 0.1,
         'p_test': 0.1,
-        'dsize': 'max',
         'seed': 0,
         'l2': 1e-8,
         'lr': 0.001,
@@ -247,7 +244,7 @@ arg_default_map_dict = {
         'dname': 'wiki2',
         'p_train': 1.0,
         'p_val': 0.1,
-        'p_test': 0.1, 'dsize': 'max',
+        'p_test': 0.1,
         'seed': 0,
         'l2': 0.00000001,
         'lr': 0.001,
@@ -273,7 +270,6 @@ arg_default_map_dict = {
         'p_train': 1.0,
         'p_val': 0.1,
         'p_test': 0.1,
-        'dsize': 'max',
         'seed': 0,
         'l2': 1e-8,
         'lr': 0.001,
@@ -298,7 +294,6 @@ arg_default_map_dict = {
         'model': 'eqt',
         'dname': 'wiki2',
         'p_test': 0.1,
-        'dsize': 'max',
         'seed': 0,
         'Ntbl': 5,
         'PT': 20,
@@ -320,7 +315,7 @@ arg_str_format_dict = {
     'join': "{ps} {pq} {alg} data/{dataName}.txt data/qs_{dataName}_{seed}_{max_l}.txt {thrs} {prfx}",
     'DREAM': "--model DREAM --dname {dataName}",
     'CardNet': "--model CardNet --dname {dataName}",
-    'LBS': "--model LBS --dname {dataName} --dsize max --seed {seed} --Ntbl {Ntbl} --PT {PT}",
+    'LBS': "--model LBS --dname {dataName} --seed {seed} --Ntbl {Ntbl} --PT {PT}",
     'Astrid': "--path datasets/{dataName}/ --prfx qs_{dataName} --delta {delta} --pt-r {pt_r} --max-l {max_l} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
 }
 
@@ -425,7 +420,6 @@ def get_arg_str_pat(alg, default_map):
             arg_str_pat += " --p-val {p_val}"
         if "p_test" in default_map:
             arg_str_pat += " --p-test {p_test}"
-        arg_str_pat += " --dsize max"
         if "seed" in default_map:
             arg_str_pat += " --seed {seed}"
         if "l2" in default_map:
@@ -1080,30 +1074,18 @@ def get_parser_with_ignores():
     parser.add_argument('--p-train', type=float, help='ratio of augmented training data')
     parser.add_argument('--p-val', type=float, help='ratio of valid')
     parser.add_argument('--p-test', type=float, help='ratio of test')
-    parser.add_argument('--bi-direct', action='store_true', help='bi-directional LSTM for RNN method')
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--n-rec', type=int, help='number of records')
-    group.add_argument('--dsize', type=str, choices=['tiny', 'small', 'mid', 'full', 'max'], help="data scale")
     parser.add_argument('--seed', type=int, help='estimator seed')
     # parser.add_argument('--short', action='store_true', help='short train test query')
     # parser.add_argument('--ncores', default=6, type=int, help='number of cores to multi-process')
     parser.add_argument('--l2', type=float, help='L2 regularization ')
     parser.add_argument('--lr', type=float, help='train learning rate [default (RNN=0.001), (CardNet=0.001)]')
     parser.add_argument('--vlr', type=float, help='train learning rate for VAE in CardNet [default 0.0001]')
-    parser.add_argument('--swa', action='store_true', help='apply stochastic weight averaging')
-    # parser.add_argument('--rewrite', action='store_true', help='postprocessing from estimated result')
-    parser.add_argument('--multi', action='store_true', help='multi RNN for each delta')
-    # parser.add_argument('--card', action='store_true', help='total data split by cardnet manner')
-    # parser.add_argument('--card', default=True, type=bool,
-    #                     help='total data split by cardnet manner. '
-    #                          'If it is False, we will partition the training data for each length and delta')
-    # parser.add_argument('--fullstr', action='store_true', help='full string mode')
     parser.add_argument('--layer', type=int, help="number of RNN layers")
     parser.add_argument('--pred-layer', type=int, help="number of pred layers")
     parser.add_argument('--cs', type=int, help="rnn cell size (it should be even)")
     parser.add_argument('--csc', type=int, help="CardNet model scale (default=256)")
     parser.add_argument('--vsc', type=int, help="CardNet vae model scale (default=128)")
-    # parser.add_argument('--n-channel', default=32, type=int, help="number of output channels")
     parser.add_argument('--Ntbl', type=int, help='maximum length of extended n-gram table for LBS (default=5)')
     parser.add_argument('--PT', type=int, help='threshold for LBS (PT>=1) (default=20) ')
     parser.add_argument('--max-epoch', type=int,

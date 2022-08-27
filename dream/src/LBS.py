@@ -349,9 +349,6 @@ class LBS(Estimator):
         assert not is_LSH, "currently disabled"
         assert not use_PST, "currently disabled"
         econf = self.conf
-        dconf = self.db_factory.conf
-        dname = dconf.name
-        dsize = dconf.size
         N = econf.N
         L = econf.L
         PT = econf.PT
@@ -369,9 +366,6 @@ class LBS(Estimator):
         assert not use_PST, "currently disabled"
         assert not is_LSH, "currently disabled"
         econf = self.conf
-        dconf = self.db_factory.conf
-        dname = dconf.name
-        dsize = dconf.size
         N = econf.N
         L = econf.L
         PT = econf.PT

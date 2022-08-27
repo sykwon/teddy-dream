@@ -879,22 +879,6 @@ def string_query_decoding(input_seq, char_list):
     return q_s, d
 
 
-def get_dbsize_from_dsize(dsize):
-    if dsize == "full":
-        n = 1000000
-    elif dsize == "mid":
-        n = 500000
-    elif dsize == "small":
-        n = 10000
-    elif dsize == "tiny":
-        n = 100
-    elif dsize == "max":
-        n = 0
-    else:
-        raise ValueError(dsize)
-    return n
-
-
 def convert_size(size_bytes):
     if size_bytes == 0:
         return "0B"
@@ -1397,36 +1381,22 @@ def get_parser_with_ignores():
     parser.add_argument('--p-train', type=float, help='ratio of augmented training data')
     parser.add_argument('--p-val', type=float, help='ratio of valid')
     parser.add_argument('--p-test', type=float, help='ratio of test')
-    # parser.add_argument('--bi-direct', action='store_true', help='bi-directional LSTM for RNN method')
-    # group = parser.add_mutually_exclusive_group()
-    # group.add_argument('--n-rec', type=int, help='number of records')
-    # group.add_argument('--dsize', type=str, choices=['tiny', 'small', 'mid', 'full', 'max'], help="data scale")
     parser.add_argument('--seed', type=int, help='estimator seed')
     # parser.add_argument('--short', action='store_true', help='short train test query')
     # parser.add_argument('--ncores', default=6, type=int, help='number of cores to multi-process')
     parser.add_argument('--l2', type=float, help='L2 regularization ')
     parser.add_argument('--lr', type=float, help='train learning rate [default (RNN=0.001), (CardNet=0.001)]')
     parser.add_argument('--vlr', type=float, help='train learning rate for VAE in CardNet [default 0.0001]')
-    # parser.add_argument('--swa', action='store_true', help='apply stochastic weight averaging')
-    # parser.add_argument('--rewrite', action='store_true', help='postprocessing from estimated result')
-    # parser.add_argument('--multi', action='store_true', help='multi RNN for each delta')
-    # parser.add_argument('--card', action='store_true', help='total data split by cardnet manner')
-    # parser.add_argument('--card', default=True, type=bool,
-    #                     help='total data split by cardnet manner. '
-    #                          'If it is False, we will partition the training data for each length and delta')
-    # parser.add_argument('--fullstr', action='store_true', help='full string mode')
     parser.add_argument('--layer', type=int, help="number of RNN layers")
     parser.add_argument('--pred-layer', type=int, help="number of pred layers")
     parser.add_argument('--cs', type=int, help="rnn cell size (it should be even)")
     parser.add_argument('--csc', type=int, help="CardNet model scale (default=256)")
     parser.add_argument('--vsc', type=int, help="CardNet vae model scale (default=128)")
-    # parser.add_argument('--n-channel', default=32, type=int, help="number of output channels")
     parser.add_argument('--Ntbl', type=int, help='maximum length of extended n-gram table for LBS (default=5)')
     parser.add_argument('--PT', type=int, help='threshold for LBS (PT>=1) (default=20) ')
     parser.add_argument('--max-epoch', type=int,
                         help="maximum epoch (default=100 for RNN 800 for CardNet)")
     parser.add_argument('--patience', type=int, help="patience for training neural network")
-    # parser.add_argument('--min-l', type=int, help="minimum length of query")
     # parser.add_argument('--max-l', type=int, help="maximum length of query")
 
     group = parser.add_mutually_exclusive_group()
@@ -1478,7 +1448,7 @@ def get_parser_with_ignores():
     return parser, ignore_opt_list
 
 
-def get_model_args(verbose=1, mode="test"):
+def get_model_args(verbose=1):
     parser, ignore_opt_list = get_parser_with_ignores()
 
     args = parser.parse_args()
@@ -1616,7 +1586,6 @@ def get_exp_key(verbose=1):
 
 def store_train_valid_query_string(q_train, q_valid, train_qry_outdir, args):
     dname = args.dname
-    seed = args.seed
     p_train = args.p_train
 
     # store train_valid query string dataset
@@ -1627,8 +1596,7 @@ def store_train_valid_query_string(q_train, q_valid, train_qry_outdir, args):
     print(q_train_valid[:5])
     os.makedirs(train_qry_outdir, exist_ok=True)
 
-    max_l = args.max_l if args.max_l else 20
-    filename = f"qs_{dname}_{seed}_{max_l}_{p_train}.txt"
+    filename = f"qs_{dname}_{p_train}.txt"
     train_qry_path = train_qry_outdir + filename
     if not os.path.exists(train_qry_path):
         print("saved at", train_qry_path)
