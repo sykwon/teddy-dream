@@ -1,11 +1,11 @@
 # Cardinality Estimation of Approximate Substring Queries
 
-## Environment
-
 [![license](https://img.shields.io/github/license/sykwon/teddy-dream?color=brightgreen)](https://github.com/sykwon/teddy-dream/blob/master/LICENSE)
 [![ubuntu](https://img.shields.io/badge/ubuntu-v18.04-orange)](https://wiki.ubuntu.com/Releases)
 ![python 3.7](https://img.shields.io/badge/python-v3.7-blue)
 ![cuda 11.6](https://img.shields.io/badge/cuda-v11.6-blue)
+
+## Installation
 
 ```bash
 sudo apt-get install redis-server
@@ -13,6 +13,14 @@ conda create -n py37 python=3.7
 source activate py37
 conda install pytorch=1.7.1 torchvision=0.8.2 cudatoolkit=11.0 -c pytorch -c nvidia
 pip install -r requirements.txt # For python packages, see requirements.txt
+```
+
+## Training & evaluating cardinality estimators
+
+To train and evaluate the cardinality estimators, run the following command:
+
+```bash
+python run.py
 ```
 
 ## Script

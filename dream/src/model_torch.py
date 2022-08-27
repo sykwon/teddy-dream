@@ -70,7 +70,7 @@ def collate_fn_RNN(batch):
     return (x_seq, x_d, x_len), y
 
 
-class RNNTorchEstimator(Estimator):
+class DREAMEstimator(Estimator):
     def __init__(self, conf):
         super().__init__(conf)
         self.conf = conf

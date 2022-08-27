@@ -5,7 +5,7 @@ from src.LBS import LBS
 from src.estimator import learn_Deep_Learning_model
 from src.preprocess import load_query_strings, get_cardinalities_train_test_valid
 
-from src.model_torch import RNNTorchEstimator, CardNetEstimator
+from src.model_torch import DREAMEstimator, CardNetEstimator
 from src.util import is_learning_model, ConfigManager
 import src.util as ut
 import sys
@@ -17,9 +17,9 @@ train_qry_outdir = "data/"
 logger = None  # logger is disabled
 
 est_class_dict = {
-    "rnn": RNNTorchEstimator,
-    "card": CardNetEstimator,
-    "eqt": LBS,
+    "DREAM": DREAMEstimator,
+    "CardNet": CardNetEstimator,
+    "LBS": LBS,
 }
 
 
@@ -30,18 +30,11 @@ def get_exp_name(args):
 
 def get_config_manager_and_exp_name(args):
     # ---- start applying args to cm ---- #
-    name_dict = {
-        "rnn": "RNN",
-        "eqt": "LBS",
-        "card": "CardNet",
-    }
     cm = ConfigManager()
     exp_suffix = ""
     model_name = args.model
-    cm['alg']['name'] = name_dict[model_name]
+    cm['alg']['name'] = model_name
     dname = args.dname
-    dsize = args.dsize
-    n_rec = ut.get_n_rec_from_args(args)
 
     if model_name == 'rnn':
         assert args.cs, "In RNN training, cell size should be given"
@@ -122,9 +115,6 @@ def get_config_manager_and_exp_name(args):
             assert model_name == 'card'
             cm["alg"]["vlr"] = args.vlr
             exp_suffix += f"_vlr_{args.vlr}"
-        cm["alg"]["swa"] = args.swa
-        if args.swa:
-            exp_suffix += "_swa"
         if args.max_char:
             cm["alg"]["max_char"] = args.max_char
             exp_suffix += f"_maxC_{args.max_char}"
@@ -140,12 +130,12 @@ def get_config_manager_and_exp_name(args):
         if args.patience is not None:
             cm["alg"]["patience"] = args.patience
             exp_suffix += f"_pat_{args.patience}"
-        if model_name == 'rnn':
+        if model_name == 'DREAM':
             cm["alg"]["clip_gr"] = args.clip_gr
             exp_suffix += f"_clipGr_{args.clip_gr}"
 
     # LBS models
-    if model_name in 'eqt':
+    if model_name in 'LBS':
         cm["alg"]["N"] = args.Ntbl
         exp_suffix += f"_N_{args.Ntbl}"
         cm["alg"]["PT"] = args.PT
@@ -155,41 +145,14 @@ def get_config_manager_and_exp_name(args):
 
     cm["alg"]["seed"] = args.seed
     exp_suffix += f"_seed_{args.seed}"
-    cm["data"]["n"] = n_rec  # from args.n_rec or args.dsize
-    cm["data"]["size"] = args.dsize
     cm["data"]["name"] = args.dname
-    # cm["alg"]["neg_ratio"] = args.nr
-    # if args.short:
-    #     cm["qry"]["short"] = args.short
-    #     cm["alg"]["name"] += '-short'
-
-    # if args.card:
-    #     exp_suffix += "_cardsplit"
 
     if args.max_epoch:
         cm["alg"]["max_epoch"] = args.max_epoch
         exp_suffix += f"_maxEpoch_{args.max_epoch}"
 
-    if args.min_l:
-        # if "l_range" in cm["qry"]:
-        #     cm["qry"]["l_range"][0] = args.min_l
-        # else:
-        #     cm["qry"]["l_range"] = [args.min_l, -1]
-        cm["alg"]["minL"] = args.min_l
-        exp_suffix += f"_minL_{args.min_l}"
-    if args.max_l:
-        # cm["qry"]["l_range"][1] = args.max_l + 1
-        cm["alg"]["maxL"] = args.max_l
-        exp_suffix += f"_maxL_{args.max_l}"
-    if args.delta is not None:
-        # cm["qry"]["delta"] = args.delta
-        cm["alg"]["delta"] = args.delta
-        exp_suffix += f"_delta_{args.delta}"
-    else:
-        if args.max_d is not None:
-            cm["qry"]["max_d"] = args.max_d
-            cm["alg"]["max_d"] = args.max_d
-            exp_suffix += f"_maxD_{args.max_d}"
+    cm["alg"]["max_d"] = args.max_d
+    exp_suffix += f"_maxD_{args.max_d}"
     if args.p_test:
         exp_suffix += f"_pTest_{args.p_test}"
 
@@ -203,7 +166,7 @@ def get_config_manager_and_exp_name(args):
         cm["alg"]["max_epoch_vae"] = args.max_epoch_vae
         exp_suffix += f"_maxEpochVae_{args.max_epoch_vae}"
 
-    exp_name = f"{cm['alg']['name']}_{dname}_{dsize}"
+    exp_name = f"{model_name}_{dname}"
     exp_name += exp_suffix
     cm['save']['exp_name'] = exp_name
     # ------ end applying args to cm ------ #
@@ -254,7 +217,7 @@ if __name__ == "__main__":
 
     # ------- prepare train and test dataset ----- #
     split_seed = 0
-    query_strings = load_query_strings(args.dname, args.dsize, seed=split_seed, max_l=args.max_l)
+    query_strings = load_query_strings(args.dname, seed=split_seed)
     q_train, q_valid, q_test = ut.get_splited_train_valid_test_each_len(query_strings, split_seed, args)
 
     if args.outdata:

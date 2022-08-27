@@ -1397,19 +1397,19 @@ def get_parser_with_ignores():
     parser.add_argument('--p-train', type=float, help='ratio of augmented training data')
     parser.add_argument('--p-val', type=float, help='ratio of valid')
     parser.add_argument('--p-test', type=float, help='ratio of test')
-    parser.add_argument('--bi-direct', action='store_true', help='bi-directional LSTM for RNN method')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('--n-rec', type=int, help='number of records')
-    group.add_argument('--dsize', type=str, choices=['tiny', 'small', 'mid', 'full', 'max'], help="data scale")
+    # parser.add_argument('--bi-direct', action='store_true', help='bi-directional LSTM for RNN method')
+    # group = parser.add_mutually_exclusive_group()
+    # group.add_argument('--n-rec', type=int, help='number of records')
+    # group.add_argument('--dsize', type=str, choices=['tiny', 'small', 'mid', 'full', 'max'], help="data scale")
     parser.add_argument('--seed', type=int, help='estimator seed')
     # parser.add_argument('--short', action='store_true', help='short train test query')
     # parser.add_argument('--ncores', default=6, type=int, help='number of cores to multi-process')
     parser.add_argument('--l2', type=float, help='L2 regularization ')
     parser.add_argument('--lr', type=float, help='train learning rate [default (RNN=0.001), (CardNet=0.001)]')
     parser.add_argument('--vlr', type=float, help='train learning rate for VAE in CardNet [default 0.0001]')
-    parser.add_argument('--swa', action='store_true', help='apply stochastic weight averaging')
+    # parser.add_argument('--swa', action='store_true', help='apply stochastic weight averaging')
     # parser.add_argument('--rewrite', action='store_true', help='postprocessing from estimated result')
-    parser.add_argument('--multi', action='store_true', help='multi RNN for each delta')
+    # parser.add_argument('--multi', action='store_true', help='multi RNN for each delta')
     # parser.add_argument('--card', action='store_true', help='total data split by cardnet manner')
     # parser.add_argument('--card', default=True, type=bool,
     #                     help='total data split by cardnet manner. '
@@ -1426,8 +1426,8 @@ def get_parser_with_ignores():
     parser.add_argument('--max-epoch', type=int,
                         help="maximum epoch (default=100 for RNN 800 for CardNet)")
     parser.add_argument('--patience', type=int, help="patience for training neural network")
-    parser.add_argument('--min-l', type=int, help="minimum length of query")
-    parser.add_argument('--max-l', type=int, help="maximum length of query")
+    # parser.add_argument('--min-l', type=int, help="minimum length of query")
+    # parser.add_argument('--max-l', type=int, help="maximum length of query")
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--max-d', type=int, help="maximum distance threshold")
@@ -1509,7 +1509,7 @@ def get_model_args(verbose=1, mode="test"):
 
 
 def is_learning_model(alg):
-    return "rnn" in alg or "card" in alg or "attn" in alg
+    return "DREAM" in alg or "CardNet" in alg
 
 
 def varify_args(args):
@@ -1517,23 +1517,16 @@ def varify_args(args):
     #     assert args.card
     model_name = args.model
     assert args.model is not None
-    assert args.model in ['rnn', 'eqt', 'card', 'attn']
+    assert args.model in ['DREAM', 'LBS', 'CardNet']
 
     assert args.dname is not None
-    assert args.dname in ['imdb', 'wiki', 'tpch', 'imdb2', 'wiki2',
-                          'tpch2', 'dblp', 'dblps', 'dblpTL', 'dblpAU', 'egr1', 'dblpa']
+    assert args.dname in ['DBLP', 'GENE', 'WIKI', 'IMDB']
 
-    assert args.n_rec is not None or args.dsize is not None
     assert args.seed is not None
-
-    assert args.max_l is not None
 
     assert args.max_d is not None or args.delta is not None
 
     assert args.p_test > 0 and args.p_test <= 1.0
-
-    if args.n_rec is None:
-        assert args.dsize is not None, args.dsize
 
     if args.prfx:
         assert 'rnn' in model_name or 'attn' in model_name, model_name
@@ -1568,31 +1561,21 @@ def varify_args(args):
         assert args.p_val is None
         assert args.clip_gr is None
 
-    if 'rnn' in args.model:
+    if 'DREAM' in args.model:
         assert args.cs is not None
         assert args.layer is not None
         assert args.pred_layer is not None
-        assert args.sep_emb == True
         assert args.h_dim is not None
         assert args.es is not None
-    elif 'attn' in args.model:
-        assert args.cs is not None
-        assert args.pred_layer is not None
-        assert args.sep_emb == True
-        assert args.h_dim is not None
-        assert args.es is not None
-        assert args.n_heads is not None
     else:
-        assert not args.bi_direct
         assert args.cs is None
         assert args.layer is None
         assert args.pred_layer is None
-        assert not args.sep_emb
         assert not args.prfx
         assert args.h_dim is None
         assert args.es is None
 
-    if 'card' in args.model:
+    if 'CardNet' in args.model:
         assert args.csc is not None
         assert args.vsc is not None
         assert args.vlr is not None
@@ -1611,7 +1594,7 @@ def varify_args(args):
         assert args.vclip_lv is None
         assert args.vclip_gr is None
 
-    if 'eqt' in args.model:
+    if 'LBS' in args.model:
         assert args.Ntbl is not None
         assert args.PT is not None
         assert args.L is not None

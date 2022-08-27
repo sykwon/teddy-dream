@@ -4,15 +4,8 @@ import os
 import pandas as pd
 
 
-def load_query_strings(dname, dsize, seed=None, max_l=None):
-    assert dsize == "max"
-    if seed is None:
-        file_path = f"data/qs_{dname}.txt"
-    else:
-        file_path = f"data/qs_{dname}_{seed}.txt"
-    if max_l is not None:
-        assert seed is not None
-        file_path = f"data/qs_{dname}_{seed}_{max_l}.txt"
+def load_query_strings(dname, seed=None):
+    file_path = f"data/qs_{dname}.txt"
 
     assert os.path.exists(file_path), file_path
     output = []
@@ -24,18 +17,10 @@ def load_query_strings(dname, dsize, seed=None, max_l=None):
     return output
 
 
-def get_query_result(dname, dsize, prfx=False, seed=None, max_l=None, delta=None):
-    if seed is None:
-        file_dir = f"data/res_{dname}_{dsize}/"
-    else:
-        file_dir = f"data/res_{dname}_{seed}_{dsize}/"
-    if max_l is not None:
-        assert seed is not None
-        file_dir = f"data/res_{dname}_{seed}_{max_l}_{dsize}/"
-    if delta is not None:
-        assert max_l is not None
-        assert seed is not None
-        file_dir = f"data/res_{dname}_{seed}_{max_l}_5_{dsize}/"
+def get_query_result(dname, max_d, prfx=False):
+    max_d_training = 5
+    assert(max_d < max_d_training)
+    file_dir = f"data/res_{dname}_{max_d_training}/"
     if prfx:
         file_path = file_dir + "p_pref.csv"
     else:
@@ -45,8 +30,8 @@ def get_query_result(dname, dsize, prfx=False, seed=None, max_l=None, delta=None
     query_results = pd.read_csv(file_path, na_filter=False)
     for row in query_results.itertuples():
         value = list(row[2:])
-        if delta is not None:
-            value = value[:(delta+1)]
+        if max_d is not None:
+            value = value[:(max_d+1)]
         output[row[1]] = value
     return output
 
@@ -128,9 +113,7 @@ def fetch_cardinality(queries, query_results, max_d=None, prfx=False, test=False
 
 def get_cardinalities_train_test_valid(q_train, q_valid, q_test, split_seed, args):
     dname = args.dname
-    dsize = args.dsize
     # seed = args.seed
-    seed = split_seed
     analysis = args.analysis  # analysis
     analysis_latency = args.latency  # latency
     prfx_mode = args.prfx or args.Sprfx or args.Eprfx
@@ -139,7 +122,7 @@ def get_cardinalities_train_test_valid(q_train, q_valid, q_test, split_seed, arg
 
     # delta = None if args.max_d == 3 else args.max_d
     delta = args.max_d
-    query_results = get_query_result(dname, dsize, prfx_mode, seed=seed, max_l=args.max_l, delta=delta)
+    query_results = get_query_result(dname, delta, prfx_mode)
     if analysis and analysis_latency:
         test_data = fetch_cardinality(q_test, query_results, max_d=args.max_d, prfx=True, test=False, delta=args.delta)
         assert len(q_test) == len(test_data), f"{len(q_test)}, {len(test_data)}"

@@ -110,9 +110,9 @@ function param_search_Pcard {
 
 # rnn subprocedure
 function rnn_sub {
-  echo [ rnn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --sep-emb --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+  echo [ rnn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model DREAM --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${lr} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   if [[ $preview -eq 0 ]]; then
-    CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --sep-emb --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+    CUDA_VISIBLE_DEVICES=${device} python run.py --model DREAM --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${lr} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   fi
 }
 

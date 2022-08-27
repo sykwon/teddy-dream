@@ -1,0 +1,17 @@
+alg:
+  bs: 32
+  clip_gr: 10.0
+  l2: 1.0e-08
+  lr: 0.001
+  max_char: 200
+  max_d: 3
+  max_epoch: 100
+  name: DREAM
+  p_train: 1.0
+  patience: 5
+  seed: 0
+data:
+  name: DBLP
+qry: {}
+save:
+  exp_name: DREAM_DBLP_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32
