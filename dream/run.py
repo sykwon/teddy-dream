@@ -41,23 +41,11 @@ def get_config_manager_and_exp_name(args):
         cm["alg"]["cs"] = args.cs
         exp_suffix += f"_cs_{args.cs}"
 
-        cm["alg"]["bi_direct"] = args.bi_direct
-        if args.bi_direct:
-            cm["alg"]["name"] += "-bi"
-
-        cm["alg"]["multi"] = args.multi
-        if args.multi:
-            exp_suffix += "_multi"
-
         cm["alg"]["layer"] = args.layer
         exp_suffix += f"_layer_{args.layer}"
 
         cm["alg"]["pred_layer"] = args.pred_layer
         exp_suffix += f"_predL_{args.pred_layer}"
-
-        cm["alg"]["sep_emb"] = args.sep_emb
-        if args.sep_emb:
-            exp_suffix += "_sep"
 
         if args.prfx:
             cm["alg"]["prfx"] = args.prfx

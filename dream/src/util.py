@@ -1552,7 +1552,6 @@ def varify_args(args):
     else:
         assert args.l2 is None
         assert args.lr is None
-        assert not args.swa
         assert args.max_epoch is None
         assert args.patience is None
         assert args.max_char is None

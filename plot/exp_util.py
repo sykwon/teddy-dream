@@ -319,9 +319,9 @@ arg_default_map_dict = {
 arg_str_format_dict = {
     'join': "{ps} {pq} {alg} data/{dataName}.txt data/qs_{dataName}_{seed}_{max_l}.txt {thrs} {prfx}",
     'DREAM': "--model DREAM --dname {dataName}",
-    'card': "--model card --dname {dataName}",
-    'eqt': "--model eqt --dname {dataName} --dsize max --seed {seed} --Ntbl {Ntbl} --PT {PT}",
-    'astrid': "--path datasets/{dataName}/ --prfx qs_{dataName} --delta {delta} --pt-r {pt_r} --max-l {max_l} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
+    'CardNet': "--model CardNet --dname {dataName}",
+    'LBS': "--model LBS --dname {dataName} --dsize max --seed {seed} --Ntbl {Ntbl} --PT {PT}",
+    'Astrid': "--path datasets/{dataName}/ --prfx qs_{dataName} --delta {delta} --pt-r {pt_r} --max-l {max_l} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
 }
 
 arg_model_format_dict = {
@@ -377,7 +377,7 @@ def unpack_dict(input_dict):
 
 
 def get_arg_str_pat(alg, default_map):
-    if "rnn" in alg:
+    if "DREAM" in alg:
         arg_str_pat = arg_str_format_dict["rnn"]
         if "p_train" in default_map:
             arg_str_pat += " --p-train {p_train}"
@@ -385,15 +385,12 @@ def get_arg_str_pat(alg, default_map):
             arg_str_pat += " --p-val {p_val}"
         if "p_test" in default_map:
             arg_str_pat += " --p-test {p_test}"
-        arg_str_pat += " --dsize max"  # default
         if "seed" in default_map:
             arg_str_pat += " --seed {seed}"
         if "l2" in default_map:
             arg_str_pat += " --l2 {l2}"
         if "lr" in default_map:
             arg_str_pat += " --lr {lr}"
-        if "swa" in default_map:  # lr swa layer
-            arg_str_pat += " --swa"
         if "layer" in default_map:
             arg_str_pat += " --layer {layer}"
         if "pred_layer" in default_map:
@@ -404,23 +401,14 @@ def get_arg_str_pat(alg, default_map):
             arg_str_pat += " --max-epoch {max_epoch}"
         if "patience" in default_map:
             arg_str_pat += " --patience {patience}"
-        if "max_l" in default_map:
-            arg_str_pat += " --max-l {max_l}"
         if "max_d" in default_map:
             arg_str_pat += " --max-d {max_d}"
-        if "delta" in default_map:
-            arg_str_pat += " --delta {delta}"
         if "max_char" in default_map:
             arg_str_pat += " --max-char {max_char}"
-        arg_str_pat += " --sep-emb"
-        if alg == 'btArnn':
-            arg_str_pat += " --btA"
-        elif alg == 'Ernn':
+        if alg == 'EDREAM':
             arg_str_pat += " --Eprfx"
-        elif "Prnn" in alg:
+        elif "PDREAM" in alg:
             arg_str_pat += " --prfx"
-        elif alg == "Mrnn":
-            arg_str_pat += " --prfx --Mprfx"
         if "bs" in default_map:
             arg_str_pat += " --bs {bs}"
         if "h_dim" in default_map:
@@ -429,7 +417,7 @@ def get_arg_str_pat(alg, default_map):
             arg_str_pat += " --es {es}"
         if "clip_gr" in default_map:
             arg_str_pat += " --clip-gr {clip_gr}"
-    elif "card" in alg:
+    elif "CardNet" in alg:
         arg_str_pat = arg_str_format_dict["card"]
         if "p_train" in default_map:
             arg_str_pat += " --p-train {p_train}"
@@ -454,12 +442,8 @@ def get_arg_str_pat(alg, default_map):
             arg_str_pat += " --max-epoch {max_epoch}"
         if "patience" in default_map:
             arg_str_pat += " --patience {patience}"
-        if "max_l" in default_map:
-            arg_str_pat += " --max-l {max_l}"
         if "max_d" in default_map:
             arg_str_pat += " --max-d {max_d}"
-        if "delta" in default_map:
-            arg_str_pat += " --delta {delta}"
         if "max_char" in default_map:
             arg_str_pat += " --max-char {max_char}"
         if "Pcard" in alg:
@@ -470,14 +454,12 @@ def get_arg_str_pat(alg, default_map):
             arg_str_pat += " --vbs {vbs}"
         if "max_epoch_vae" in default_map:
             arg_str_pat += " --max-epoch-vae {max_epoch_vae}"
-    elif "lbs" in alg:
-        arg_str_pat = arg_str_format_dict["lbs"]
-        if "max_l" in default_map:
-            arg_str_pat += " --max-l {max_l}"
-    elif "astrid" in alg:
-        arg_str_pat = arg_str_format_dict["astrid"]
+    elif "LBS" in alg:
+        arg_str_pat = arg_str_format_dict["LBS"]
+    elif "Astrid" in alg:
+        arg_str_pat = arg_str_format_dict["Astrid"]
     else:
-        assert any([join_name in alg for join_name in ['allp', 'taste', 'topk', 'soddy', 'teddy', 'abl']])
+        assert any([join_name in alg for join_name in ['NaiveGen', 'TASTE', 'Qgram', 'SODDY', 'TEDDY', 'TEDDY-R']])
         arg_str_pat = arg_str_format_dict['join']
         if "pTrain" in default_map:
             arg_str_pat = arg_str_pat.replace("data/qs_{dataName}_{seed}_{max_l}.txt",

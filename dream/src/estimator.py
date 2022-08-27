@@ -1,4 +1,4 @@
-from src.util import Map, distinct_prefix
+from src.util import Map, distinct_prefix, is_learning_model
 import torch
 from tensorboardX import SummaryWriter
 from tqdm import tqdm
@@ -113,7 +113,7 @@ class DBFactory(object):
             raise ValueError
 
 
-def learn_Deep_Learning_model_rewrite(model_name, dname, dsize, exp_name, logger=None):
+def learn_Deep_Learning_model_rewrite(model_name, dname, exp_name, logger=None):
     file_path = f"exp_result/{dname}/{exp_name}/estimate.csv"
     assert os.path.exists(file_path), file_path
     # df = pd.read_csv(file_path, )
@@ -188,11 +188,7 @@ def learn_Deep_Learning_model_rewrite(model_name, dname, dsize, exp_name, logger
             logger.report_table("MOF info", "PD with index", 0, table_plot=df)
 
 
-def eval_Deep_Learning_model_bak(cm, est_class: Type[Estimator], data, is_rewirte=False, logger=None, exp_key=None, limit_time=None, over_write=None, n_qry=None, n_prfx=None, n_update=None):
-    pass
-
-
-def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=False, logger=None, exp_key=None, limit_time=None, overwrite=None, n_qry=None, n_prfx=None, n_update=None, analysis=None, analysis_latency=None):
+def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=False, logger=None, exp_key=None, overwrite=None, n_qry=None, n_prfx=None, n_update=None, analysis=None, analysis_latency=None):
     """
 
     Args:
@@ -206,9 +202,8 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
     """
     assert exp_key is not None
     print(cm)
-    print(cm.data)
+    # print(cm.data)
     model_name = cm.alg.name
-    dsize = cm.data.size
     dname = cm.data.name
     exp_name = cm.save.exp_name
     res_dir = f"exp_result/{dname}/{exp_name}"
@@ -216,7 +211,7 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
     # nr = cm.alg.neg_ratio
 
     if is_rewirte:
-        learn_Deep_Learning_model_rewrite(model_name, dname, dsize, exp_name, logger)
+        learn_Deep_Learning_model_rewrite(model_name, dname, exp_name, logger)
         exit()
 
     if analysis and not analysis_latency:
@@ -232,15 +227,12 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
         conn.set(f"anal:{exp_key}", exp_json_str)
         exit()
 
-    if dsize is None:
-        dsize = cm.data.n
-
     os.makedirs(res_dir, exist_ok=True)
     yaml.dump(cm.get_dict(), open(res_dir + "/conf.yaml", "w"))
     with open(res_dir + "/args.txt", "w") as f:
         f.write(" ".join(sys.argv) + "\n")
 
-    is_learner = len(data) > 2
+    is_learner = is_learning_model(model_name)
     if is_learner:
         train_data, valid_data, test_data = data
     else:
@@ -379,7 +371,7 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
     q_error = ut.q_error(y, y_hat)
     q_error90 = ut.q_error(y, y_hat, "q90")
 
-    learn_Deep_Learning_model_rewrite(model_name, dname, dsize, exp_name, logger)
+    learn_Deep_Learning_model_rewrite(model_name, dname, exp_name, logger)
 
     exp_json_str = ut.get_model_exp_json_str(model_name, est_duration, err=q_error, q90=q_error90)
     if not analysis:

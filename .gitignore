@@ -6,6 +6,8 @@ __pycache__/
 **/stat/
 **/time/
 **/model/
+**/exp_result/
+**/log/
 obj/
 time/
 res/

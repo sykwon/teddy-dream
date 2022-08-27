@@ -9,7 +9,6 @@ from torch import nn
 from torch import optim
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from torch.utils.data import Dataset, DataLoader
-from torchcontrib.optim import SWA
 from tqdm import tqdm
 from collections.abc import Iterable
 
@@ -80,7 +79,6 @@ class DREAMEstimator(Estimator):
         self.patience = conf.patience
         self.best_epoch = 0
         self.last_epoch = 0
-        self.sep_emb = conf.sep_emb
         self.multi = conf.multi
         self.prfx = conf.prfx
         self.btS = conf.btS
@@ -156,11 +154,7 @@ class DREAMEstimator(Estimator):
         seed = conf.seed
         num_rnn_layer = conf.layer
         num_pred_layer = conf.pred_layer
-        n_channel = conf.n_channel
         max_d = conf.max_d
-        delta = conf.delta
-        if delta is not None:
-            max_d = 0
         prfx = self.prfx
         btS = self.btS
         btA = self.btA
@@ -202,10 +196,7 @@ class DREAMEstimator(Estimator):
                 # encoding
                 x_train = []
                 for q_s in qs_list:
-                    if self.multi or self.sep_emb:
-                        x_train.append(ut.string_query_encoding(q_s, self.char_dict))
-                    else:
-                        raise NotImplementedError
+                    x_train.append(ut.string_query_encoding(q_s, self.char_dict))
                 return x_train, y_train
             else:  # test mode
                 raw_data_bak = raw_data
@@ -217,10 +208,7 @@ class DREAMEstimator(Estimator):
                 qs_list, qd_list, y_train = list(zip(*raw_data))
                 x_train = []
                 for q_s, q_d in zip(qs_list, qd_list):
-                    if self.multi or self.sep_emb:
-                        x_train.append(ut.string_query_encoding(q_s, self.char_dict))
-                    else:
-                        x_train.append(ut.string_query_encoding(q_s, self.char_dict, d=q_d))
+                    x_train.append(ut.string_query_encoding(q_s, self.char_dict))
                 return (x_train, qd_list), y_train
         else:
             if len(raw_data[0]) == 2:
@@ -232,10 +220,7 @@ class DREAMEstimator(Estimator):
             qs_list, qd_list, y_train = list(zip(*raw_data))
             x_train = []
             for q_s, q_d in zip(qs_list, qd_list):
-                if self.multi or self.sep_emb:
-                    x_train.append(ut.string_query_encoding(q_s, self.char_dict))
-                else:
-                    x_train.append(ut.string_query_encoding(q_s, self.char_dict, d=q_d))
+                x_train.append(ut.string_query_encoding(q_s, self.char_dict))
 
             return (x_train, qd_list), y_train
 
@@ -289,30 +274,12 @@ class DREAMEstimator(Estimator):
         return q_err
 
     def train(self, train_data, valid_data=None, test_data=None):
-        # ---- test same train data ---- #
-        # print("while test ")
-        # import pickle as pkl
-        # # pkl_path, test_data = "train.pkl", train_data
-        # pkl_path, test_data = "valid.pkl", valid_data
-        # if os.path.exists(pkl_path):
-        #     test_data_back = pkl.load(open(pkl_path, "rb"))
-        #     for i in range(len(test_data[0])):
-        #         x_s, x_d = (test_data[0][i], test_data[1][i])
-        #         b_s, b_d = (test_data_back[0][i], test_data_back[1][i])
-        #         assert x_s == b_s, f"{x_s}, {b_s}"
-        #         assert x_d == b_d
-        # else:
-        #     pkl.dump(test_data, open(pkl_path, "wb"))
-        # exit()
-        # ---- end test ---------- #
-
         model = self.model
         # model.to(self.device)
         model.cuda()
         model.train()
         econf = self.conf
         lr = econf.lr
-        is_swa = econf.swa
         max_epoch = econf.max_epoch
         save_path = self.save_path
         logdir = self.logdir
@@ -347,8 +314,6 @@ class DREAMEstimator(Estimator):
 
         # --- initialize optimizer --- #
         opt = optim.Adam(model.parameters(), lr=lr, weight_decay=self.l2)
-        if is_swa:
-            opt = SWA(opt, swa_start=5, swa_freq=2, swa_lr=lr / 2)
 
         # --- create summary writer --- #
         sw = SummaryWriter(logdir)
@@ -423,8 +388,6 @@ class DREAMEstimator(Estimator):
                                    global_step=global_step)  # add stats
 
             # --- validation --- #
-            if is_swa:  # To evaluate model
-                opt.swap_swa_sgd()
 
             if is_debug:
                 pred_train, y_train = self.estimate(dl_train)  # for train
@@ -479,8 +442,6 @@ class DREAMEstimator(Estimator):
             if patience == max_patience:
                 break
 
-            if is_swa:  # To continue training
-                opt.swap_swa_sgd()
         os.rename(curr_best_path, save_path)
         self.model.load_state_dict(torch.load(save_path))
         torch.save(self.model.state_dict(), save_path)
@@ -651,11 +612,11 @@ def init_weights_vae(model):
 
 
 class ConcatEmbed(nn.Module):
-    def __init__(self, n_char, delta, emb_size, dist_emb_size=5):
+    def __init__(self, n_char, max_d, emb_size, dist_emb_size=5):
         super().__init__()
         self.char_embedding = nn.Embedding(n_char + 1, emb_size - dist_emb_size,
                                            padding_idx=0)  # padding_idx currently not working
-        self.dist_embedding = nn.Embedding(delta + 1, dist_emb_size)
+        self.dist_embedding = nn.Embedding(max_d + 1, dist_emb_size)
 
     def forward(self, x, d):
         char_emb = self.char_embedding(x)  # batch, max_len, emb-dist_emb
@@ -1153,7 +1114,6 @@ class CardNetEstimator(Estimator):
         self.patience = conf.patience
         self.max_epoch_vae = conf.max_epoch_vae
         self.max_epoch = conf.max_epoch
-        self.is_swa = conf.swa
         self.csc = self.conf.csc  # CardNet scale
         self.vsc = self.conf.vsc  # VAE scale
         self.tau_max = conf.max_d
@@ -1331,8 +1291,6 @@ class CardNetEstimator(Estimator):
         # ---- VAE training
         opt_vae = optim.Adam(self.model.vae.parameters(), lr=self.vlr, weight_decay=self.vl2)
         print("vlr:", self.vlr, "weight decay:", self.vl2, "vclip logvar:", self.vclip_lv, "vclip grad:", self.vclip_gr)
-        if self.is_swa:
-            opt_vae = SWA(opt_vae, swa_start=5, swa_freq=2, swa_lr=self.vlr / 2)
 
         min_epoch = 10
         max_patience = self.patience
@@ -1399,8 +1357,6 @@ class CardNetEstimator(Estimator):
                             assert False, "Value explode"
 
             # ---- evaluation
-            if self.is_swa:  # To evaluate model
-                opt_vae.swap_swa_sgd()
 
             if is_debug:
                 train_loss = self.eval_vae(dl_train)
@@ -1426,9 +1382,6 @@ class CardNetEstimator(Estimator):
             if curr_patience == max_patience:
                 break
 
-            if self.is_swa:  # To continue learning model
-                opt_vae.swap_swa_sgd()
-
         # ----- done vae training ----
         os.replace(self.vae_path_curr, self.vae_path)
         self.model.vae.load_state_dict(torch.load(self.vae_path))  # updated from best model
@@ -1444,8 +1397,6 @@ class CardNetEstimator(Estimator):
 
         # ---- Estimator training
         opt_model = optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=self.l2)
-        if self.is_swa:
-            opt_model = SWA(opt_model, swa_start=5, swa_freq=2, swa_lr=self.lr / 2)
 
         min_epoch = 10
         max_patience = self.patience
@@ -1475,8 +1426,6 @@ class CardNetEstimator(Estimator):
                 opt_model.step()
 
             # ---- evaluation
-            if self.is_swa:  # To evaluate model
-                opt_model.swap_swa_sgd()
 
             if is_debug:
                 train_loss, train_q_error = self.eval_cardnet(dl_train)
@@ -1502,9 +1451,6 @@ class CardNetEstimator(Estimator):
             self.last_epoch = epoch
             if curr_patience == max_patience:
                 break
-
-            if self.is_swa:  # To continue learning model
-                opt_model.swap_swa_sgd()
 
         # ----- done vae training ----
         os.replace(self.model_path_curr, self.save_path)
