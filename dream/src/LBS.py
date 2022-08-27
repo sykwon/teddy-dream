@@ -7,8 +7,6 @@ import src.util as ut
 from src.estimator import Estimator
 from src.util import get_class_name
 
-is_debug = False
-
 
 def estimate_coverage(query_result, engram_hash, N, engram, n_sample=100, seed=None):
     """

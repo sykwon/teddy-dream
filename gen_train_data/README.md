@@ -57,6 +57,6 @@ To measure the execution times of all algorithms for generating the training dat
 ./run.sh <data_name>
 ```
 
-where <data_name> can be DBLP, GENE, WIKI, IMDB or all. Here, ```all``` represents to generate the training data with all datasets (i.e., DBLP, GENE, WIKI and IMDB).
+where ```<data_name>``` can be DBLP, GENE, WIKI, IMDB or all. Here, ```all``` represents to generate the training data with all datasets (i.e., DBLP, GENE, WIKI and IMDB).
 
 In this case, the default value of ```<max_hours_to_execute>``` is set to 30 (30 hours) to invoke the python code for.py to execute each algorithm.

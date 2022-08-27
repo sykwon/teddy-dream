@@ -285,7 +285,7 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
     pd_data = []
     pd_data.append(["s_q", "d", "true_count", "est_count"])
     start = time.time()
-    delta = cm.alg.max_d
+    max_d = cm.alg.max_d
     if "LBS" in cm.alg.name:
         est.silent = True
     if analysis:  # ts
@@ -308,9 +308,9 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
     print(test_data[:10])
     # y_hat, y= est.estimate_timeseries_anlysis(test_data)
     qry_list = np.array(list(zip(*test_data))[0])
-    delta_list = list(range(delta+1)) * num_qry_str
+    delta_list = list(range(max_d+1)) * num_qry_str
     if not "LBS" in cm.alg.name:
-        qry_list = qry_list.repeat(delta+1)
+        qry_list = qry_list.repeat(max_d+1)
 
     pd_data = list(zip(qry_list, delta_list, y, y_hat, latencies))
     df = pd.DataFrame(data=pd_data, columns=["s_q", "d", "true_count", "est_count", "latency"])

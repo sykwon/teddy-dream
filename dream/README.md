@@ -15,7 +15,7 @@ conda install pytorch=1.7.1 torchvision=0.8.2 cudatoolkit=11.0 -c pytorch -c nvi
 pip install -r requirements.txt # For python packages, see requirements.txt
 ```
 
-## Training & evaluating cardinality estimators
+## Training and evaluating cardinality estimators
 
 To train and evaluate the cardinality estimators, run the following command:
 
@@ -23,7 +23,10 @@ To train and evaluate the cardinality estimators, run the following command:
 python run.py --model <model_name> --dname <data_name> --p-train <ratio_training> --p-val <ratio_validation> --p-test <ratio_test> --seed <seed> --l2 <l2_regularization> --lr <learning_rate> --layer <number_encoder_layers> --pred-layer <number_decoder_layers> --cs <model_scale> --max-epoch <max_epoch> --patience <patience> --max-d <delta_M> --max-char <max_char> --bs <batch_size> --h-dim 512 --es <embedding_size> --clip-gr <gradient_clipping> 
 ```
 
-### Example
+For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model.
+The output will show the model parameters before training the model.
+After the training is done, it provide where the estimated cardinalities for test data and the trained model are stored.
+In addition, it outputs the average q-error of estimated cardinalities.
 
 ```bash
 python run.py --model DREAM --dname DBLP --p-train 1.0 --p-val 0.1 --p-test 0.1 --seed 0 --l2 0.00000001 --lr 0.001 --layer 1 --pred-layer 3 --cs 512 --max-epoch 100 --patience 5 --max-d 3 --max-char 200 --bs 32 --h-dim 512 --es 100 --clip-gr 10.0
@@ -53,26 +56,20 @@ train_loss: 001.342 train_q_error: 003.211: 100%|██████████|
 train_loss: 001.390 train_q_error: 003.854: 100%|██████████| 2477/2477 [00:13<00:00, 186.10it/s]
 [epoch 02] valid_loss: 001.121, valid_q_error: 003.904
 ...
+[epoch 14] valid_loss: 000.587, valid_q_error: 002.716
+train_loss: 000.062 train_q_error: 001.197: 100%|██████████| 2477/2477 [00:13<00:00, 184.92it/s]
+[epoch 15] valid_loss: 000.581, valid_q_error: 002.658
+The trained model are written as model/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32/saved_model.pth 
+The estimated cardinalities are written as exp_result/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32/analysis_lat_gpu.csv
+         q_err
+mean  2.859777
 ```
 
-<!-- ### Example 2: CardNet
+The above output says that the trained model is stored in the directory ```model/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32``` and its name is ```saved_model.pth```.
+Furthermore, it says that the average q-error of estimated cardinalities is 2.859777 for the DREAM model.
 
 ```bash
-python run.py --model DREAM --dname DBLP --p-train 1.0 --p-val 0.1 --p-test 0.1 --seed 0 --l2 0.00000001 --lr 0.001 --layer 1 --pred-layer 3 --cs 512 --max-epoch 100 --patience 5 --max-d 3 --max-char 200 --bs 32 --h-dim 512 --es 100 --clip-gr 10.0
+./run.sh <data_name>
 ```
 
-### Example 3: LBS
-
-```bash
-python run.py --model DREAM --dname DBLP --p-train 1.0 --p-val 0.1 --p-test 0.1 --seed 0 --l2 0.00000001 --lr 0.001 --layer 1 --pred-layer 3 --cs 512 --max-epoch 100 --patience 5 --max-d 3 --max-char 200 --bs 32 --h-dim 512 --es 100 --clip-gr 10.0
-``` -->
-
-## Script
-
-```bash
-# exp on DBLP 
-./run.sh DBLP
-
-# all exp
-./run.sh all
-```
+where ```<data_name>``` can be DBLP, GENE, WIKI, IMDB or all. Here, ```all``` represents to generate the training data with all datasets (i.e., DBLP, GENE, WIKI and IMDB).

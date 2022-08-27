@@ -1410,7 +1410,6 @@ def get_parser_with_ignores():
     parser.add_argument('--vclip-lv', type=float, help='vae soft value clipping on logvar')
     parser.add_argument('--vclip-gr', type=float, help='vae hard value clipping on gradient')
     parser.add_argument('--clip-gr', type=float, help='estimation model hard value clipping on gradient')
-    # parser.add_argument('--n-heads', type=int, help='number of heads for attention models')
 
     # ignored options
     ignore_opt_list = []
