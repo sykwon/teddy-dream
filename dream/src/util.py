@@ -10,6 +10,7 @@ import socket
 import time
 from functools import reduce
 from sklearn.model_selection import train_test_split
+import torchsummary
 
 import numpy as np
 import pandas as pd
@@ -653,7 +654,7 @@ def q_error(y, y_hat, reduction="mean"):
 
 
 def q_error_np(y, y_hat, eps=1e-3, is_list=False):
-    warnings.warn(FutureWarning("To be change"))
+    # warnings.warn(FutureWarning("To be change"))
 
     if not isinstance(y, np.ndarray):
         y = np.array(y)
@@ -917,43 +918,7 @@ def get_size(obj, seen=None):
 
 
 def print_torch_summarize(model):
-    summarized_str, n_total_params = torch_summarize(model)
-    for line in summarized_str.split('\\n'):
-        print(line)
-    print("total params:", n_total_params)
-
-
-def torch_summarize(model, show_weights=True, show_parameters=True):
-    """Summarizes torch model by showing trainable parameters and weights."""
-    assert isinstance(model, nn.Module)
-    tmpstr = model.__class__.__name__ + ' (\n'
-    total_params = 0
-    for key, module in model._modules.items():
-        # if it contains layers let call it recursively to get params and weights
-        if type(module) in [
-            torch.nn.modules.container.Container,
-            torch.nn.modules.container.Sequential
-        ]:
-            modstr, params = torch_summarize(module)
-        else:
-            modstr = module.__repr__()
-            params = sum([np.prod(p.size()) for p in module.parameters()])
-        modstr = _addindent(modstr, 2)
-
-        params_back = sum([np.prod(p.size()) for p in module.parameters()])
-        assert params == params_back
-        total_params += params
-        weights = tuple([tuple(p.size()) for p in module.parameters()])
-
-        tmpstr += '  (' + key + '): ' + modstr
-        if show_weights:
-            tmpstr += ', weights={}'.format(weights)
-        if show_parameters:
-            tmpstr += ', parameters={}'.format(params)
-        tmpstr += '\n'
-
-    tmpstr = tmpstr + ')'
-    return tmpstr, total_params
+    print(model)
 
 
 def _addindent(s_, numSpaces):

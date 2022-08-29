@@ -20,49 +20,78 @@ pip install -r requirements.txt # For python packages, see requirements.txt
 To train and evaluate the cardinality estimators, run the following command:
 
 ```bash
-python run.py --model <model_name> --dname <data_name> --p-train <ratio_training> --p-val <ratio_validation> --p-test <ratio_test> --seed <seed_number> --l2 <l2_regularization> --lr <learning_rate> --layer <number_encoder_layers> --pred-layer <number_decoder_layers> --cs <model_scale> --max-epoch <max_epoch> --patience <patience> --max-d <delta_M> --max-char <max_char> --bs <batch_size> --h-dim 512 --es <embedding_size> --clip-gr <gradient_clipping> 
+python run.py --model <model_name> --dname <data_name> --p-train <ratio_training> --p-val <ratio_validation> --p-test <ratio_test> --seed <seed_number> --l2 <l2_regularization> --lr <learning_rate> --layer <number_encoder_layers> --pred-layer <number_decoder_layers> --cs <encoder_scale> --max-epoch <max_epoch> --patience <patience> --max-d <delta_M> --max-char <max_char> --bs <batch_size> --h-dim <decoder_scale> --es <embedding_size> --clip-gr <gradient_clipping> 
 ```
 
 * <model_name>: the name of the cardinality estimator (DREAM, CardNet or LBS)  
 The meanings of DREAM, Qgram and LBS are described in Section 6 of our paper.
 * <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
 The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our paper.
-* <delta_M>: the maximum substring edit distance threshold
+* <ratio_training>: the ratio of training dataset
+* <ratio_validation>: the ratio of validation dataset
+* <ratio_test>: the ratio of test dataset
 * <seed_number>: the random seed to generate the initial weights of the estimator model
+* <l2_regularization>: the coefficient of l2 regularization
+* <learning_rate>: the learning rate of the gradient descent optimization
+* <number_encoder_layers>: the number of layers in the encoder of the model
+* <encoder_scale>: the scale of the encoder of the model
+* <max_epoch>: the maximum number of epoches to train the model
+* <patience>: the number which represents how many times to keep the training while the
+* <delta_M>: the maximum substring edit distance threshold
+* <max_char>: It is the maximum number of most frequent characters to keep for the cardinality estimator.  
+    The remaining characters are considered as unknown.
+* <batch_size>: the batch size of each training step
+* <decoder_scale>: the scale of the decoder of the model
+* <embedding_size>: the embedding size of concatenated embedding for character and distance
+* <gradient_clipping>: the maximum norm of gradient to ensure the stable learning
 
-For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model with test data.
-The model parameters of the DREAM model will be printed by using the ```summary``` function by importing ```torchsummary``` before training the model. The description of the ```summary``` function can be found in <https://pypi.org/project/torch-summary/>.
+For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model with the test data.
+The model parameters of the DREAM model will be printed based on ```pytorch```  before training the model. The description can be found in <https://pytorch.org/docs/1.7.1/generated/torch.nn.Module.html>.
+While training the DREAM model, it will print the average q-error with the validation data.
 After training as well as evaluation of the DREAM model are done, the file pathes where the output file of the estimated cardinalities for test data and the trained model are printed.
 In addition, the average q-error of estimated cardinalities is printed.
 
 ```bash
 python run.py --model DREAM --dname DBLP --p-train 1.0 --p-val 0.1 --p-test 0.1 --seed 0 --l2 0.00000001 --lr 0.001 --layer 1 --pred-layer 3 --cs 512 --max-epoch 100 --patience 5 --max-d 3 --max-char 200 --bs 32 --h-dim 512 --es 100 --clip-gr 10.0
 
-RNN_module (
+RNN_module(
   (embedding): ConcatEmbed(
     (char_embedding): Embedding(65, 95, padding_idx=0)
     (dist_embedding): Embedding(4, 5)
-  ), weights=((65, 95), (4, 5)), parameters=6195
+  )
   (rnns): ModuleList(
     (0): LSTM(100, 512, batch_first=True)
-  ), weights=((2048, 100), (2048, 512), (2048,), (2048,)), parameters=1257472
-  (rnn): LSTM(100, 512, batch_first=True), weights=((2048, 100), (2048, 512), (2048,), (2048,)), parameters=1257472
-  (pred): Sequential (
-    (PRED-1): Linear(in_features=512, out_features=512, bias=True), weights=((512, 512), (512,)), parameters=262656
-    (LeakyReLU-1): LeakyReLU(negative_slope=0.01), weights=(), parameters=0
-    (PRED-2): Linear(in_features=512, out_features=512, bias=True), weights=((512, 512), (512,)), parameters=262656
-    (LeakyReLU-2): LeakyReLU(negative_slope=0.01), weights=(), parameters=0
-    (PRED-3): Linear(in_features=512, out_features=512, bias=True), weights=((512, 512), (512,)), parameters=262656
-    (LeakyReLU-3): LeakyReLU(negative_slope=0.01), weights=(), parameters=0
-    (PRED-OUT): Linear(in_features=512, out_features=1, bias=True), weights=((1, 512), (1,)), parameters=513
-  ), weights=((512, 512), (512,), (512, 512), (512,), (512, 512), (512,), (1, 512), (1,)), parameters=788481
+  )
+  (rnn): LSTM(100, 512, batch_first=True)
+  (pred): Sequential(
+    (PRED-1): Linear(in_features=512, out_features=512, bias=True)
+    (LeakyReLU-1): LeakyReLU(negative_slope=0.01)
+    (PRED-2): Linear(in_features=512, out_features=512, bias=True)
+    (LeakyReLU-2): LeakyReLU(negative_slope=0.01)
+    (PRED-3): Linear(in_features=512, out_features=512, bias=True)
+    (LeakyReLU-3): LeakyReLU(negative_slope=0.01)
+    (PRED-OUT): Linear(in_features=512, out_features=1, bias=True)
+  )
 )
-total params: 3309620
-
+[epoch 01] average q-error of validation: 004.273
+[epoch 02] average q-error of validation: 003.927
+[epoch 03] average q-error of validation: 003.431
+[epoch 04] average q-error of validation: 003.189
+[epoch 05] average q-error of validation: 002.899
+[epoch 06] average q-error of validation: 002.858
+[epoch 07] average q-error of validation: 002.874
+[epoch 08] average q-error of validation: 002.695
+[epoch 09] average q-error of validation: 002.700
+[epoch 10] average q-error of validation: 002.681
+[epoch 11] average q-error of validation: 002.702
+[epoch 12] average q-error of validation: 002.772
+[epoch 13] average q-error of validation: 002.796
+[epoch 14] average q-error of validation: 002.745
+[epoch 15] average q-error of validation: 002.749
 The trained model are written as model/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32/saved_model.pth 
 The estimated cardinalities are written as exp_result/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32/analysis_lat_gpu.csv
 
-average q-error: 2.859777
+average q-error: 2.87
 ```
 
 The above output says that the trained model is stored at the file with the name ```saved_model.pth``` in the directory ```model/DBLP/DREAM_DBLP_cs_512_layer_1_predL_3_hDim_512_es_100_lr_0.001_maxC_200_pVal_0.1_ptrain_1.0_l2_1e-08_pat_5_clipGr_10.0_seed_0_maxEpoch_100_maxD_3_pTest_0.1_bs_32```.

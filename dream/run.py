@@ -145,9 +145,9 @@ def get_config_manager_and_exp_name(args):
 
 
 if __name__ == "__main__":
-    args, exp_key = ut.get_model_args(verbose=True)
+    args, exp_key = ut.get_model_args(verbose=False)
     ut.varify_args(args)
-    print("[args]:", args)
+    # print("[args]:", args)
 
     conn = redis.Redis()
     # check if this experiment already done
@@ -168,11 +168,11 @@ if __name__ == "__main__":
                 args.overwrite = True
 
     cm, exp_name = get_config_manager_and_exp_name(args)
-    print(cm)
-    print("[exp_key ]:", exp_key)
-    print("[exp_name]:", exp_name)
+    # print(cm)
+    # print("[exp_key ]:", exp_key)
+    # print("[exp_name]:", exp_name)
 
-    print("save pair (exp_key, exp_name)")
+    # print("save pair (exp_key, exp_name)")
     args_dict_str = json.dumps(args.__dict__)
     if not args.analysis:
         conn.set(f"conf:{exp_key}", exp_name)

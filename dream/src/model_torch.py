@@ -274,8 +274,8 @@ class DREAMEstimator(Estimator):
 
         for epoch in range(1, max_epoch + 1):
             # --- training loop --- #
-            tqdm_train = tqdm(dl_train, total=len(dl_train), mininterval=5)
-            for batch in tqdm_train:
+            # tqdm_train = tqdm(dl_train, total=len(dl_train), mininterval=5)
+            for batch in dl_train:
                 # print(f"batch start {global_step}")
 
                 # debug hook
@@ -326,8 +326,7 @@ class DREAMEstimator(Estimator):
                     q_error_batch = self.q_error(y_batch, pred_batch)
 
                 # write stats with std and log
-                tqdm_train.set_description(f"train_loss: {loss_batch_:07.3f} train_q_error: {q_error_batch:07.3f}",
-                                           refresh=False)  # tqdm print setting
+                # tqdm_train.set_description(f"train_loss: {loss_batch_:07.3f} train_q_error: {q_error_batch:07.3f}", refresh=False)  # tqdm print setting
                 if global_step % 1000 == 0:
                     sw.add_scalars("Batch", {"q_err": q_error_batch, "loss": loss_batch_},
                                    global_step=global_step)  # add stats
@@ -368,7 +367,8 @@ class DREAMEstimator(Estimator):
             sw.add_scalars("Epoch_q_err", {"train": q_error_train, "valid": q_error_valid, "test": q_error_test},
                            global_step=epoch)  # add stats
             sw.flush()
-            print(f"[epoch {epoch:02d}] valid_loss: {loss_valid:07.3f}, valid_q_error: {q_error_valid:07.3f}")
+            # print(f"[epoch {epoch:02d}] valid_loss: {loss_valid:07.3f}, valid_q_error: {q_error_valid:07.3f}")
+            print(f"[epoch {epoch:02d}] average q-error of validation: {q_error_valid:07.3f}")
             if test_data:
                 print(f"[epoch {epoch:02d}] test_loss: {loss_test:07.3f}, test_q_error: {q_error_test:07.3f}")
 
@@ -388,6 +388,7 @@ class DREAMEstimator(Estimator):
                 break
 
         os.rename(curr_best_path, save_path)
+        print("The trained model are written as", save_path)
         self.model.load_state_dict(torch.load(save_path))
         torch.save(self.model.state_dict(), save_path)
 
@@ -1296,9 +1297,9 @@ class CardNetEstimator(Estimator):
         step = 0
         print("train_cardnet")
         for epoch in range(1, self.max_epoch + 1):
-            tqdm_train = tqdm(dl_train, mininterval=5)
+            # tqdm_train = tqdm(dl_train, mininterval=5)
             # ---- train loop
-            for batch in tqdm_train:
+            for batch in dl_train:
                 opt_model.zero_grad()
                 step += 1
                 x, c = self._batch_to_device(batch)
@@ -1308,8 +1309,8 @@ class CardNetEstimator(Estimator):
                     torch.nn.utils.clip_grad_value_(self.model.parameters(), self.clip_gr)
                 c_hat = self.model(x)
                 q_error = ut.q_error(c.cpu().numpy().reshape(-1), c_hat.detach().cpu().numpy().reshape(-1))
-                tqdm_train.set_description(f"[Epoch {epoch:02d}] loss: {loss:7.4f} q_err: {q_error:7.4f}",
-                                           refresh=False)
+                # tqdm_train.set_description(
+                #     f"[Epoch {epoch:02d}] loss: {loss:7.4f} q_err: {q_error:7.4f}", refresh=False)
                 if step % 1000 == 0:
                     sw.add_scalars("Batch", {"loss": loss.item(), "q_err": q_error}, global_step=step)
                 opt_model.step()
@@ -1321,8 +1322,9 @@ class CardNetEstimator(Estimator):
             else:
                 train_loss, train_q_error = -1, -1
             valid_loss, valid_q_error = self.eval_cardnet(dl_valid, update_dynamic_weight=True)
-            print(
-                f"[Epoch {epoch:02d}] train [loss, q_err]: [{train_loss:.6f}, {train_q_error:.4f}], valid [loss, q_err]: [{valid_loss:.6f}, {valid_q_error:.4f}]")
+            # print(
+            #     f"[Epoch {epoch:02d}] train [loss, q_err]: [{train_loss:.6f}, {train_q_error:.4f}], valid [loss, q_err]: [{valid_loss:.6f}, {valid_q_error:.4f}]")
+            print(f"[epoch {epoch:02d}] average q-error of validation: {valid_q_error:07.3f}")
             sw.add_scalars("Epoch_loss", {"train": train_loss, "valid": valid_loss}, global_step=epoch)
             sw.add_scalars("Epoch_q_err", {"train": train_q_error, "valid": valid_q_error}, global_step=epoch)
             sw.flush()
@@ -1344,5 +1346,6 @@ class CardNetEstimator(Estimator):
         # ----- done vae training ----
         os.replace(self.model_path_curr, self.save_path)
 
+        print("The trained model are written as", self.save_path)
         self.model.load_state_dict(torch.load(self.save_path))  # updated from best model
         torch.save(self.model.state_dict(), self.save_path)

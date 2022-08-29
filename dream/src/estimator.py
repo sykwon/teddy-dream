@@ -48,7 +48,7 @@ class Estimator(metaclass=ABCMeta):
         y_pred = []
         y_data = []
         latencies = []
-        for test_qry in tqdm(test_data, total=len(test_data)):
+        for test_qry in test_data:
             start = time.time()
             y_pred_s, y_data_s = self.estimate([test_qry])
             end = time.time()
@@ -116,8 +116,8 @@ def learn_Deep_Learning_model_rewrite(model_name, dname, exp_name, logger=None):
     df['(l,d)'] = [(x, y) for x, y in zip(df['len'], df['d'])]
     # warnings.filterwarnings(action='default')
     file_dir = os.path.dirname(file_path)
-    print(df)
-    print(df[['q_err', 'q_err10']].aggregate(['mean']))
+    # print(df)
+    # print(df[['q_err', 'q_err10']].aggregate(['mean']))
     df.to_csv(file_dir + "/estimate_analysis.csv")
     count_ct = pd.crosstab(df['d'], df['len'], values=1, aggfunc='sum', margins=True)
     count_ct.to_csv(file_dir + "/count.csv")
@@ -130,39 +130,13 @@ def learn_Deep_Learning_model_rewrite(model_name, dname, exp_name, logger=None):
         logger.report_table("count", "PD with index", 0, table_plot=count_ct)
         logger.report_table("q_err", "PD with index", 0, table_plot=q_err_ct)
         logger.report_table("q_err10", "PD with index", 0, table_plot=q_err10_ct)
-    file_path = file_dir + "/log_q_value.png"
-    print(f"write at {file_path}")
-    sns.set(style="darkgrid")
-    is_hue = "all_d" in exp_name
-    if is_hue:
-        ax = sns.boxplot(x="len", y="log_q_value", hue="d", data=df)
-    else:
-        ax = sns.boxplot(x="(l,d)", y="log_q_value", data=df, order=sorted(set(df["(l,d)"])))
-    ax.set(ylim=(-3, 3))
-    # plt.legend(bbox_to_anchor=(1, 1), loc=2, borderaxespad=0.)
-    plt.savefig(file_path)
-    plt.close()
 
     if logger is not None:
         logger.report_image("log_q", "image Image", 0, local_path=file_path)
 
-    file_path = file_dir + "/violin_log_q_value.png"
-    print(f"write at {file_path}")
-    sns.set(style="darkgrid")
-    # sns.boxplot(x="len", y="log_q_value", hue="d", data=df)
-    if is_hue:
-        ax = sns.violinplot(x="len", y="log_q_value", hue="d", data=df)
-    else:
-        ax = sns.violinplot(x="(l,d)", y="log_q_value", data=df, order=sorted(set(df["(l,d)"])))
-    ax.set(ylim=(-3, 3))
-    # plt.legend(bbox_to_anchor=(1, 1), loc=2, borderaxespad=0.)
-    plt.savefig(file_path)
-    plt.close()
-
     if logger is not None:
         logger.report_image("log_q_vio", "image Image", 0, local_path=file_path)
 
-    #
     if "LBS" in model_name:
         file_path = file_dir + "/mof.csv"
         df = pd.read_csv(file_path)
@@ -191,7 +165,7 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
 
     """
     assert exp_key is not None
-    print(cm)
+    # print(cm)
     # print(cm.data)
     model_name = cm.alg.name
     dname = cm.data.name
@@ -231,11 +205,11 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
         ut.verify_test_data_packed(test_data)
         df = pd.DataFrame(data=list(zip(*test_data))[0], columns=["s_q"])
         res_path = res_dir + f"/analysis_qs.csv"
-        print("saved at", res_path)
+        # print("saved at", res_path)
         df.to_csv(res_path, index=False)
 
     est = est_class(cm.alg)
-    print(f"Start building the {est.class_name} class")
+    # print(f"Start building the {est.class_name} class")
     dfact = DBFactory(cm.data)
     # q_strat = QryGenStrategy(cm.qconf)
     # dfact.set_query_strategy(q_strat)
@@ -276,7 +250,7 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
     end = time.time()
     duration = end - start
     model_size = est.model_size()
-    print("additional info:", additional_info)
+    # print("additional info:", additional_info)
     if not analysis:
         exp_json_str = ut.get_model_exp_json_str(
             model_name, duration, size=model_size, query=n_qry, prefix=n_prfx, update=n_update, **additional_info)
@@ -298,14 +272,14 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
         # exit()
     if "LBS" in cm.alg.name:
         test_data = ut.unpack_test_data(test_data)
-        print("LBS test data:", test_data[:5])
+        # print("LBS test data:", test_data[:5])
 
     num_qry_str = len(test_data)
     est.estimate_latency_anlysis(test_data[:10])
     # y_hat, y, latencies = est.estimate_latency_anlysis(valid_data)
     # print(ut.q_error(y, y_hat))
     y_hat, y, latencies = est.estimate_latency_anlysis(test_data)
-    print(test_data[:10])
+    # print(test_data[:10])
     # y_hat, y= est.estimate_timeseries_anlysis(test_data)
     qry_list = np.array(list(zip(*test_data))[0])
     delta_list = list(range(max_d+1)) * num_qry_str
@@ -314,13 +288,8 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
 
     pd_data = list(zip(qry_list, delta_list, y, y_hat, latencies))
     df = pd.DataFrame(data=pd_data, columns=["s_q", "d", "true_count", "est_count", "latency"])
-    if "LBS" in cm.alg.name:
-        device = ''
-    else:
-        device = '_gpu' if torch.cuda.is_available() else '_cpu'
-    analysis_label = 'lat' if not analysis else "ts"
-    print("saved at", res_dir + f"/analysis_{analysis_label}{device}.csv")
-    df.to_csv(res_dir + f"/analysis_{analysis_label}{device}.csv", index=False)
+    print("The estimated cardinalities are written as", res_dir + f"/analysis.csv")
+    df.to_csv(res_dir + f"/analysis.csv", index=False)
     # else:
     #     y_hat, y = est.estimate(test_data)
     end = time.time()
@@ -355,11 +324,12 @@ def learn_Deep_Learning_model(cm, est_class: Type[Estimator], data, is_rewirte=F
 
     df.to_csv(res_dir + "/estimate.csv", index=False)
     df.to_excel(res_dir + "/estimate.xlsx", index=False)
-    print("EXACT   :", y[:5])
-    print(f"{cm.alg.name}:", y_hat[:5])
+    # print("EXACT   :", y[:5])
+    # print(f"{cm.alg.name}:", y_hat[:5])
     # q_error = ut.q_error_np(y, y_hat, eps=10.)
     q_error = ut.q_error(y, y_hat)
     q_error90 = ut.q_error(y, y_hat, "q90")
+    print(f"average q-error: {q_error:.2f}")
 
     learn_Deep_Learning_model_rewrite(model_name, dname, exp_name, logger)
 
