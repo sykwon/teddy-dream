@@ -8,9 +8,9 @@ See [example.ipynb](example.ipynb) file.
 
 For example, you can obtain graphes and tables by using [example.ipynb](example.ipynb) for the DBLP dataset. Note that if you want to see the graphes and tables for other datasets, what you have to do is to assign the value of the variable ```dataNames``` to the name of dataset that you want to use.
 
-### Drawing Graphs of Execution times to Generate the training data
+### Drawing graphs of execution times to generate the training data
 
-Here are two graphs of execution time versus data size for the ```base``` and ```prefix-aug``` datasets.
+Here are the graphs of execution time versus data size for the ```base``` and ```prefix-aug``` datasets, respectively.
 
 #### Base training data
 
