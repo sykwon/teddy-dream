@@ -8,7 +8,7 @@
 ![size](https://img.shields.io/github/repo-size/sykwon/teddy-dream?color=yellow)
 ![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsykwon%2Fteddy-dream&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)
 
-This repository implements training data generation algorithms (SODDY & TEDDY) and deep cardinality estimators (DREAM) proposed in our paper "Cardinality Estimation of Approximate Substring Queries using Deep Learning".
+This repository implements training data generation algorithms (SODDY & TEDDY) and deep cardinality estimators (DREAM) proposed in our paper "Cardinality Estimation of Approximate Substring Queries using Deep Learning". It is created by Suyong Kwon, Woohwan Jung and Kyuseok Shim.
 
 ## Repository Overwiew
 
