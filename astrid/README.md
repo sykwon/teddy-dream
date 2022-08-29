@@ -32,7 +32,7 @@ The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our pape
 * <seed_number>: the random seed to generate the initial weights of the estimator model
 * <learning_rate>: the learning rate of the gradient descent optimization
 * <max_epoch>: the maximum number of epoches to train the estimator model
-* <max_epoch_emb>: the maximum number of epoches to train the embedding model
+* <max_epoch_emb>: the maximum number of epoches to train the embedding model (Note that the Astrid consists of the embedding and estimator models.)
 * <batch_size>: the batch size of each training step
 * <decoder_scale>: the scale of the decoder of the model
 * <embedding_size>: the embedding size of concatenated embedding for character and distance
