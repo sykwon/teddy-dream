@@ -49,12 +49,10 @@ cd ..
 
 ### Datasets
 
-| Dataset |
-|---------|
-| DBLP    |
-| WIKI    |
-| IMDB    |
-| GENE    |
+* DBLP
+* WIKI
+* IMDB
+* GENE
 
 ## Examples
 
