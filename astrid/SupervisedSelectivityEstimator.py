@@ -65,7 +65,8 @@ def train_selEst_model(configs, train_loader,  string_helper):
 
     model.train()
 
-    for epoch in tqdm(range(configs.num_epochs), desc="Epochs", position=0, leave=False):
+    # for epoch in tqdm(range(configs.num_epochs), desc="Epochs", position=0, leave=False):
+    for epoch in range(configs.num_epochs):
         running_loss = []
         for batch_idx, (string_queries, true_selectivities) in enumerate(tqdm(train_loader, desc="Training", leave=False)):
             # for batch_idx, output in enumerate(tqdm(train_loader, desc="Training", leave=False)):
@@ -79,8 +80,8 @@ def train_selEst_model(configs, train_loader,  string_helper):
             loss.backward()
             optimizer.step()
             running_loss.append(loss.cpu().detach().numpy())
-        print("Epoch: {}/{} - Mean Running Loss: {:.4f}".format(epoch+1, configs.num_epochs, np.mean(running_loss)))
-        print("Summary stats of Loss: Percentile: [0.75, 0.9, 0.95, 0.99] ", [
-              np.quantile(running_loss, q) for q in [0.75, 0.9, 0.95, 0.99]])
+        # print("Epoch: {}/{} - average q-error of training data: {:.4f}".format(epoch+1, configs.num_epochs, np.mean(running_loss)))
+        # print("Summary stats of Loss: Percentile: [0.75, 0.9, 0.95, 0.99] ", [
+        #       np.quantile(running_loss, q) for q in [0.75, 0.9, 0.95, 0.99]])
 
     return model

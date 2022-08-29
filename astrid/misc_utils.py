@@ -106,8 +106,8 @@ def compute_qerrors(preds=None, targets=None, min_val=0.0, max_val=1.0):
     preds = unnormalize_torch(preds, min_val, max_val)
     targets = unnormalize_torch(targets, min_val, max_val)
     assert len(targets) == len(preds)
-    print("targets:", targets)
-    print("preds  :", preds)
+    # print("targets:", targets)
+    # print("preds  :", preds)
 
     for i in range(len(targets)):
         if preds[i] < 1.0:
@@ -134,4 +134,3 @@ def compute_qerrors_wo_unnorm(preds, targets):
         else:
             qerror.append(targets[i] / preds[i])
     return qerror
-

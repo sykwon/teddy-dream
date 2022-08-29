@@ -19,6 +19,7 @@ from tqdm import tqdm
 import json
 embedding_learner_configs, frequency_configs, selectivity_learner_configs = None, None, None
 path = "datasets/dblp/"
+model_path = ""
 # This assumes that prepare_dataset function was called to output the files.
 # If not, please change the file names appropriately
 train_triplet_prefix = None
@@ -26,6 +27,7 @@ train_file_name_prefix = "dblp_titles"
 total_file_name_prefix = "dblp_titles"
 model_name_prefix = None
 split_seed = 0
+delta = None
 conn = redis.Redis()
 exp_key = None
 args = None
@@ -43,23 +45,19 @@ def setup_configs():
                                                                      num_epochs=args.emb_epoch, margin=0.2, device=device, lr=args.lr,
                                                                      channel_size=8)
 
-    # if delta == 0:
-    #     query_type = "substring"
-    # else:
-    query_type = "prefix"
     frequency_configs = misc_utils.StringFrequencyConfigs(
         string_list_file_name=path + total_file_name_prefix + ".csv",
         train_string_list_file_name=path + train_file_name_prefix + ".csv",
-        selectivity_file_name=path + total_file_name_prefix + "_" + query_type + "_counts.csv",
-        triplets_file_name=path + train_triplet_prefix + "_" + query_type + "_triplets.csv"
+        selectivity_file_name=path + total_file_name_prefix + "_counts.csv",
+        triplets_file_name=path + train_triplet_prefix + "_triplets.csv"
     )
 
     selectivity_learner_configs = misc_utils.SelectivityEstimatorConfigs(
         embedding_dimension=args.es, decoder_scale=args.dsc, batch_size=args.bs, num_epochs=args.epoch, device=device, lr=args.lr,
         # will be updated in train_selectivity_estimator
         min_val=0.0, max_val=1.0,
-        embedding_model_file_name=path + model_name_prefix + "_" + query_type + "_embedding_model.pth",
-        selectivity_model_file_name=path + model_name_prefix + "_" + query_type + "_selectivity_model.pth"
+        embedding_model_file_name=model_path + model_name_prefix + f"embedding_model_{delta}.pth",
+        selectivity_model_file_name=model_path + model_name_prefix + f"selectivity_model_{delta}.pth"
     )
 
     return embedding_learner_configs, frequency_configs, selectivity_learner_configs
@@ -71,7 +69,8 @@ def train_astrid_embedding_model(string_helper, model_output_file_name=None, ove
 
     # Some times special strings such as nan or those that start with a number confuses Pandas
     df = pd.read_csv(frequency_configs.triplets_file_name)
-    print("learn embedding model from the file --", frequency_configs.triplets_file_name)
+    # print("learn embedding model from the file --", frequency_configs.triplets_file_name)
+    print("start pretraining embedding model")
     df["Anchor"] = df["Anchor"].astype(str)
     df["Positive"] = df["Positive"].astype(str)
     df["Negative"] = df["Negative"].astype(str)
@@ -101,6 +100,8 @@ def train_astrid_embedding_model(string_helper, model_output_file_name=None, ove
             embedding_model = EmbeddingLearner.train_embedding_model(
                 embedding_learner_configs, train_loader, string_helper)
             if model_output_file_name is not None:
+                print("The pretrained embedding model are written as", model_output_file_name)
+                os.makedirs(os.path.dirname(model_output_file_name), exist_ok=True)
                 torch.save(embedding_model.state_dict(), model_output_file_name)
     return embedding_model
 
@@ -128,6 +129,8 @@ def train_selectivity_estimator(train_df, string_helper, embedding_model, model_
 
     # --- sampling training data --- #
     # train_df = train_df.sample(frac=0.01)
+
+    print("start training estimator model")
     if load_only:
         selectivity_model = load_selectivity_estimation_model(model_output_file_name, string_helper)
         selectivity_model = selectivity_model.to(selectivity_learner_configs.device)
@@ -144,6 +147,8 @@ def train_selectivity_estimator(train_df, string_helper, embedding_model, model_
             selectivity_model = SupervisedSelectivityEstimator.train_selEst_model(selectivity_learner_configs, train_loader,
                                                                                   string_helper)
             if model_output_file_name is not None:
+                print("The estimated cardinalities are written as", model_output_file_name)
+                os.makedirs(os.path.dirname(model_output_file_name), exist_ok=True)
                 torch.save(selectivity_model.state_dict(), model_output_file_name)
     return selectivity_model
 
@@ -218,7 +223,7 @@ def load_selectivity_estimation_model(model_file_name, string_helper):
 def transform_df_to_my_df(df):
     df = df.copy()
     df = df.assign(d=args.delta)
-    df = df.drop('normalized_selectivities', 1)
+    df = df.drop('normalized_selectivities', axis=1)
     df = df.rename(columns={'string': 's_q', 'selectivity': 'true_count'})
     df = df[['s_q', 'd', 'true_count']]
     return df
@@ -261,7 +266,7 @@ def analysis_block1_query_string(df, train_df, test_df, test_qs):
     test_qs = pd.DataFrame(test_qs)
     save_prefix = model_name_prefix.replace("qs_", "")
     dname = save_prefix.split("_")[0]
-    log_dir = f"log/{dname}/{save_prefix}/"
+    log_dir = f"log/{dname}/{save_prefix}"
     os.makedirs(log_dir, exist_ok=True)
 
     df_my = transform_df_to_my_df(df)
@@ -272,15 +277,15 @@ def analysis_block1_query_string(df, train_df, test_df, test_qs):
     train_path = log_dir + f"train_data_{args.delta}.csv"
     qs_path = log_dir + f"analysis_qs.csv"
     test_path = log_dir + f"test_data_{args.delta}.csv"
-    print("saved at:", data_path)
-    df_my.to_csv(data_path, index=False)
+    # print("saved at:", data_path)
+    # df_my.to_csv(data_path, index=False)
     test_qs.rename({0: 's_q'}, axis=1)
-    print("saved at:", qs_path)
-    test_qs.to_csv(qs_path, index=False)
-    print("saved at:", train_path)
-    train_df_my.to_csv(train_path, index=False)
-    print("saved at:", test_path)
-    test_df_my.to_csv(test_path, index=False)
+    # print("saved at:", qs_path)
+    # test_qs.to_csv(qs_path, index=False)
+    # print("saved at:", train_path)
+    # train_df_my.to_csv(train_path, index=False)
+    # print("saved at:", test_path)
+    # test_df_my.to_csv(test_path, index=False)
     return log_dir, df_my, train_df_my, test_df_my
 
 
@@ -294,9 +299,8 @@ def analysis_block2_estimations(test_df_my_prfx, denormalized_predictions, laten
     test_df_my_prfx['est_count'] = denormalized_predictions
     test_df_my_prfx['latency'] = latencies
     ts_path = log_dir + f"analysis_ts_{args.delta}.csv"
-    print("saved at:", ts_path)
+    print("The estimated cardinalities are written as", ts_path)
     test_df_my_prfx.to_csv(ts_path, index=False)
-    print("analysis end")
 
 
 def main():
@@ -319,7 +323,7 @@ def main():
 
     additional_info = {}
     start_emb = time.time()
-    print("read query strings at", frequency_configs.string_list_file_name)  # total
+    # print("read query strings at", frequency_configs.string_list_file_name)  # total
     qs_df = pd.read_csv(frequency_configs.string_list_file_name, header=None,
                         keep_default_na=False, delimiter=",,,,,,,,,", engine='python')
     qs_df_train = pd.read_csv(frequency_configs.train_string_list_file_name, header=None,
@@ -337,7 +341,7 @@ def main():
     # embedding_model = load_embedding_model(embedding_model_file_name, string_helper)
 
     # Load the input file and split into 50-50 train, test split
-    print("read training data at", frequency_configs.selectivity_file_name)  # total
+    # print("read training data at", frequency_configs.selectivity_file_name)  # total
     df = pd.read_csv(frequency_configs.selectivity_file_name, keep_default_na=False)
     # Some times strings that start with numbers or
     # special strings such as nan which confuses Pandas' type inference algorithm
@@ -364,7 +368,7 @@ def main():
     # train_qs = train_qs_df['s_q']
     # train_qs = qs_df_train['s_q']
     # train_qs = qs_df_train['s_q']
-    print("# of train query string:", len(train_qs))
+    # print("# of train query string:", len(train_qs))
     train_indices_df = get_indices_from_value_list(df["string"], ut.distinct_prefix(train_qs))
     train_df = df.iloc[train_indices_df]
 
@@ -375,8 +379,8 @@ def main():
     # print(ut.distinct_prefix(test_qs)[:20])
     test_df = df.iloc[test_indices_df]
     test_df_prfx = df.iloc[test_indices_df_prfx]
-    if args.analysis_latency:
-        print(len(test_qs), len(test_df), len(test_df_prfx))
+    # if args.analysis_latency:
+    #     print(len(test_qs), len(test_df), len(test_df_prfx))
 
     log_dir, df_my, train_df_my, test_df_my_prfx = analysis_block1_query_string(df, train_df, test_df_prfx, test_qs)
 
@@ -404,7 +408,7 @@ def main():
     n_qry = len(q_train)
     n_prfx = len(distinct_prefix(q_train))
     n_update = -1
-    print(additional_info)
+    # print(additional_info)
     exp_json_str = ut.get_model_exp_json_str(model_name, duration, size=model_size,
                                              query=n_qry, prefix=n_prfx, update=n_update, **additional_info)
     if not args.analysis_latency:
@@ -445,9 +449,9 @@ def main():
     q_error90 = float(np.quantile(test_q_error, q=0.9))
     q_error_prfx = float(np.mean(test_q_error_prfx))
     q_error90_prfx = float(np.quantile(test_q_error_prfx, q=0.9))
-    print("Test data: Mean q-error loss ", np.mean(test_q_error))
-    print("Test data: Summary stats of Loss: Percentile: [0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99] ",
-          [np.quantile(test_q_error, q) for q in [0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99]])
+    print("average q-error: {:.2f}".format(np.mean(test_q_error)))
+    # print("Test data: Summary stats of Loss: Percentile: [0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99] ",
+    #       [np.quantile(test_q_error, q) for q in [0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99]])
 
     exp_json_str = ut.get_model_exp_json_str(model_name, est_duration, err=q_error,
                                              q90=q_error90, err_prfx=q_error_prfx, q90_prfx=q_error90_prfx)
@@ -530,18 +534,20 @@ def save_train_query_strings_including_valid_data(path, total_prefix, train_pref
     q_train.extend(q_valid)
     q_train = sorted(q_train)
     train_path = path + train_prefix + ".csv"
-    print("train(+valid) saved at", train_path)
+    # print("train(+valid) saved at", train_path)
     with open(train_path, 'w') as f:
         for query in q_train:
             f.write(query + "\n")
     # del q_valid
-    print(len(query_strings), len(q_train), len(q_valid), len(q_test))
-    print(q_test[:10], q_valid[:10])
+    # print(len(query_strings), len(q_train), len(q_valid), len(q_test))
+    # print(q_test[:10], q_valid[:10])
 
 
 if __name__ == "__main__":
-    args, exp_key = ut.get_model_args()
-    path = args.path
+    args, exp_key = ut.get_model_args(verbose=False)
+    path = f"datasets/{args.dname}/"
+    model_path = f"log/{args.dname}/"
+    delta = args.delta
     assert args.p_val == 0.1
     assert args.p_test == 0.1
     if not args.analysis and not args.overwrite:
@@ -558,8 +564,8 @@ if __name__ == "__main__":
 
     max_d = 5
     assert args.delta <= max_d
-    qs_prefix = args.prfx
-    dname = qs_prefix.replace("qs_", "")
+    dname = args.dname
+    qs_prefix = f"qs_{dname}"
     res_prefix = qs_prefix.replace("qs_", "res_")
 
     # load path
@@ -568,13 +574,13 @@ if __name__ == "__main__":
     total_card_load_prefix = res_prefix + f"_{max_d}"
 
     # input path
-    train_triplet_prefix = args.prfx + f"_{args.delta}"
-    total_file_name_prefix = args.prfx + f"_{args.delta}"  # total: train + test
+    train_triplet_prefix = qs_prefix + f"_{args.delta}"
+    total_file_name_prefix = qs_prefix + f"_{args.delta}"  # total: train + test
     train_file_name_prefix = total_file_name_prefix + f"_{args.p_train}"
 
     # model path
-    model_name_prefix = args.prfx + \
-        f"_{args.delta}_{args.seed}_{args.es}_{args.bs}_{args.lr}_{args.epoch}_{args.p_train}_{args.emb_epoch}_{args.dsc}"
+    model_name_prefix = dname + \
+        f"_{args.seed}_{args.es}_{args.bs}_{args.lr}_{args.epoch}_{args.p_train}_{args.emb_epoch}_{args.dsc}/"
 
     if args.analysis:
         print("analysis mode")
@@ -589,8 +595,8 @@ if __name__ == "__main__":
                 exit()
         for args.delta in range(max_delta+1):
             # options
-            model_name_prefix = args.prfx + \
-                f"_{args.delta}_{args.seed}_{args.es}_{args.bs}_{args.lr}_{args.epoch}_{args.p_train}_{args.emb_epoch}_{args.dsc}"
+            model_name_prefix = qs_prefix + \
+                f"_{args.seed}_{args.es}_{args.bs}_{args.lr}_{args.epoch}_{args.p_train}_{args.emb_epoch}_{args.dsc}"
             save_prefix = model_name_prefix.replace("qs_", "")
             log_dir = f"log/{dname}/{save_prefix}/"
             ts_path = log_dir + f"analysis_ts_{args.delta}.csv"
@@ -656,31 +662,31 @@ if __name__ == "__main__":
     conn.set(f"conf:{exp_key}", model_name_prefix)
 
     args_dict_str = json.dumps(args.__dict__)
-    print("args:", args)
-    print("args_str:", args_dict_str)
+    # print("args:", args)
+    # print("args_str:", args_dict_str)
     conn.set(f"args:{exp_key}", args_dict_str)
 
-    print("dname:", dname)
-    print("path:", path)
+    # print("dname:", dname)
+    # print("path:", path)
     os.makedirs(path, exist_ok=True)
-    print("total_card_load_prefix:", total_card_load_prefix)
-    print("total_qs_load_prefix:", total_qs_load_prefix)
-    print("train_qs_load_prefix:", train_qs_load_prefix)
-    print("triplet_prefix:", train_triplet_prefix)
-    print("total_file_name_prefix:", total_file_name_prefix)
-    print("train_file_name_prefix:", train_file_name_prefix)
-    print("file_name_prefix:", train_file_name_prefix)
-    print("model_name_prefix:", model_name_prefix)
-    print("delta:", args.delta)
-    print("p_train:", args.p_train)
-    print("seed:", args.seed)
-    print("overwrite:", args.overwrite)
+    # print("total_card_load_prefix:", total_card_load_prefix)
+    # print("total_qs_load_prefix:", total_qs_load_prefix)
+    # print("train_qs_load_prefix:", train_qs_load_prefix)
+    # print("triplet_prefix:", train_triplet_prefix)
+    # print("total_file_name_prefix:", total_file_name_prefix)
+    # print("train_file_name_prefix:", train_file_name_prefix)
+    # print("file_name_prefix:", train_file_name_prefix)
+    # print("model_name_prefix:", model_name_prefix)
+    # print("delta:", args.delta)
+    # print("p_train:", args.p_train)
+    # print("seed:", args.seed)
+    # print("overwrite:", args.overwrite)
     assert os.path.exists(f"data/{total_card_load_prefix}/p_pref.csv")
     assert os.path.exists(f"data/{total_qs_load_prefix}.txt")
     assert os.path.exists(f"data/{train_qs_load_prefix}.txt")
 
     copyfile(f"data/{total_card_load_prefix}/p_pref.csv", path +
-             total_qs_load_prefix + "_prefix_counts.csv")  # total cardinality
+             total_qs_load_prefix + "_counts.csv")  # total cardinality
     copyfile(f"data/{total_qs_load_prefix}.txt", path + total_qs_load_prefix + ".csv")  # total query string
     # copyfile(f"data/{train_prefix}.txt", path + train_prefix + ".csv")  # train query string
     save_train_query_strings_including_valid_data(path, total_qs_load_prefix, train_qs_load_prefix)
@@ -689,19 +695,13 @@ if __name__ == "__main__":
                                      total_file_name_prefix, train_triplet_prefix, args.delta)
     prepare_datasets.prepare_dataset(path, train_qs_load_prefix, total_qs_load_prefix,
                                      train_file_name_prefix, train_triplet_prefix, args.delta)
-    # prepare_datasets.prepare_dataset(path, dataset_prefix, delta, 20, pt_r, p_train)
-    print(path + train_qs_load_prefix + ".csv", path + train_file_name_prefix + ".csv")
-    print(path + total_qs_load_prefix + ".csv", path + total_file_name_prefix + ".csv")
+    # print(path + train_qs_load_prefix + ".csv", path + train_file_name_prefix + ".csv")
+    # print(path + total_qs_load_prefix + ".csv", path + total_file_name_prefix + ".csv")
     copyfile(path + train_qs_load_prefix + ".csv", path + train_file_name_prefix + ".csv")  # train query string
     copyfile(path + total_qs_load_prefix + ".csv", path + total_file_name_prefix + ".csv")  # total query string
-    # if args.seed >= 0:
-    #     print(f"data/{cardinality_prefix}/p_pref.csv", path + total_prefix + "_prefix_counts.csv")
-    #     print(f"data/{total_prefix}.txt", path + total_prefix + ".csv")
-    #     print(total_prefix)
-    #     print(path + total_prefix + ".csv", path + train_file_name_prefix + ".csv")
 
-    if args.analysis_latency:
-        print("analysis mode")
-    else:
-        print("normal mode")
+    # if args.analysis_latency:
+    #     print("analysis mode")
+    # else:
+    #     print("normal mode")
     main()

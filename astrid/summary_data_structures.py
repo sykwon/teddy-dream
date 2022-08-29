@@ -402,11 +402,11 @@ def create_summary_datastructure(input_file_name, string_generator_fn, split_wor
 def store_selectivities(tree, output_file_name):
     df = tree.get_selectivities()
     df = df.sort_values(by="string")
-    print("store_selectivities at", output_file_name)
+    # print("store_selectivities at", output_file_name)
     df.to_csv(output_file_name, index=True, header=True)
 
 
 def store_triplets(tree, output_file_name):
     df = tree.get_triplets()
-    print("store_triplets at", output_file_name)
+    # print("store_triplets at", output_file_name)
     df.to_csv(output_file_name, index=False, header=True)

@@ -56,11 +56,8 @@ def get_model_exp_json_str(model, time=None, size=None, err=None, log_time=None,
 
 def get_parser_with_ignores_astrid(required=True):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path", required=required, type=str, help="data path")
-    parser.add_argument("--prfx", required=required, type=str, help="data prefix")
+    parser.add_argument("--dname", required=required, type=str, help="dataset name")
     parser.add_argument("--delta", required=required, type=int, help="train model")
-    parser.add_argument("--pt-r", required=required, type=float,
-                        help="pretraining ratio of nodes in a trie")
     parser.add_argument("--p-train", required=required, type=float, help="ratio of training data")
     parser.add_argument("--p-val", default=0.1, type=float, help="ratio of valid data")
     parser.add_argument("--p-test", default=0.1, type=float, help="ratio of test data")

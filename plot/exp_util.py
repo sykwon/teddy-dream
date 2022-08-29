@@ -157,7 +157,6 @@ arg_default_map_dict = {
     'Pastrid': {
         'path': "datasets/wiki2/",
         'delta': -3,
-        'pt_r': 1.0,
         'p_train': 1.0,
         'seed': 0,
         'es': 512,
@@ -308,7 +307,7 @@ arg_str_format_dict = {
     'DREAM': "--model DREAM --dname {dataName}",
     'CardNet': "--model CardNet --dname {dataName}",
     'LBS': "--model LBS --dname {dataName} --seed {seed} --Ntbl {Ntbl} --PT {PT}",
-    'Astrid': "--path datasets/{dataName}/ --prfx qs_{dataName} --delta {delta} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
+    'Astrid': "--dname {dataName} --delta {delta} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
 }
 
 arg_model_format_dict = {
@@ -1025,8 +1024,7 @@ def get_matched_exp_keys(query_dict, fast=True):
 
 def get_parser_with_ignores_astrid(required=True):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path", required=required, type=str, help="data path")
-    parser.add_argument("--prfx", required=required, type=str, help="data prefix")
+    parser.add_argument("--dname", required=required, type=str, help="dataset name")
     parser.add_argument("--delta", required=required, type=int, help="train model")
     parser.add_argument("--p-train", required=required, type=float, help="ratio of training data")
     parser.add_argument("--p-val", default=0.1, type=float, help="ratio of valid data")
@@ -1115,10 +1113,10 @@ def get_parser_with_ignores():
 
 
 def get_parsed_args(exp_key):
-    assert "--model" in exp_key or "--path" in exp_key, exp_key
+    # assert "--model" in exp_key or "--path" in exp_key, exp_key
     if "--model" in exp_key:
         parser, _ = get_parser_with_ignores()
-    elif "--path" in exp_key:
+    else:
         parser, _ = get_parser_with_ignores_astrid(required=False)
     parser.usage = argparse.SUPPRESS
     args = None

@@ -56,10 +56,12 @@ def train_embedding_model(configs, train_loader, string_helper, load_model=False
     device = configs.device
 
     model.train()
-    for epoch in tqdm(range(configs.num_epochs), desc="Epochs"):
+    # for epoch in tqdm(range(configs.num_epochs), desc="Epochs"):
+    for epoch in range(configs.num_epochs):
         # for epoch in range(epochs):
         running_loss = []
-        for step, (anchor, positive, negative) in enumerate(tqdm(train_loader, desc="Training", leave=False)):
+        # for step, (anchor, positive, negative) in enumerate(tqdm(train_loader, desc="Training", leave=False)):
+        for step, (anchor, positive, negative) in enumerate(train_loader):
             # for step, (anchor, positive, negative) in enumerate(train_loader):
             anchor = anchor.to(device)
             positive = positive.to(device)
@@ -74,6 +76,6 @@ def train_embedding_model(configs, train_loader, string_helper, load_model=False
             loss.backward()
             optimizer.step()
             running_loss.append(loss.cpu().detach().numpy())
-        print("Epoch: {}/{} - Mean Running Loss: {:.8f}".format(epoch+1, configs.num_epochs, np.mean(running_loss)))
+        # print("Epoch: {}/{} - Mean Running Loss: {:.8f}".format(epoch+1, configs.num_epochs, np.mean(running_loss)))
 
     return model
