@@ -20,7 +20,7 @@ Here are the graphs of execution time versus data size for the ```base``` and ``
 
 <img src="figures/qry_size_vs_time_DBLP_3_prfx.png" alt="drawing" width="450"/>
 
-### Cardinality estimation
+### Generating the table of estimated errors for cardinality estimations
 
 Here is the table which shows ```q-error``` of estimated cardinalites for the DBLP dataset.
 
