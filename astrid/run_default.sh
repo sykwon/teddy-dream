@@ -4,13 +4,13 @@ exp=${1}
 device=0
 delta_M=3
 preview=0
-dnames='dblp egr1 wiki2 imdb2'
+dnames='DBLP GENE WIKI IMDB'
 seeds='0'
 p_trains='0.2 0.4 0.6 0.8 1.0'
 dscs='128 256 512 1024'
 
 seed=0
-dname=dblp
+dname=DBLP
 es=512
 bs=2048
 lr=0.001

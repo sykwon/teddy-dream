@@ -22,12 +22,12 @@ pip install -r requirements.txt # For python packages, see requirements.txt
 To train and evaluate the cardinality estimators, run the following command:
 
 ```bash
-python AstridEmbed.py --dname <data_name> --delta <delta> --p-train <ratio_training> --seed <seed_number> --es <embedding_size> --bs <batch_size> --<learning_rate> --epoch <max_epoch> --emb-epoch <max_epoch_emb> --dsc <decoder_scale>
+python AstridEmbed.py --dname <data_name> --delta <delta_number> --p-train <ratio_training> --seed <seed_number> --es <embedding_size> --bs <batch_size> --<learning_rate> --epoch <max_epoch> --emb-epoch <max_epoch_emb> --dsc <decoder_scale>
 ```
 
 * <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
 The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our paper.
-* <delta>: the substring edit distance threshold for training and test queries
+* <delta_number>: the substring edit distance threshold for training and test queries
 * <ratio_training>: the ratio of training dataset
 * <seed_number>: the random seed to generate the initial weights of the estimator model
 * <learning_rate>: the learning rate of the gradient descent optimization
