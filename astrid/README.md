@@ -35,7 +35,7 @@ The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our pape
 * <max_epoch_emb>: the maximum number of epoches to train the embedding model (Note that the Astrid consists of the embedding and estimator models.)
 * <batch_size>: the number of samples processed before the model is updated
 * <decoder_hidden_layer_dim>: the dimension of the first hidden layer in the decoder of the model (Note that the dimension of the i-th hidden layer is twice of that of the (i+1)-th hidden layer.)
-* <embedding_size>: the size of concatenated embedings of a pair of a character and a distance (Note that the size of a distance embedding is fixed as 5.)
+* <embedding_size>: the size of embeding lof a character
 
 For example, if we use the following command, we train the Astrid model with the base training data with ```<delta_number>=1``` for the DBLP dataset and evaluate the model with the test data.  After training as well as evaluation of the Astrid model are done, the file pathes where the output file of the estimated cardinalities for test data and the trained models are printed.
 In addition, the average q-error of estimated cardinalities is printed.
