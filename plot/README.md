@@ -12,7 +12,7 @@ For example, you can obtain graphes and tables by using [example.ipynb](example.
 
 ### Generating training data
 
-Here are two graphs of ```execution time``` versus ```Train data size``` for the base and prefix-aug datasets.
+Here are two graphs of execution time versus data size for the ```base``` and ```prefix-aug``` datasets.
 
 #### Base training data
 
@@ -24,7 +24,7 @@ Here are two graphs of ```execution time``` versus ```Train data size``` for the
 
 ### Cardinality estimation
 
-Here is the table of ```q-error``` of estimated cardinalites for the DBLP dataset.
+Here is the table which shows ```q-error``` of estimated cardinalites for the DBLP dataset.
 
 <table border="1" class="dataframe">
   <thead>
