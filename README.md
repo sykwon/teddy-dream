@@ -50,9 +50,9 @@ cd ..
 ### Datasets
 
 * DBLP
+* GENE
 * WIKI
 * IMDB
-* GENE
 
 ## Examples
 
@@ -61,25 +61,25 @@ These commands produces experimental results.
 ```bash
 cd gen_train_data
 ./run.sh DBLP     # to generate training data from the DBLP dataset
+# ./run.sh GENE   # to generate training data from the GENE dataset
 # ./run.sh WIKI   # to generate training data from the WIKI dataset
 # ./run.sh IMDB   # to generate training data from the IMDB dataset
-# ./run.sh GENE   # to generate training data from the GENE dataset
 # ./run.sh all    # to generate training data from all datasets
 cd ..
 
 cd dream
 ./run.sh DBLP    # to train all models except Astrid with the DBLP dataset
+# ./run.sh GENE  # to train all models except Astrid with the GENE dataset
 # ./run.sh WIKI  # to train all models except Astrid with the WIKI dataset
 # ./run.sh IMDB  # to train all models except Astrid with the IMDB dataset
-# ./run.sh GENE  # to train all models except Astrid with the GENE dataset
 # ./run.sh all   # to train all models except Astrid with all datasets
 cd ..
 
 cd astrid
 ./run.sh DBLP    # to train the Astrid model with the DBLP dataset
+# ./run.sh GENE  # to train the Astrid model with the GENE dataset
 # ./run.sh WIKI  # to train the Astrid model with the WIKI dataset
 # ./run.sh IMDB  # to train the Astrid model with the IMDB dataset
-# ./run.sh GENE  # to train the Astrid model with the GENE dataset
 # ./run.sh all   # to train the Astrid model with all datasets
 cd ..
 ```
