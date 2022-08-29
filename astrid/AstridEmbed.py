@@ -18,7 +18,7 @@ from shutil import copyfile
 from tqdm import tqdm
 import json
 embedding_learner_configs, frequency_configs, selectivity_learner_configs = None, None, None
-path = "datasets/dblp/"
+path = "datasets/DBLP/"
 model_path = ""
 # This assumes that prepare_dataset function was called to output the files.
 # If not, please change the file names appropriately

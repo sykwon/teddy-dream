@@ -26,27 +26,27 @@ def get_table_accuracy_of_estimators_in_default_setting(delta=3, verbose_level=0
     eu._ylabels = ['anal:err', 'anal:q50', 'est:q90', 'anal:q99', 'anal:q100']
 
     eu._default_map_dict = arg_default_map_dict.copy()
-    eu._default_map_dict['Pastrid']['delta'] = -delta
-    for alg in ['card', 'Pcard', 'DREAM', 'PDREAM', 'eqt']:
+    eu._default_map_dict['PAstrid']['delta'] = -delta
+    for alg in ['CardNet', 'PCardNet', 'DREAM', 'PDREAM', 'LBS']:
         eu._default_map_dict[alg]['max_d'] = delta
 
     formatter_dict = default_dict({
-        # ('wiki2', 'anal:q100'): lambda x: '-' if np.isnan(x) else int(x),
-        # ('imdb2', 'anal:q100'): lambda x: '-' if np.isnan(x) else int(x),
-        # ('dblp', 'anal:q100'): lambda x: '-' if np.isnan(x) else int(x),
-        # ('egr1', 'anal:q100'): lambda x: '-' if np.isnan(x) else int(x),
-        ('wiki2', 'anal:q10'): lambda x: '-' if np.isnan(x) else '{:.3f}'.format(x),
-        ('imdb2', 'anal:q10'): lambda x: '-' if np.isnan(x) else '{:.3f}'.format(x),
-        ('dblp', 'anal:q10'): lambda x: '-' if np.isnan(x) else '{:.3f}'.format(x),
-        ('egr1', 'anal:q10'): lambda x: '-' if np.isnan(x) else '{:.3f}'.format(x),
-        ('wiki2', 'anal:q100'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
-        ('imdb2', 'anal:q100'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
-        ('dblp', 'anal:q100'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
-        ('egr1', 'anal:q100'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
-        ('wiki2', 'anal:q99'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
-        ('imdb2', 'anal:q99'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
-        ('dblp', 'anal:q99'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
-        # ('egr1', 'anal:q99'): '{:.1f}'.format,
+        # ('WIKI', 'anal:q100'): lambda x: '-' if np.isnan(x) else int(x),
+        # ('IMDB', 'anal:q100'): lambda x: '-' if np.isnan(x) else int(x),
+        # ('DBLP', 'anal:q100'): lambda x: '-' if np.isnan(x) else int(x),
+        # ('GENE', 'anal:q100'): lambda x: '-' if np.isnan(x) else int(x),
+        ('WIKI', 'anal:q10'): lambda x: '-' if np.isnan(x) else '{:.3f}'.format(x),
+        ('IMDB', 'anal:q10'): lambda x: '-' if np.isnan(x) else '{:.3f}'.format(x),
+        ('DBLP', 'anal:q10'): lambda x: '-' if np.isnan(x) else '{:.3f}'.format(x),
+        ('GENE', 'anal:q10'): lambda x: '-' if np.isnan(x) else '{:.3f}'.format(x),
+        ('WIKI', 'anal:q100'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
+        ('IMDB', 'anal:q100'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
+        ('DBLP', 'anal:q100'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
+        ('GENE', 'anal:q100'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
+        ('WIKI', 'anal:q99'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
+        ('IMDB', 'anal:q99'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
+        ('DBLP', 'anal:q99'): lambda x: '-' if np.isnan(x) else '{:.1f}'.format(x),
+        # ('GENE', 'anal:q99'): '{:.1f}'.format,
     })
     formatter_dict.set_default(lambda x: '-' if np.isnan(x) else '{:.3f}'.format(x))
 
@@ -85,18 +85,18 @@ def get_table_accuracy_of_estimators_in_default_setting(delta=3, verbose_level=0
 
 def get_df_model_lbs_egr(verbose_level):
     dataNames = eu._dataNames.copy()
-    _default_map = eu._default_map_dict['eqt'].copy()
-    if 'egr1' in dataNames:
-        eu._dataNames.remove('egr1')
+    _default_map = eu._default_map_dict['LBS'].copy()
+    if 'GENE' in dataNames:
+        eu._dataNames.remove('GENE')
         df1 = get_df_model(verbose_level=verbose_level)
-        eu._dataNames = ['egr1']
-        eu._default_map_dict['eqt']['PT'] = 1
-        eu._default_map_dict['eqt']['Ntbl'] = 8
+        eu._dataNames = ['GENE']
+        eu._default_map_dict['LBS']['PT'] = 1
+        eu._default_map_dict['LBS']['Ntbl'] = 8
         df2 = get_df_model(verbose_level=verbose_level)
 
         df = pd.concat([df1, df2])
         eu._dataNames = dataNames.copy()
-        eu._default_map_dict['eqt'] = _default_map.copy()
+        eu._default_map_dict['LBS'] = _default_map.copy()
     else:
         df = get_df_model(verbose_level=verbose_level)
     return df
@@ -108,7 +108,7 @@ def exp1_qs_vs_gt(prefix, timeout, delta=None, **kwargs):
 
     eu._algs = ['allp', 'topk', 'taste', 'teddy2', 'soddy2']
 
-    eu._dataNames = ['wiki2', 'imdb2', 'dblp', 'egr1']
+    eu._dataNames = ['WIKI', 'IMDB', 'DBLP', 'GENE']
     if 'dataNames' in kwargs:
         eu._dataNames = kwargs['dataNames']
     eu._xvals = [0.01, 0.03, 0.1, 0.3, 1.0]

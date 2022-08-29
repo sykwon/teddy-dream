@@ -938,7 +938,7 @@ class CardNet(nn.Module):
 
         # assign dynamic_weight
         dynamic_weight = dynamic_weight.detach()
-        print("dynamic weights are updated from", self.dynamic_weight, "to", dynamic_weight)
+        # print("dynamic weights are updated from", self.dynamic_weight, "to", dynamic_weight)
         self.dynamic_weight = dynamic_weight
 
         # setting previous validation loss
@@ -1225,10 +1225,10 @@ class CardNetEstimator(Estimator):
         step = 0
         torch.save(self.model.vae.state_dict(), self.vae_path_curr)
         for epoch in range(1, self.max_epoch_vae + 1):
-            tqdm_train = tqdm(dl_train, total=len(dl_train), mininterval=5)
+            # tqdm_train = tqdm(dl_train, total=len(dl_train), mininterval=5)
             # ---- train loop
             self.model.vae.train()
-            for batch in tqdm_train:
+            for batch in dl_train:
                 opt_vae.zero_grad()
                 step += 1
                 x = batch.to(self.device)
@@ -1241,7 +1241,7 @@ class CardNetEstimator(Estimator):
                 if self.vclip_gr > 0:
                     torch.nn.utils.clip_grad_value_(self.model.vae.parameters(), self.vclip_gr)
                 instance_loss = loss.item() / len(batch)
-                tqdm_train.set_description(f"[Epoch {epoch:02d}] loss: {instance_loss:7.4f}", refresh=False)
+                # tqdm_train.set_description(f"[Epoch {epoch:02d}] loss: {instance_loss:7.4f}", refresh=False)
                 if step % 1000 == 0:
                     sw.add_scalar("Batch_vae_loss", instance_loss, global_step=step)
                 opt_vae.step()

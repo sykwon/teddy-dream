@@ -72,7 +72,7 @@ class format_dict(dict):
 # name mapping
 alg_label_dict = identity_dict({
     # model
-    "Prnn": "DREAM",
+    "PDREAM": "DREAM",
     "rnn": "DREAM",
     "eqt": "LBS",
     "card": "CardNet",
@@ -154,8 +154,8 @@ data_label_dict = identity_dict({
 
 
 arg_default_map_dict = {
-    'Pastrid': {
-        'path': "datasets/wiki2/",
+    'PAstrid': {
+        'dname': "WIKI",
         'delta': -3,
         'p_train': 1.0,
         'seed': 0,
@@ -168,7 +168,7 @@ arg_default_map_dict = {
     },
     'DREAM': {
         'model': 'DREAM',
-        'dname': 'wiki2',
+        'dname': 'WIKI',
         'p_train': 1.0,
         'p_val': 0.1,
         'p_test': 0.1,
@@ -191,7 +191,7 @@ arg_default_map_dict = {
     },
     'PDREAM': {
         'model': 'DREAM',
-        'dname': 'wiki2',
+        'dname': 'WIKI',
         'p_train': 1.0,
         'p_val': 0.1,
         'p_test': 0.1,
@@ -214,7 +214,7 @@ arg_default_map_dict = {
     },
     'EDREAM': {
         'model': 'DREAM',
-        'dname': 'wiki2',
+        'dname': 'WIKI',
         'p_train': 1.0,
         'p_val': 0.1,
         'p_test': 0.1,
@@ -235,8 +235,8 @@ arg_default_map_dict = {
         'es': 100,
         'clip_gr': 10.0,
     },
-    'Pcard': {
-        'dname': 'wiki2',
+    'PCardNet': {
+        'dname': 'WIKI',
         'p_train': 1.0,
         'p_val': 0.1,
         'p_test': 0.1,
@@ -259,8 +259,8 @@ arg_default_map_dict = {
         'vclip_gr': 0.01,
         'clip_gr': 10.0,
     },
-    'card': {
-        'dname': 'wiki2',
+    'CardNet': {
+        'dname': 'WIKI',
         'p_train': 1.0,
         'p_val': 0.1,
         'p_test': 0.1,
@@ -283,9 +283,9 @@ arg_default_map_dict = {
         'vclip_gr': 0.01,
         'clip_gr': 10.0,
     },
-    'eqt': {
-        'model': 'eqt',
-        'dname': 'wiki2',
+    'LBS': {
+        'model': 'LBS',
+        'dname': 'WIKI',
         'p_test': 0.1,
         'seed': 0,
         'Ntbl': 5,
@@ -312,19 +312,19 @@ arg_str_format_dict = {
 
 arg_model_format_dict = {
     'DREAM': "DREAM_{dataName}_max_cs_{cs}_layer_1_predL_{predLayer}",
-    'card': "CardNET_{dataName}_max_csc_{csc}_vsc_{vsc}",
-    'eqt': "L_10_N_{Ntbl}_PT_{PT}_n_*_name_{dataName}_seed_{seed}.bin",
-    'astrid': "",
+    'CardNet': "CardNET_{dataName}_max_csc_{csc}_vsc_{vsc}",
+    'LBS': "L_10_N_{Ntbl}_PT_{PT}_n_*_name_{dataName}_seed_{seed}.bin",
+    'Astrid': "",
 }
 
 model_dir_dict = {
-    'DREAM': "../model/",
-    'Prnn': "../model/",
-    'card': "../model/",
-    'Pcard': "../model/",
-    'eqt': "../deepess/pkl/load_extended_ngram_table_hash/",
-    'astrid': "",
-    'Pastrid': "",
+    'DREAM': "../dream/model/",
+    'PDREAM': "../dream/model/",
+    'CardNet': "../dream/model/",
+    'PCardNet': "../dream/model/",
+    'LBS': "../dream/pkl/load_extended_ngram_table_hash/",
+    'Astrid': "../astrid/log/",
+    'PAstrid': "../astrid/log/",
 }
 
 alg_style_dict = {
@@ -565,10 +565,7 @@ def union_df(df_list, ignore_index=True):
 
 def assign_dname_to_query_dict(query_dict, dname, alg):
     if dname is not None:
-        if alg == "Pastrid":
-            query_dict['path'] = f"datasets/{dname}/"
-        else:
-            query_dict['dname'] = dname
+        query_dict['dname'] = dname
     return query_dict
 
 
@@ -622,10 +619,7 @@ def get_df_model(verbose_level=2):
                 xlabel = xlabel_dict[alg]
                 default_map = default_map_dict[alg].copy()
                 default_map['seed'] = seed
-                if "astrid" in alg:
-                    default_map['path'] = f'datasets/{dataName}/'
-                else:
-                    default_map['dname'] = dataName
+                default_map['dname'] = dataName
 
                 for xval in xvals:
                     if isinstance(xlabel, tuple):

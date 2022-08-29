@@ -1433,7 +1433,7 @@ def is_learning_model(alg):
 
 
 def varify_args(args):
-    # if model_name == 'card':
+    # if model_name == 'CardNet':
     #     assert args.card
     model_name = args.model
     assert args.model is not None
@@ -1569,7 +1569,7 @@ def get_splited_train_valid_test_each_len(query_strings, split_seed, args):
 
     q_train, q_test = train_test_split(query_strings, test_size=p_test, random_state=seed, stratify=query_len)
     if p_valid is None:  # use all train data as valid data
-        assert args.model == 'eqt'
+        assert args.model == 'LBS'
         return None, q_train, q_test
 
     q_train_len = [len(x) for x in q_train]

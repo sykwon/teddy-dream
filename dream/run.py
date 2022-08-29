@@ -37,7 +37,7 @@ def get_config_manager_and_exp_name(args):
     dname = args.dname
 
     if model_name == 'DREAM':
-        assert args.cs, "In RNN training, cell size should be given"
+        assert args.cs, "In DREAM training, cell size should be given"
         cm["alg"]["cs"] = args.cs
         exp_suffix += f"_cs_{args.cs}"
 
@@ -60,7 +60,7 @@ def get_config_manager_and_exp_name(args):
         cm["alg"]["es"] = args.es
         exp_suffix += f"_es_{args.es}"
 
-    if model_name == 'card':
+    if model_name == 'CardNet':
         cm["alg"]["csc"] = args.csc
         exp_suffix += f"_csc_{args.csc}"
         cm["alg"]["vsc"] = args.vsc
@@ -82,7 +82,7 @@ def get_config_manager_and_exp_name(args):
             cm["alg"]["lr"] = args.lr
             exp_suffix += f"_lr_{args.lr}"
         if args.vlr:
-            assert model_name == 'card'
+            assert model_name == 'CardNet'
             cm["alg"]["vlr"] = args.vlr
             exp_suffix += f"_vlr_{args.vlr}"
         if args.max_char:

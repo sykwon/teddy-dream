@@ -20,10 +20,10 @@ fi
 seeds='0'
 
 rnn_all
-# Prnn_all
-# card_all
-# Pcard_all
-# LBS_all
+Prnn_all
+card_all
+Pcard_all
+LBS_all
 
 # run_all
 # Ernn_all

@@ -7,6 +7,16 @@
 
 This is the modified version of Astrid starting from the astrid model downloaded from Astrid's authors repository [[github](<https://github.com/saravanan-thirumuruganathan/astrid-string-selectivity>)].
 
+## Installation
+
+```bash
+sudo apt-get install redis-server
+conda create -n py37 python=3.7
+source activate py37
+conda install pytorch=1.7.1 torchvision=0.8.2 cudatoolkit=11.0 -c pytorch -c nvidia
+pip install -r requirements.txt # For python packages, see requirements.txt
+```
+
 ## Training and evaluating cardinality estimators
 
 To train and evaluate the cardinality estimators, run the following command:
@@ -37,11 +47,11 @@ The pretrained embedding model are written as log/DBLP/DBLP_0_512_2048_0.001_64_
 start training estimator model
 The estimated cardinalities are written as log/DBLP/DBLP_0_512_2048_0.001_64_1.0_8_1024/selectivity_model_1.pth
 The estimated cardinalities are written as log/DBLP/DBLP_0_512_2048_0.001_64_1.0_8_1024/analysis_ts_1.csv
-average q-error: 2.64
+average q-error: 2.91
 ```
 
 The above output says that the trained models are stored at the file with the names ```embedding_model_1.pth``` and ```selectivity_model_1.pth``` in the directory ```log/DBLP/DBLP_0_512_2048_0.001_64_1.0_8_1024/```.
-Furthermore, it says that the average q-error of estimated cardinalities is 2.64 for the DREAM model.
+Furthermore, it says that the average q-error of estimated cardinalities is 2.91 for the DREAM model.
 
 To measure the estimation errors of Astrid for a dataset, run the following command:
 

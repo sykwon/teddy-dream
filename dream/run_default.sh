@@ -3,14 +3,14 @@ exp=${1}
 device=0
 preview=0
 analysis=0
-dnames='wiki2 imdb2 dblp egr1'
+dnames='WIKI IMDB DBLP GENE'
 seeds='0 1 2'
 p_trains='0.1 0.2 0.4 0.6 0.8 1.0'
 css='128 256 512 1024'
 cscs='128 256 512 1024'
 PTs='400 100 20 1'
 
-dname=wiki2
+dname=WIKI
 seed=0
 max_d=3
 max_char=200
@@ -51,7 +51,7 @@ function set_rnn {
   l2=0.00000001
   clip_gr=10.0
 }
-function set_Prnn {
+function set_PDREAM {
   l2=0.00000001
   clip_gr=10.0
 }
@@ -89,7 +89,7 @@ function param_search_Pcard_sub {
 # param search Pcard
 function param_search_Pcard {
   param_search_Pcard_sub
-  local dname='dblp'
+  local dname='DBLP'
   local lr=0.001
   local sc=128
   local bs=256
@@ -107,51 +107,51 @@ function param_search_Pcard {
   sc=128
 }
 
-# rnn subprocedure
+# DREAM subprocedure
 function rnn_sub {
-  echo [ rnn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model DREAM --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${lr} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+  echo [ DREAM ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model DREAM --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${lr} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   if [[ $preview -eq 0 ]]; then
     CUDA_VISIBLE_DEVICES=${device} python run.py --model DREAM --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${lr} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   fi
 }
 
-# Prnn subprocedure
-function Prnn_sub {
-  echo [Prnn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+# PDREAM subprocedure
+function PDREAM_sub {
+  echo [PDREAM ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model DREAM --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   if [[ $preview -eq 0 ]]; then
-    CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+    CUDA_VISIBLE_DEVICES=${device} python run.py --model DREAM --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   fi
 }
 
 # Ernn subprocedure
 function Ernn_sub {
-  echo [Ernn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --Eprfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+  echo [Ernn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model DREAM --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --Eprfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   if [[ $preview -eq 0 ]]; then
-    CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --Eprfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+    CUDA_VISIBLE_DEVICES=${device} python run.py --model DREAM --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --Eprfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   fi
 }
 
-# card subprocedure
+# CardNet subprocedure
 function card_sub {
-  echo [card ]: CUDA_VISIBLE_DEVICES=${device} python run.py --model card --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
+  echo [card ]: CUDA_VISIBLE_DEVICES=${device} python run.py --model CardNet --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
   if [[ $preview -eq 0 ]]; then
-    CUDA_VISIBLE_DEVICES=${device} python run.py --model card --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
+    CUDA_VISIBLE_DEVICES=${device} python run.py --model CardNet --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
   fi
 }
 
 # Pcard subprocedure
 function Pcard_sub {
-  echo [Pcard]: CUDA_VISIBLE_DEVICES=${device} python run.py --model card --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --Eprfx --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
+  echo [Pcard]: CUDA_VISIBLE_DEVICES=${device} python run.py --model CardNet --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --Eprfx --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
   if [[ $preview -eq 0 ]]; then
-    CUDA_VISIBLE_DEVICES=${device} python run.py --model card --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --Eprfx --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
+    CUDA_VISIBLE_DEVICES=${device} python run.py --model CardNet --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --Eprfx --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
   fi
 }
 
 # LBS subprocedure
 function LBS_sub {
-  echo [ LBS ]: python run.py --model eqt --dname ${dname} --p-test ${p_test} --dsize max --seed ${seed} --Ntbl ${Ntbl} --PT ${PT} --max-l ${max_l} --max-d ${max_d} --L ${L}${suffix}
+  echo [ LBS ]: python run.py --model LBS --dname ${dname} --p-test ${p_test} --seed ${seed} --Ntbl ${Ntbl} --PT ${PT} --max-d ${max_d} --L ${L}${suffix}
   if [[ $preview -eq 0 ]]; then
-    python run.py --model eqt --dname ${dname} --p-test ${p_test} --dsize max --seed ${seed} --Ntbl ${Ntbl} --PT ${PT} --max-l ${max_l} --max-d ${max_d} --L ${L}${suffix}
+    python run.py --model LBS --dname ${dname} --p-test ${p_test} --seed ${seed} --Ntbl ${Ntbl} --PT ${PT} --max-d ${max_d} --L ${L}${suffix}
   fi
 }
 
@@ -161,11 +161,11 @@ function rnn_default {
   set_rnn
   rnn_sub
 }
-function Prnn_default {
+function PDREAM_default {
   local l2
   local clip_gr
-  set_Prnn
-  Prnn_sub
+  set_PDREAM
+  PDREAM_sub
 }
 function Ernn_default {
   local l2
@@ -199,12 +199,12 @@ function for_default_rnn {
   done
 }
 
-function for_default_Prnn {
+function for_default_PDREAM {
   local seed
   local dname
   for seed in $seeds; do
     for dname in $dnames; do
-      Prnn_sub
+      PDREAM_sub
     done
   done
 }
@@ -261,14 +261,14 @@ function for_data_size_rnn {
   done
 }
 
-function for_data_size_Prnn {
+function for_data_size_PDREAM {
   local seed
   local dname
   local p_train
   for seed in $seeds; do
     for dname in $dnames; do
       for p_train in $p_trains; do
-        Prnn_sub
+        PDREAM_sub
       done
     done
   done
@@ -313,16 +313,16 @@ function for_data_size_Pcard {
   done
 }
 
-function for_model_size_Prnn {
+function for_model_size_PDREAM {
   local seed
   local dname
   local cs
   local h_dim
-  dname='dblp'
+  dname='DBLP'
   for seed in $seeds; do
     for cs in $css; do
       h_dim=${cs}
-      Prnn_sub
+      PDREAM_sub
     done
   done
 }
@@ -332,7 +332,7 @@ function for_model_size_Pcard {
   local dname
   local csc
   local vsc
-  dname='dblp'
+  dname='DBLP'
   for seed in $seeds; do
     for csc in $cscs; do
       vsc=$((csc / 2))
@@ -345,7 +345,7 @@ function for_model_size_LBS {
   local seed
   local dname
   local PT
-  dname='dblp'
+  dname='DBLP'
   for seed in $seeds; do
     for PT in $PTs; do
       LBS_sub
@@ -366,7 +366,7 @@ function for_analysis_rnn {
   done
 }
 
-function for_analysis_Prnn {
+function for_analysis_PDREAM {
   local suffix
   local dname
   local seed
@@ -374,7 +374,7 @@ function for_analysis_Prnn {
 
   for seed in $seeds; do
     for dname in $dnames; do
-      Prnn_sub
+      PDREAM_sub
     done
   done
 }
@@ -442,15 +442,15 @@ function rnn_all {
   echo
 }
 
-function Prnn_all {
+function PDREAM_all {
   local l2
   local clip_gr
-  set_Prnn
+  set_PDREAM
 
-  for_default_Prnn
-  for_analysis_Prnn
-  # for_data_size_Prnn
-  # for_model_size_Prnn
+  for_default_PDREAM
+  for_analysis_PDREAM
+  # for_data_size_PDREAM
+  # for_model_size_PDREAM
   echo
 }
 
@@ -495,7 +495,7 @@ function LBS_all {
 
 function run_all {
   rnn_all
-  Prnn_all
+  PDREAM_all
   Ernn_all
   card_all
   Pcard_all
@@ -505,7 +505,7 @@ function run_all {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if [[ $preview -ne 0 ]]; then
     rnn_default
-    Prnn_default
+    PDREAM_default
     Ernn_default
     card_default
     Pcard_default
