@@ -20,7 +20,7 @@ pip install -r requirements.txt # For python packages, see requirements.txt
 To train and evaluate the cardinality estimators, run the following command:
 
 ```bash
-python run.py --model <model_name> --dname <data_name> --p-train <ratio_training> --p-val <ratio_validation> --p-test <ratio_test> --seed <seed_number> --l2 <l2_regularization> --lr <learning_rate> --layer <number_encoder_layers> --pred-layer <number_decoder_layers> --cs <encoder_scale> --max-epoch <max_epoch> --patience <patience> --max-d <delta_M> --max-char <max_char> --bs <batch_size> --h-dim <decoder_scale> --es <embedding_size> --clip-gr <gradient_clipping> 
+python run.py --model <model_name> --dname <data_name> --p-train <ratio_training> --p-val <ratio_validation> --p-test <ratio_test> --seed <seed_number> --l2 <l2_regularization> --lr <learning_rate> --layer <number_encoder_layers> --pred-layer <number_decoder_layers> --cs <encoder_scale> --max-epoch <max_epoch> --patience <patience_number> --max-d <delta_M> --max-char <max_char> --bs <batch_size> --h-dim <decoder_scale> --es <embedding_size> --clip-gr <gradient_clipping> 
 ```
 
 * <model_name>: the name of the cardinality estimator (DREAM, CardNet or LBS)  
@@ -36,7 +36,7 @@ The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our pape
 * <number_encoder_layers>: the number of layers in the encoder of the model
 * <encoder_scale>: the scale of the encoder of the model
 * <max_epoch>: the maximum number of epoches to train the model
-* <patience>: the number which represents how many times to keep the training while the
+* <patience_number>: the number of epochs without improvement after which training will be early stopped
 * <delta_M>: the maximum substring edit distance threshold
 * <max_char>: It is the maximum number of most frequent characters to keep for the cardinality estimator.  
     The remaining characters are considered as unknown.
