@@ -3,7 +3,7 @@
 exp=${1:-help}
 
 source run_default.sh
-preview=1
+preview=0
 
 if [[ "$exp" = "help" ]]; then
     echo "Usage: ./run.sh {DBLP, GENE, WIKI, IMDB, all}"
@@ -20,9 +20,9 @@ fi
 seeds='0'
 
 rnn_all
-Prnn_all
+PDREAM_all
 card_all
-Pcard_all
+PCardNet_all
 LBS_all
 
 # run_all

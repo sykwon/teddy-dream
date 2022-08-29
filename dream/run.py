@@ -170,7 +170,7 @@ if __name__ == "__main__":
     cm, exp_name = get_config_manager_and_exp_name(args)
     # print(cm)
     # print("[exp_key ]:", exp_key)
-    # print("[exp_name]:", exp_name)
+    print("[exp_name]:", exp_name)
 
     # print("save pair (exp_key, exp_name)")
     args_dict_str = json.dumps(args.__dict__)

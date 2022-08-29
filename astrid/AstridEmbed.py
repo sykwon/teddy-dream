@@ -281,7 +281,7 @@ def analysis_block1_query_string(df, train_df, test_df, test_qs):
     # df_my.to_csv(data_path, index=False)
     test_qs.rename({0: 's_q'}, axis=1)
     # print("saved at:", qs_path)
-    # test_qs.to_csv(qs_path, index=False)
+    test_qs.to_csv(qs_path, index=False)
     # print("saved at:", train_path)
     # train_df_my.to_csv(train_path, index=False)
     # print("saved at:", test_path)

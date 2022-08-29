@@ -12,8 +12,8 @@ else
     echo "Start experiments on the ${exp} dataset"
     dnames=$exp
 fi
-preview=1
+preview=0
 
 astrid_default
 astrid_analysis
-astrid_train_size
+# astrid_train_size

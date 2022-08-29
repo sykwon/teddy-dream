@@ -1,4 +1,5 @@
 import exp_util as eu
+import os
 from exp_util import *
 from IPython.display import display
 
@@ -15,12 +16,12 @@ def get_table_accuracy_of_estimators_in_default_setting(delta=3, verbose_level=0
 
     eu._xvals = [1.0]
     eu._xvals_dict = {
-        "eqt": [0.1],
+        "LBS": [0.1],
     }
 
     eu._xlabel = "p_train"
     eu._xlabel_dict = {
-        "eqt": "p_test",
+        "LBS": "p_test",
     }
 
     eu._ylabels = ['anal:err', 'anal:q50', 'est:q90', 'anal:q99', 'anal:q100']
@@ -80,7 +81,11 @@ def get_table_accuracy_of_estimators_in_default_setting(delta=3, verbose_level=0
         df_list.append(df_prfx)
 
     df_all = pd.concat(df_list)
-    display(rename_df_col_index(df_all).applymap("{:.2f}".format))
+    formated_df = rename_df_col_index(df_all).applymap("{:.2f}".format)
+    display(formated_df)
+    table_key = "_".join(eu._dataNames)
+    os.makedirs("htmls/", exist_ok=True)
+    formated_df.to_html(f"htmls/estimator_{table_key}.html")
 
 
 def get_df_model_lbs_egr(verbose_level):
@@ -106,7 +111,7 @@ def exp1_qs_vs_gt(prefix, timeout, delta=None, **kwargs):
     # exp1: join varying sampling ratio
     eu._seeds = [0]
 
-    eu._algs = ['allp', 'topk', 'taste', 'teddy2', 'soddy2']
+    eu._algs = ['NaiveGen', 'Qgram', 'TASTE', 'TEDDY', 'SODDY']
 
     eu._dataNames = ['WIKI', 'IMDB', 'DBLP', 'GENE']
     if 'dataNames' in kwargs:
@@ -128,7 +133,7 @@ def exp1_qs_vs_gt(prefix, timeout, delta=None, **kwargs):
         ofname_pat += "_prfx"
     ofname_pat += ".png"
 
-    df = get_df(0)
+    df = get_df(1)
     df['n_qry'] = df['join:n_prfx'] * (delta + 1)
     df['n_qs'] = df['join:n_prfx']
     df = clipping_df(df, "join:time", max_val=timeout)
@@ -148,27 +153,27 @@ def exp1_qs_vs_gt(prefix, timeout, delta=None, **kwargs):
 
     if prefix:
         plt_args = {
-            "wiki2": {
+            "WIKI": {
                 'yticks': [1e2, 1e3, 1e4, 1e5],
                 'ylim': [1e2, 1e5],
                 'xlim': [0.03, 1],
                 'xminor': False,
                 'yminor': False,
             },
-            "imdb2": {
+            "IMDB": {
                 'yticks': [1e3, 1e4],
                 'yticks': [1e2, 1e3, 1e4, 1e5],
                 'xlim': [0.03, 1],
                 'xminor': False,
                 'yminor': True,
             },
-            "dblp": {
+            "DBLP": {
                 'yticks': [1e1, 1e2, 1e3, 1e4, 1e5, 1e6],
                 'xlim': [0.03, 1],
                 'xminor': False,
                 'yminor': True,
             },
-            "egr1": {
+            "GENE": {
                 'xlim': [0.01, 1],
                 'yticks': [1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4, 1e5],
                 'xminor': False,
@@ -176,25 +181,25 @@ def exp1_qs_vs_gt(prefix, timeout, delta=None, **kwargs):
         }
     else:
         plt_args = {
-            "wiki2": {
+            "WIKI": {
                 'yticks': [1e2, 1e3, 1e4, 1e5],
                 'xlim': [0.01, 1],
                 'ylim': [1e2, 1e5],
                 'xminor': False,
                 'yminor': False,
             },
-            "imdb2": {
+            "IMDB": {
                 'yticks': [1e2, 1e3, 1e4, 1e5],
                 'xlim': [0.01, 1],
                 'ylim': [3e1, 1e5],
                 'xminor': False,
             },
-            "dblp": {
+            "DBLP": {
                 'yticks': [1e0, 1e1, 1e2, 1e3, 1e4],
                 'xlim': [0.01, 1],
                 'xminor': False,
             },
-            "egr1": {
+            "GENE": {
                 'xlim': [0.01, 1],
                 'yticks': [1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4, 1e5],
                 'xminor': False,

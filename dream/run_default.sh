@@ -63,12 +63,12 @@ function set_card {
   l2=0.00000001
   clip_gr=10.0
 }
-function set_Pcard {
+function set_PCardNet {
   l2=0.00000001
   clip_gr=10.0
 }
 
-function param_search_Pcard_sub {
+function param_search_PCardNet_sub {
   local cbs
   local vbs
   local clr
@@ -82,27 +82,27 @@ function param_search_Pcard_sub {
   csc=$((sc * 2))
   vsc=${sc}
 
-  # [Pcard]
-  Pcard_sub
+  # [PCardNet]
+  PCardNet_sub
 }
 
-# param search Pcard
-function param_search_Pcard {
-  param_search_Pcard_sub
+# param search PCardNet
+function param_search_PCardNet {
+  param_search_PCardNet_sub
   local dname='DBLP'
   local lr=0.001
   local sc=128
   local bs=256
   for bs in 4096 1024 64 16; do
-    param_search_Pcard_sub
+    param_search_PCardNet_sub
   done
   bs=256
   for lr in 0.01 0.0001; do
-    param_search_Pcard_sub
+    param_search_PCardNet_sub
   done
   lr=0.001
   for sc in 256 512 1024; do
-    param_search_Pcard_sub
+    param_search_PCardNet_sub
   done
   sc=128
 }
@@ -139,9 +139,9 @@ function card_sub {
   fi
 }
 
-# Pcard subprocedure
-function Pcard_sub {
-  echo [Pcard]: CUDA_VISIBLE_DEVICES=${device} python run.py --model CardNet --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --Eprfx --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
+# PCardNet subprocedure
+function PCardNet_sub {
+  echo [PCardNet]: CUDA_VISIBLE_DEVICES=${device} python run.py --model CardNet --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --Eprfx --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
   if [[ $preview -eq 0 ]]; then
     CUDA_VISIBLE_DEVICES=${device} python run.py --model CardNet --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --Eprfx --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
   fi
@@ -179,11 +179,11 @@ function card_default {
   set_card
   card_sub
 }
-function Pcard_default {
+function PCardNet_default {
   local l2
   local clip_gr
-  set_Pcard
-  Pcard_sub
+  set_PCardNet
+  PCardNet_sub
 }
 function LBS_default {
   LBS_sub
@@ -228,12 +228,12 @@ function for_default_card {
     done
   done
 }
-function for_default_Pcard {
+function for_default_PCardNet {
   local seed
   local dname
   for seed in $seeds; do
     for dname in $dnames; do
-      Pcard_sub
+      PCardNet_sub
     done
   done
 }
@@ -300,14 +300,14 @@ function for_data_size_card {
   done
 }
 
-function for_data_size_Pcard {
+function for_data_size_PCardNet {
   local seed
   local dname
   local p_train
   for seed in $seeds; do
     for dname in $dnames; do
       for p_train in $p_trains; do
-        Pcard_sub
+        PCardNet_sub
       done
     done
   done
@@ -327,7 +327,7 @@ function for_model_size_PDREAM {
   done
 }
 
-function for_model_size_Pcard {
+function for_model_size_PCardNet {
   local seed
   local dname
   local csc
@@ -336,7 +336,7 @@ function for_model_size_Pcard {
   for seed in $seeds; do
     for csc in $cscs; do
       vsc=$((csc / 2))
-      Pcard_sub
+      PCardNet_sub
     done
   done
 }
@@ -405,7 +405,7 @@ function for_analysis_card {
   done
 }
 
-function for_analysis_Pcard {
+function for_analysis_PCardNet {
   local suffix
   local dname
   local seed
@@ -413,7 +413,7 @@ function for_analysis_Pcard {
 
   for seed in $seeds; do
     for dname in $dnames; do
-      Pcard_sub
+      PCardNet_sub
     done
   done
 }
@@ -474,15 +474,15 @@ function card_all {
   echo
 }
 
-function Pcard_all {
+function PCardNet_all {
   local l2
   local clip_gr
-  set_Pcard
+  set_PCardNet
 
-  for_default_Pcard
-  for_analysis_Pcard
-  # for_data_size_Pcard
-  # for_model_size_Pcard
+  for_default_PCardNet
+  for_analysis_PCardNet
+  # for_data_size_PCardNet
+  # for_model_size_PCardNet
   echo
 }
 
@@ -498,7 +498,7 @@ function run_all {
   PDREAM_all
   Ernn_all
   card_all
-  Pcard_all
+  PCardNet_all
   LBS_all
 }
 
@@ -508,7 +508,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     PDREAM_default
     Ernn_default
     card_default
-    Pcard_default
+    PCardNet_default
     LBS_default
     echo
     run_all

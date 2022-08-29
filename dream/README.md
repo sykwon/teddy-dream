@@ -42,7 +42,7 @@ The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our pape
     The remaining characters are considered as unknown.
 * <batch_size>: the number of samples processed before the model is updated
 * <decoder_scale>: the scale of the decoder of the model
-* <embedding_size>: the embedding size of concatenated embedding for character and distance
+* <embedding_size>: the size of concatenated embedings of a pair of a character and a distance (Note that the size of a distance embedding is fixed as 5.)
 * <gradient_clipping>: the maximum norm of gradient to ensure the stable learning
 
 For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model with the test data.

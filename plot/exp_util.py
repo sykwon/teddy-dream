@@ -14,6 +14,7 @@ _latex_dir = "figures/"
 _tbl_dir = "tables/"
 _confirm = False
 _verbose_fig = True
+_verbose_tbl = False
 _save_table = False
 
 # default values
@@ -73,23 +74,23 @@ class format_dict(dict):
 alg_label_dict = identity_dict({
     # model
     "PDREAM": "DREAM",
-    "rnn": "DREAM",
-    "eqt": "LBS",
+    "DREAM": "DREAM",
+    "LBS": "LBS",
     "card": "CardNet",
-    "Pcard": "CardNet",
-    "Pastrid": "Astrid",
+    "PCardNet": "CardNet",
+    "PAstrid": "Astrid",
 
     # gen
-    "allp": "NaiveGen",
-    "topk": "Qgram",
-    "taste": "TASTE",
-    "soddy2": "SODDY",
-    "teddy2": "TEDDY",
+    "NaiveGen": "NaiveGen",
+    "Qgram": "Qgram",
+    "TASTE": "TASTE",
+    "SODDY": "SODDY",
+    "TEDDY": "TEDDY",
     "Tallp": "NaiveGen",
-    "Ttopk": "Qgram",
-    "Ttaste": "TASTE",
-    "Tsoddy22": "SODDY",
-    "Tteddy22ttt": "TEDDY",
+    "TQgram": "Qgram",
+    "TTASTE": "TASTE",
+    "TSODDY2": "SODDY",
+    "TTEDDY2ttt": "TEDDY",
 })
 
 table_label_dict = identity_dict({
@@ -146,10 +147,10 @@ param_label_dict = identity_dict({
 })
 
 data_label_dict = identity_dict({
-    "wiki2": "WIKI",
-    "imdb2": "IMDB",
-    "dblp": "DBLP",
-    "egr1": "GENE",
+    "WIKI": "WIKI",
+    "IMDB": "IMDB",
+    "DBLP": "DBLP",
+    "GENE": "GENE",
 })
 
 
@@ -293,8 +294,7 @@ arg_default_map_dict = {
         'max_d': 3,
         'L': 10,
     },
-    'teddy2': {
-        'ps': 1.0,
+    'TEDDY': {
         'pq': 1.0,
         'pTrain': 1.0,
         'thrs': 3,
@@ -303,7 +303,7 @@ arg_default_map_dict = {
 }
 
 arg_str_format_dict = {
-    'join': "{ps} {pq} {alg} data/{dataName}.txt data/qs_{dataName}.txt {thrs} {prfx}",
+    'join': "{alg} data/{dataName}.txt data/qs_{dataName}.txt {thrs} {prfx} 0",
     'DREAM': "--model DREAM --dname {dataName}",
     'CardNet': "--model CardNet --dname {dataName}",
     'LBS': "--model LBS --dname {dataName} --seed {seed} --Ntbl {Ntbl} --PT {PT}",
@@ -328,11 +328,11 @@ model_dir_dict = {
 }
 
 alg_style_dict = {
-    'allp': {'marker': '^'},
-    'topk': {'marker': '+', 'linestyle': "dashed"},
-    'taste': {'marker': 'D'},
-    'soddy2': {'marker': 'x', 'linestyle': "dotted"},
-    'teddy2': {'marker': 'o'},
+    'NaiveGen': {'marker': '^'},
+    'Qgram': {'marker': '+', 'linestyle': "dashed"},
+    'TASTE': {'marker': 'D'},
+    'SODDY': {'marker': 'x', 'linestyle': "dotted"},
+    'TEDDY': {'marker': 'o'},
 }
 
 
@@ -364,7 +364,7 @@ def unpack_dict(input_dict):
 
 def get_arg_str_pat(alg, default_map):
     if "DREAM" in alg:
-        arg_str_pat = arg_str_format_dict["rnn"]
+        arg_str_pat = arg_str_format_dict["DREAM"]
         if "p_train" in default_map:
             arg_str_pat += " --p-train {p_train}"
         if "p_val" in default_map:
@@ -431,7 +431,7 @@ def get_arg_str_pat(alg, default_map):
             arg_str_pat += " --max-d {max_d}"
         if "max_char" in default_map:
             arg_str_pat += " --max-char {max_char}"
-        if "Pcard" in alg:
+        if "PCardNet" in alg:
             arg_str_pat += " --Eprfx"
         if "bs" in default_map:
             arg_str_pat += " --bs {bs}"
