@@ -3,11 +3,12 @@
 ## Running the example notebook
 
 After conducting the experiments, you can see the graph or the table by using the notebook file.
-See [example.ipynb](example.ipynb) file
+The generated graphs will be stored in the folder ```figures/```.
+See [example.ipynb](example.ipynb) file.
 
 ## Results
 
-Here are the graphs for the DBLP dataset obtained by using the notebook file.
+For example, here are the graphs for the DBLP dataset obtained by using the notebook file.
 
 ### Generating training data
 
