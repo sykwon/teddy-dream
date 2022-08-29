@@ -51,7 +51,7 @@ average q-error: 2.91
 ```
 
 The above output says that the trained models are stored at the file with the names ```embedding_model_1.pth``` and ```selectivity_model_1.pth``` in the directory ```log/DBLP/DBLP_0_512_2048_0.001_64_1.0_8_1024/```.
-Furthermore, it says that the average q-error of estimated cardinalities is 2.91 for the DREAM model.
+Furthermore, it says that the average q-error of estimated cardinalities is 2.91 for the Astrid model.
 
 To measure the estimation errors of Astrid for a dataset, run the following command:
 
