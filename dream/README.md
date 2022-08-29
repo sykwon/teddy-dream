@@ -40,7 +40,7 @@ The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our pape
 * <delta_M>: the maximum substring edit distance threshold
 * <max_char>: It is the maximum number of most frequent characters to keep for the cardinality estimator.  
     The remaining characters are considered as unknown.
-* <batch_size>: the batch size of each training step
+* <batch_size>: the number of samples processed before the model is updated
 * <decoder_scale>: the scale of the decoder of the model
 * <embedding_size>: the embedding size of concatenated embedding for character and distance
 * <gradient_clipping>: the maximum norm of gradient to ensure the stable learning

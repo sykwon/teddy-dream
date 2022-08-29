@@ -22,7 +22,7 @@ pip install -r requirements.txt # For python packages, see requirements.txt
 To train and evaluate the cardinality estimators, run the following command:
 
 ```bash
-python AstridEmbed.py --dname <data_name> --delta <delta_number> --p-train <ratio_training> --seed <seed_number> --es <embedding_size> --bs <batch_size> --<learning_rate> --epoch <max_epoch> --emb-epoch <max_epoch_emb> --dsc <decoder_scale>
+python AstridEmbed.py --dname <data_name> --delta <delta_number> --p-train <ratio_training> --seed <seed_number> --es <embedding_size> --bs <batch_size> --<learning_rate> --epoch <max_epoch> --emb-epoch <max_epoch_emb> --dsc <decoder_hidden_layer_dim>
 ```
 
 * <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
@@ -34,10 +34,10 @@ The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our pape
 * <max_epoch>: the maximum number of epoches to train the estimator model
 * <max_epoch_emb>: the maximum number of epoches to train the embedding model (Note that the Astrid consists of the embedding and estimator models.)
 * <batch_size>: the number of samples processed before the model is updated
-* <decoder_scale>: the scale of the decoder of the model
-* <embedding_size>: the embedding size of concatenated embedding for character and distance
+* <decoder_hidden_layer_dim>: the dimension of the first hidden layer in the decoder of the model (Note that the dimension of the i-th hidden layer is twice of that of the (i+1)-th hidden layer.)
+* <embedding_size>: the size of concatenated embedings of a pair of a character and a distance (Note that the size of a distance embedding is fixed as 5.)
 
-For example, if we use the following command, we train the Astrid model with the base training data with ```<delta>=1``` for the DBLP dataset and evaluate the model with the test data.  After training as well as evaluation of the Astrid model are done, the file pathes where the output file of the estimated cardinalities for test data and the trained models are printed.
+For example, if we use the following command, we train the Astrid model with the base training data with ```<delta_number>=1``` for the DBLP dataset and evaluate the model with the test data.  After training as well as evaluation of the Astrid model are done, the file pathes where the output file of the estimated cardinalities for test data and the trained models are printed.
 In addition, the average q-error of estimated cardinalities is printed.
 
 ```bash
