@@ -6,8 +6,6 @@ After conducting the experiments, you can see the graph or the table by using th
 The generated graphs and tables will be stored in the folders ```figures/``` and ```htmls/```, respectively.
 See [example.ipynb](example.ipynb) file.
 
-## Results
-
 For example, you can obtain graphes and tables by using [example.ipynb](example.ipynb) for the DBLP dataset. Note that if you want to see the graphes and tables for other datasets, what you have to do is to change the variable ```dataNames```.
 
 ### Generating training data
