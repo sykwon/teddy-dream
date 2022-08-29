@@ -27,7 +27,7 @@ python run.py --model <model_name> --dname <data_name> --p-train <ratio_training
 The meanings of DREAM, Qgram and LBS are described in Section 6 of our paper.
 * <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
 The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our paper.
-* <ratio_training>: the ratio of training dataset
+* <ratio_training>: the sampling ratio of query strings to train the estimators
 * <ratio_validation>: the ratio of validation dataset
 * <ratio_test>: the ratio of test dataset
 * <seed_number>: the random seed to generate the initial weights of the estimator model

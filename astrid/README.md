@@ -28,7 +28,7 @@ python AstridEmbed.py --dname <data_name> --delta <delta_number> --p-train <rati
 * <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
 The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our paper.
 * <delta_number>: the substring edit distance threshold for training and test queries
-* <ratio_training>: the ratio of training dataset
+* <ratio_training>: the sampling ratio of query strings to train the estimators
 * <seed_number>: the random seed to generate the initial weights of the estimator model
 * <learning_rate>: the learning rate of the gradient descent optimization
 * <max_epoch>: the maximum number of epoches to train the estimator model
