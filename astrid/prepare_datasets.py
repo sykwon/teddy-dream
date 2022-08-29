@@ -75,7 +75,7 @@ def load_and_save_tpch():
 # dblp_authors_prefix_count, dblp_authors_prefix_triplets contain the frequencies and triplets respectively
 
 
-def prepare_dataset(folder_path, train_qs_prefix, total_prefix, file_name_prefix, triplet_name_prefix, threshold, max_l, prune_level):
+def prepare_dataset(folder_path, train_qs_prefix, total_prefix, file_name_prefix, triplet_name_prefix, threshold):
     print("Processing data", train_qs_prefix)
     # functions = [summary_data_structures.get_all_prefixes, summary_data_structures.get_all_suffixes,
     #              summary_data_structures.get_all_substrings]
@@ -97,7 +97,7 @@ def prepare_dataset(folder_path, train_qs_prefix, total_prefix, file_name_prefix
                   count_file_name_w, "and", triplet_file_name)
             continue
 
-        summary_data_structures.MAX_STR_SIZE = max_l
+        summary_data_structures.MAX_STR_SIZE = 20
         max_n = None
         tree = summary_data_structures.create_summary_datastructure(
             input_qs_file_name, fn, split_words=False, max_n=max_n)

@@ -7,30 +7,6 @@
 
 This is the modified version of Astrid starting from the astrid model downloaded from [[github](<https://github.com/saravanan-thirumuruganathan/astrid-string-selectivity>)]
 
-## Script
+## Training and evaluating cardinality estimators
 
-```bash
-# quick test
-./run.sh test 
-
-# exp on DBLP 
-./run.sh dblp
-
-# all exp
-./run.sh all
-```
-
-### Algorithms
-
-| in exp | in paper |
-|--------|----------|
-| astrid | Astrid   |
-
-### Datasets
-
-| in exp | in paper |
-|--------|----------|
-| dblp   |   DBLP   |
-| wiki2  |   WIKI   |
-| imdb2  |   IMDB   |
-| egr1   |   GENE   |
+To train and evaluate the cardinality estimators, run the following command:

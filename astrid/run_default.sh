@@ -26,9 +26,9 @@ function astrid_sub {
     local delta
     for delta in $(seq 0 $delta_M); do
         if [[ $preview -ne 0 ]]; then
-            echo CUDA_VISIBLE_DEVICES=${device} python AstridEmbed.py --path datasets/${dname}/ --prfx qs_${dname} --delta ${delta} --pt-r ${pt_r} --max-l ${max_l} --p-train ${p_train} --seed ${seed} --es ${es} --bs ${bs} --lr ${lr} --epoch ${epoch} --emb-epoch ${emb_epoch} --dsc ${dsc}${suffix}
+            echo CUDA_VISIBLE_DEVICES=${device} python AstridEmbed.py --path datasets/${dname}/ --prfx qs_${dname} --delta ${delta} --pt-r ${pt_r} --p-train ${p_train} --seed ${seed} --es ${es} --bs ${bs} --lr ${lr} --epoch ${epoch} --emb-epoch ${emb_epoch} --dsc ${dsc}${suffix}
         else
-            CUDA_VISIBLE_DEVICES=${device} python AstridEmbed.py --path datasets/${dname}/ --prfx qs_${dname} --delta ${delta} --pt-r ${pt_r} --max-l ${max_l} --p-train ${p_train} --seed ${seed} --es ${es} --bs ${bs} --lr ${lr} --epoch ${epoch} --emb-epoch ${emb_epoch} --dsc ${dsc}${suffix}
+            CUDA_VISIBLE_DEVICES=${device} python AstridEmbed.py --path datasets/${dname}/ --prfx qs_${dname} --delta ${delta} --pt-r ${pt_r} --p-train ${p_train} --seed ${seed} --es ${es} --bs ${bs} --lr ${lr} --epoch ${epoch} --emb-epoch ${emb_epoch} --dsc ${dsc}${suffix}
         fi
     done
 }

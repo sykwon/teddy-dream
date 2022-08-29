@@ -158,7 +158,6 @@ arg_default_map_dict = {
         'path': "datasets/wiki2/",
         'delta': -3,
         'pt_r': 1.0,
-        'max_l': 20,
         'p_train': 1.0,
         'seed': 0,
         'es': 512,
@@ -182,7 +181,6 @@ arg_default_map_dict = {
         'cs': 512,
         'max_epoch': 100,
         'patience': 5,
-        'max_l': 20,
         'max_d': 3,
         'max_char': 200,
         'prfx': False,
@@ -206,7 +204,6 @@ arg_default_map_dict = {
         'cs': 512,
         'max_epoch': 100,
         'patience': 5,
-        'max_l': 20,
         'max_d': 3,
         'max_char': 200,
         'prfx': True,
@@ -230,7 +227,6 @@ arg_default_map_dict = {
         'cs': 512,
         'max_epoch': 100,
         'patience': 5,
-        'max_l': 20,
         'max_d': 3,
         'max_char': 200,
         'Eprfx': True,
@@ -254,7 +250,6 @@ arg_default_map_dict = {
         'max_epoch': 800,
         'patience': 5,
         'Eprfx': True,
-        'max_l': 20,
         'max_d': 3,
         'max_char': 200,
         'bs': 256,
@@ -279,7 +274,6 @@ arg_default_map_dict = {
         'max_epoch': 800,
         'patience': 5,
         'Eprfx': False,
-        'max_l': 20,
         'max_d': 3,
         'max_char': 200,
         'bs': 256,
@@ -297,7 +291,6 @@ arg_default_map_dict = {
         'seed': 0,
         'Ntbl': 5,
         'PT': 20,
-        'max_l': 20,
         'max_d': 3,
         'L': 10,
     },
@@ -307,16 +300,15 @@ arg_default_map_dict = {
         'pTrain': 1.0,
         'thrs': 3,
         'prfx': 0,
-        'max_l': 20
     }
 }
 
 arg_str_format_dict = {
-    'join': "{ps} {pq} {alg} data/{dataName}.txt data/qs_{dataName}_{seed}_{max_l}.txt {thrs} {prfx}",
+    'join': "{ps} {pq} {alg} data/{dataName}.txt data/qs_{dataName}.txt {thrs} {prfx}",
     'DREAM': "--model DREAM --dname {dataName}",
     'CardNet': "--model CardNet --dname {dataName}",
     'LBS': "--model LBS --dname {dataName} --seed {seed} --Ntbl {Ntbl} --PT {PT}",
-    'Astrid': "--path datasets/{dataName}/ --prfx qs_{dataName} --delta {delta} --pt-r {pt_r} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
+    'Astrid': "--path datasets/{dataName}/ --prfx qs_{dataName} --delta {delta} --p-train {pTrain} --seed {seed} --es {es} --bs {bs} --lr {lr} --epoch {epoch}",
 }
 
 arg_model_format_dict = {
@@ -456,8 +448,8 @@ def get_arg_str_pat(alg, default_map):
         assert any([join_name in alg for join_name in ['NaiveGen', 'TASTE', 'Qgram', 'SODDY', 'TEDDY', 'TEDDY-R']])
         arg_str_pat = arg_str_format_dict['join']
         if "pTrain" in default_map:
-            arg_str_pat = arg_str_pat.replace("data/qs_{dataName}_{seed}_{max_l}.txt",
-                                              "data/qs_{dataName}_{seed}_{max_l}_{pTrain}.txt")
+            arg_str_pat = arg_str_pat.replace("data/qs_{dataName}.txt",
+                                              "data/qs_{dataName}_{pTrain}.txt")
 
         if "P" == alg[0]:
             alg = alg[1:]
@@ -1036,8 +1028,6 @@ def get_parser_with_ignores_astrid(required=True):
     parser.add_argument("--path", required=required, type=str, help="data path")
     parser.add_argument("--prfx", required=required, type=str, help="data prefix")
     parser.add_argument("--delta", required=required, type=int, help="train model")
-    parser.add_argument("--pt-r", required=required, type=float,
-                        help="pretraining ratio of nodes in a trie")
     parser.add_argument("--p-train", required=required, type=float, help="ratio of training data")
     parser.add_argument("--p-val", default=0.1, type=float, help="ratio of valid data")
     parser.add_argument("--p-test", default=0.1, type=float, help="ratio of test data")

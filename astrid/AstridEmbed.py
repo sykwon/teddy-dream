@@ -563,18 +563,18 @@ if __name__ == "__main__":
     res_prefix = qs_prefix.replace("qs_", "res_")
 
     # load path
-    total_qs_load_prefix = qs_prefix + f"_0_{args.max_l}"  # total: train + test
+    total_qs_load_prefix = qs_prefix  # total: train + test
     train_qs_load_prefix = total_qs_load_prefix + f"_{args.p_train}"
-    total_card_load_prefix = res_prefix + f"_0_{args.max_l}_{max_d}_max"
+    total_card_load_prefix = res_prefix + f"_{max_d}"
 
     # input path
-    train_triplet_prefix = args.prfx + f"_{args.delta}_{args.pt_r}_{args.max_l:02d}_{args.seed}"
-    total_file_name_prefix = args.prfx + f"_{args.delta}_{args.pt_r}_{args.max_l:02d}_0"  # total: train + test
+    train_triplet_prefix = args.prfx + f"_{args.delta}"
+    total_file_name_prefix = args.prfx + f"_{args.delta}"  # total: train + test
     train_file_name_prefix = total_file_name_prefix + f"_{args.p_train}"
 
     # model path
     model_name_prefix = args.prfx + \
-        f"_{args.delta}_{args.pt_r}_{args.max_l:02d}_{args.seed}_{args.es}_{args.bs}_{args.lr}_{args.epoch}_{args.p_train}_{args.emb_epoch}_{args.dsc}"
+        f"_{args.delta}_{args.seed}_{args.es}_{args.bs}_{args.lr}_{args.epoch}_{args.p_train}_{args.emb_epoch}_{args.dsc}"
 
     if args.analysis:
         print("analysis mode")
@@ -590,7 +590,7 @@ if __name__ == "__main__":
         for args.delta in range(max_delta+1):
             # options
             model_name_prefix = args.prfx + \
-                f"_{args.delta}_{args.pt_r}_{args.max_l:02d}_{args.seed}_{args.es}_{args.bs}_{args.lr}_{args.epoch}_{args.p_train}_{args.emb_epoch}_{args.dsc}"
+                f"_{args.delta}_{args.seed}_{args.es}_{args.bs}_{args.lr}_{args.epoch}_{args.p_train}_{args.emb_epoch}_{args.dsc}"
             save_prefix = model_name_prefix.replace("qs_", "")
             log_dir = f"log/{dname}/{save_prefix}/"
             ts_path = log_dir + f"analysis_ts_{args.delta}.csv"
@@ -672,7 +672,6 @@ if __name__ == "__main__":
     print("file_name_prefix:", train_file_name_prefix)
     print("model_name_prefix:", model_name_prefix)
     print("delta:", args.delta)
-    print("pt_r:", args.pt_r)
     print("p_train:", args.p_train)
     print("seed:", args.seed)
     print("overwrite:", args.overwrite)
@@ -687,9 +686,9 @@ if __name__ == "__main__":
     save_train_query_strings_including_valid_data(path, total_qs_load_prefix, train_qs_load_prefix)
 
     prepare_datasets.prepare_dataset(path, total_qs_load_prefix, total_qs_load_prefix,
-                                     total_file_name_prefix, train_triplet_prefix, args.delta, args.max_l, args.pt_r)
+                                     total_file_name_prefix, train_triplet_prefix, args.delta)
     prepare_datasets.prepare_dataset(path, train_qs_load_prefix, total_qs_load_prefix,
-                                     train_file_name_prefix, train_triplet_prefix, args.delta, args.max_l, args.pt_r)
+                                     train_file_name_prefix, train_triplet_prefix, args.delta)
     # prepare_datasets.prepare_dataset(path, dataset_prefix, delta, 20, pt_r, p_train)
     print(path + train_qs_load_prefix + ".csv", path + train_file_name_prefix + ".csv")
     print(path + total_qs_load_prefix + ".csv", path + total_file_name_prefix + ".csv")

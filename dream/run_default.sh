@@ -13,7 +13,6 @@ PTs='400 100 20 1'
 dname=wiki2
 seed=0
 max_d=3
-max_l=20
 max_char=200
 p_train=1.0
 p_test=0.1
@@ -118,25 +117,17 @@ function rnn_sub {
 
 # Prnn subprocedure
 function Prnn_sub {
-  echo [Prnn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+  echo [Prnn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   if [[ $preview -eq 0 ]]; then
-    CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+    CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   fi
 }
 
 # Ernn subprocedure
 function Ernn_sub {
-  echo [Ernn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --sep-emb --Eprfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+  echo [Ernn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --Eprfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   if [[ $preview -eq 0 ]]; then
-    CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --max-d ${max_d} --max-char ${max_char} --sep-emb --Eprfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
-  fi
-}
-
-# Drnn subprocedure
-function Drnn_sub {
-  echo [Drnn ] : CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --delta ${delta} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
-  if [[ $preview -eq 0 ]]; then
-    CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-l ${max_l} --delta ${delta} --max-char ${max_char} --sep-emb --prfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
+    CUDA_VISIBLE_DEVICES=${device} python run.py --model rnn --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${lr}${swa} --layer ${layer} --pred-layer ${pred_layer} --cs ${cs} --max-epoch ${max_epoch} --patience ${patience} --max-d ${max_d} --max-char ${max_char} --sep-emb --Eprfx --bs ${bs} --h-dim ${h_dim} --es ${es} --clip-gr ${clip_gr}${suffix}
   fi
 }
 
@@ -156,13 +147,6 @@ function Pcard_sub {
   fi
 }
 
-# Dcard subprocedure
-function Dcard_sub {
-  echo [Pcard]: CUDA_VISIBLE_DEVICES=${device} python run.py --model card --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-l ${max_l} --delta ${delta} --max-char ${max_char} --Eprfx --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
-  if [[ $preview -eq 0 ]]; then
-    CUDA_VISIBLE_DEVICES=${device} python run.py --model card --dname ${dname} --p-train ${p_train} --p-val ${p_val} --p-test ${p_test} --dsize max --seed ${seed} --l2 ${l2} --lr ${clr} --vlr ${vlr} --csc ${csc} --vsc ${vsc} --max-epoch ${cmax_epoch} --patience ${patience} --max-l ${max_l} --delta ${delta} --max-char ${max_char} --Eprfx --bs ${cbs} --vbs ${vbs} --max-epoch-vae ${cmax_epoch_vae} --vl2 ${vl2} --vclip-lv ${vclip_lv} --vclip-gr ${vclip_gr} --clip-gr ${clip_gr}${suffix}
-  fi
-}
 # LBS subprocedure
 function LBS_sub {
   echo [ LBS ]: python run.py --model eqt --dname ${dname} --p-test ${p_test} --dsize max --seed ${seed} --Ntbl ${Ntbl} --PT ${PT} --max-l ${max_l} --max-d ${max_d} --L ${L}${suffix}
@@ -447,32 +431,6 @@ function for_analysis_LBS {
   done
 }
 
-function for_each_delta_Prnn {
-  local seed
-  local dname
-  local delta
-  for seed in $seeds; do
-    for dname in $dnames; do
-      for delta in 0 1 2 3; do
-        Drnn_sub
-      done
-    done
-  done
-}
-
-function for_each_delta_Pcard {
-  local seed
-  local dname
-  local delta
-  for seed in $seeds; do
-    for dname in $dnames; do
-      for delta in 0 1 2 3; do
-        Dcard_sub
-      done
-    done
-  done
-}
-
 function rnn_all {
   local l2
   local clip_gr
@@ -493,7 +451,6 @@ function Prnn_all {
   for_analysis_Prnn
   # for_data_size_Prnn
   # for_model_size_Prnn
-  # for_each_delta_Prnn
   echo
 }
 
@@ -526,7 +483,6 @@ function Pcard_all {
   for_analysis_Pcard
   # for_data_size_Pcard
   # for_model_size_Pcard
-  # for_each_delta_Pcard
   echo
 }
 
