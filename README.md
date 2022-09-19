@@ -85,3 +85,18 @@ cd ..
 ```
 
 Please refer to [[notebook](/plot/example.ipynb)] to see the experimental results.
+
+## Citation
+
+Please consider to cite our paper if you find this code useful:
+
+```bibtex
+@article{kwon2022cardinality,
+    title={Cardinality estimation of approximate substring queries using deep learning},
+    author={Kwon, Suyong and Jung, Woohwan and Shim, Kyuseok},
+    journal={Proceddings of the VLDB Endowment},
+    volume={15},
+    number={11},
+    year={2022}
+}
+```
