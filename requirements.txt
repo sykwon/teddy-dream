@@ -1,7 +1,10 @@
+anytree
 numpy
 pandas
-PyYAML
+sklearn
+torch
 tqdm
+PyYAML
 line_profiler
 tensorboardX
 torchsummaryX

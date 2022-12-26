@@ -10,7 +10,6 @@ import socket
 import time
 from functools import reduce
 from sklearn.model_selection import train_test_split
-import torchsummary
 
 import numpy as np
 import pandas as pd

@@ -23,10 +23,27 @@ It consists of four folders each of which contains its own README file and scrip
 
 ## Installation and Requirements
 
+### Method 1: Use the Docker Image
+To run the image needs the NVIDIA Container Toolkit. If you do not have the toolkit, refer to the [installation guide](<https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker>)
+
+```bash
+git clone https://github.com/sykwon/teddy-dream.git
+
+# run docker image
+docker run -it --gpus all --name dream -v ${PWD}:/workspace -u 1000:1000 sykwon/dream /bin/bash
+
+# after starting docker
+redis-server --daemonize yes
+cd gen_train_data/
+make clean && make && make info
+cd ..
+```
+
+### Method 2: Create a Virtual Python Environment
 This code needs Python-3.7 or higher.
 
 ```bash
-sudo apt-get install -y redis-server
+sudo apt-get install -y redis-server git
 sudo apt-get install -y binutils
 sudo apt-get install -y texlive texlive-latex-extra texlive-fonts-recommended dvipng cm-super
 
@@ -34,17 +51,7 @@ conda create -n py37 python=3.7
 source activate py37
 conda install -y pytorch=1.7.1 torchvision=0.8.2 cudatoolkit=11.0 -c pytorch -c nvidia
 
-cd dream
 pip install -r requirements.txt
-cd ..
-
-cd astrid
-pip install -r requirements.txt
-cd ..
-
-cd plot
-pip install -r requirements.txt
-cd ..
 ```
 
 ### Datasets
