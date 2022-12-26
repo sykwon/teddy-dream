@@ -83,6 +83,7 @@ class DREAMEstimator(Estimator):
         self.l2 = conf.l2
         self.seq_out = self.prfx
         self.clip_gr = conf.clip_gr
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def build(self, train_data, valid_data=None, test_data=None, over_write=False):
         dfact = self.db_factory
@@ -104,9 +105,7 @@ class DREAMEstimator(Estimator):
         max_d = conf.max_d
         prfx = self.prfx
 
-        self.device = device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        # assert torch.cuda.is_available()
-        if device.type == "cpu":
+        if self.device.type == "cpu":
             warnings.warn("check whether CUDA is available")
 
         # for reproducibility
@@ -123,9 +122,9 @@ class DREAMEstimator(Estimator):
 
         ut.print_torch_summarize(self.model)
         if not over_write and os.path.exists(save_path):
-            self.model.load_state_dict(torch.load(save_path, map_location=torch.device(self.device)))
-            if device.type == "cuda":
-                self.model.to(device)
+            self.model.load_state_dict(torch.load(save_path, map_location=self.device))
+            if self.device.type == "cuda":
+                self.model.to(self.device)
         else:
             # self.train(train_data, valid_data, test_data)
             self.train(train_data, valid_data)
@@ -220,8 +219,7 @@ class DREAMEstimator(Estimator):
 
     def train(self, train_data, valid_data=None, test_data=None):
         model = self.model
-        # model.to(self.device)
-        model.cuda()
+        model.to(self.device)
         model.train()
         econf = self.conf
         lr = econf.lr
@@ -389,7 +387,7 @@ class DREAMEstimator(Estimator):
 
         os.rename(curr_best_path, save_path)
         print("The trained model are written as", save_path)
-        self.model.load_state_dict(torch.load(save_path))
+        self.model.load_state_dict(torch.load(save_path, map_location=self.device))
         torch.save(self.model.state_dict(), save_path)
 
     def _average_loss(self, data_or_loader):
@@ -581,6 +579,7 @@ class RNN_module(nn.Module):
         self.prfx = prfx
         self.seq_out = self.prfx
         self.max_len = max_len
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # input_size = n_char+1
         # self.char_embedding = nn.Embedding(input_size, embed_size - 5, padding_idx=0)
@@ -661,7 +660,7 @@ class RNN_module(nn.Module):
         # print("after last:", output)
         # if self.prfx:
         if self.seq_out and not prfx_train:
-            output = torch.gather(output, 1, (lengths - 1).unsqueeze(-1).cuda()).squeeze()
+            output = torch.gather(output, 1, (lengths - 1).unsqueeze(-1).to(self.device)).squeeze()
         return output
 
         # if hidden is not None:
@@ -702,7 +701,6 @@ class RNN_module(nn.Module):
             data, delta, lengths = x
             loss = mean_squared_logarithmic_loss(pred_y, y, lengths, reduction='none')
             if self.prfx:
-                # y_last = torch.gather(y, 1, (lengths - 1).unsqueeze(-1).cuda()).squeeze()
                 # loss = mean_squared_logarithmic_loss(pred_y, y_last)
                 loss = loss.sum() / lengths.sum()
             else:
@@ -1049,7 +1047,7 @@ class CardNetEstimator(Estimator):
         self.vclip_lv = self.conf.vclip_lv
         self.vclip_gr = self.conf.vclip_gr
         self.clip_gr = self.conf.clip_gr
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.save_dir = None
         self.save_path = None
         self.log_dir = None

@@ -66,6 +66,7 @@ def setup_configs():
 # This function trains and returns the embedding model
 def train_astrid_embedding_model(string_helper, model_output_file_name=None, overwrite=None, load_only=None):
     global embedding_learner_configs, frequency_configs
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Some times special strings such as nan or those that start with a number confuses Pandas
     df = pd.read_csv(frequency_configs.triplets_file_name)
@@ -88,14 +89,14 @@ def train_astrid_embedding_model(string_helper, model_output_file_name=None, ove
         embedding_model = EmbeddingLearner.train_embedding_model(
             embedding_learner_configs, train_loader, string_helper, load_model=True)
         if os.path.exists(model_output_file_name):
-            embedding_model.load_state_dict(torch.load(model_output_file_name))
+            embedding_model.load_state_dict(torch.load(model_output_file_name, map_location=device))
         else:
             raise FileNotFoundError(model_output_file_name)
     else:
         if os.path.exists(model_output_file_name) and not overwrite:  # load
             embedding_model = EmbeddingLearner.train_embedding_model(
                 embedding_learner_configs, train_loader, string_helper, load_model=True)
-            embedding_model.load_state_dict(torch.load(model_output_file_name))
+            embedding_model.load_state_dict(torch.load(model_output_file_name, map_location=device))
         else:  # train
             embedding_model = EmbeddingLearner.train_embedding_model(
                 embedding_learner_configs, train_loader, string_helper)
@@ -162,15 +163,16 @@ def get_selectivity_for_strings(strings, embedding_model, selectivity_model, str
     strings_as_tensors = []
     latencies = []
     normalized_predictions = []
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     with torch.no_grad():
         if analysis is not None:
             for string in strings[:10]:
-                string_as_tensor = string_helper.string_to_tensor(string).cuda()
+                string_as_tensor = string_helper.string_to_tensor(string).to(device)
                 string_as_tensor = string_as_tensor.view(-1, *string_as_tensor.shape)
                 selectivity_model(embedding_model(string_as_tensor))
             for string in strings:
                 start = time.time()
-                string_as_tensor = string_helper.string_to_tensor(string).cuda()
+                string_as_tensor = string_helper.string_to_tensor(string).to(device)
                 # By default embedding mode expects a tensor of [batch size x alphabet_size * max_string_length]
                 # so create a "fake" dimension that converts the 2D matrix into a 3D tensor
                 string_as_tensor = string_as_tensor.view(-1, *string_as_tensor.shape)
@@ -179,25 +181,24 @@ def get_selectivity_for_strings(strings, embedding_model, selectivity_model, str
                 latency = end - start
                 latencies.append(latency)
                 normalized_predictions.append(normalized_prediction)
-            normalized_predictions = torch.tensor(normalized_predictions).cuda()
+            normalized_predictions = torch.tensor(normalized_predictions).to(device)
             denormalized_predictions = misc_utils.unnormalize_torch(normalized_predictions,
                                                                     selectivity_learner_configs.min_val,
                                                                     selectivity_learner_configs.max_val)
         else:
             # print("n_strings:", len(strings))  # 23924
             for string in strings:
-                string_as_tensor = string_helper.string_to_tensor(string).cuda()
+                string_as_tensor = string_helper.string_to_tensor(string).to(device)
                 # By default embedding mode expects a tensor of [batch size x alphabet_size * max_string_length]
                 # so create a "fake" dimension that converts the 2D matrix into a 3D tensor
                 string_as_tensor = string_as_tensor.view(-1, *string_as_tensor.shape)
                 # print("string:", string_as_tensor.size()) # [1, 63, 20]
                 strings_as_tensors.append(embedding_model(string_as_tensor).detach().cpu().numpy())
             strings_as_tensors = np.concatenate(strings_as_tensors)
-            # print("strings:", torch.tensor(strings_as_tensors).cuda().size())  # [23924, 64]
             # normalized_selectivities= between 0 to 1 after the min-max and log scaling.
             # denormalized_predictions are the frequencies between 0 to N
             normalized_predictions = selectivity_model(
-                torch.tensor(strings_as_tensors).cuda())
+                torch.tensor(strings_as_tensors).to(device))
             denormalized_predictions = misc_utils.unnormalize_torch(normalized_predictions,
                                                                     selectivity_learner_configs.min_val,
                                                                     selectivity_learner_configs.max_val)
@@ -206,17 +207,19 @@ def get_selectivity_for_strings(strings, embedding_model, selectivity_model, str
 
 def load_embedding_model(model_file_name, string_helper):
     from EmbeddingLearner import EmbeddingCNNNetwork
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     embedding_model = EmbeddingCNNNetwork(
         string_helper, embedding_learner_configs)
-    embedding_model.load_state_dict(torch.load(model_file_name))
+    embedding_model.load_state_dict(torch.load(model_file_name, map_location=device))
     return embedding_model
 
 
 def load_selectivity_estimation_model(model_file_name, string_helper):
     from SupervisedSelectivityEstimator import SelectivityEstimator
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     selectivity_model = SelectivityEstimator(
         string_helper, selectivity_learner_configs)
-    selectivity_model.load_state_dict(torch.load(model_file_name))
+    selectivity_model.load_state_dict(torch.load(model_file_name, map_location=device))
     return selectivity_model
 
 
