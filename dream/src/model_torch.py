@@ -1107,12 +1107,12 @@ class CardNetEstimator(Estimator):
 
         # load or train model
         if not over_write and os.path.exists(self.save_path):
-            self.model.load_state_dict(torch.load(self.save_path, map_location=torch.device(self.device)))
+            self.model.load_state_dict(torch.load(self.save_path, map_location=self.device))
             self.model.to(self.device)
         else:
             # load or train vae
             if not over_write and os.path.exists(self.vae_path):
-                self.model.vae.load_state_dict(torch.load(self.vae_path, map_location=torch.device(self.device)))
+                self.model.vae.load_state_dict(torch.load(self.vae_path, map_location=self.device))
             else:
                 self._train_vae(train_data, valid_data)
             self._train_cardnet(train_data, valid_data, test_data)
@@ -1272,7 +1272,7 @@ class CardNetEstimator(Estimator):
 
         # ----- done vae training ----
         os.replace(self.vae_path_curr, self.vae_path)
-        self.model.vae.load_state_dict(torch.load(self.vae_path))  # updated from best model
+        self.model.vae.load_state_dict(torch.load(self.vae_path, map_location=self.device))  # updated from best model
         torch.save(self.model.vae.state_dict(), self.vae_path)
 
     def _train_cardnet(self, train_data, valid_data=None, test_data=None):
@@ -1345,5 +1345,5 @@ class CardNetEstimator(Estimator):
         os.replace(self.model_path_curr, self.save_path)
 
         print("The trained model are written as", self.save_path)
-        self.model.load_state_dict(torch.load(self.save_path))  # updated from best model
+        self.model.load_state_dict(torch.load(self.save_path, map_location=self.device))  # updated from best model
         torch.save(self.model.state_dict(), self.save_path)

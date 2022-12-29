@@ -22,6 +22,8 @@ It consists of four folders each of which contains its own README file and scrip
 | plot | example notebook files |
 
 ## Installation and Requirements
+It is recommended to run our code with the CUDA environment.
+However, the non-CUDA version of our code is also working when the pytorch library does not supper GPU. (You may set CUDA_VISIBLE_DEVICES as -1 to enforce CPU mode.)
 
 ### Method 1: Use the Docker Image
 To run the image needs the NVIDIA Container Toolkit. If you do not have the toolkit, refer to the [installation guide](<https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker>)
