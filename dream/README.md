@@ -25,30 +25,30 @@ python run.py --model <model_name> --dname <data_name> --p-train <ratio_training
 
 * <model_name>: the name of the cardinality estimator (DREAM, CardNet or LBS)  
 The meanings of DREAM, Qgram and LBS are described in Section 6 of our paper.
-* <data_name>: the name of dataset (DBLP, GENE, WIKI or IMDB)  
+* <data_name>: the name of the dataset (DBLP, GENE, WIKI or IMDB)  
 The meanings of DBLP, GENE, WIKI and IMDB are described in Section 6 of our paper.
 * <ratio_training>: the sampling ratio of query strings to train the estimators
-* <ratio_validation>: the ratio of validation dataset
-* <ratio_test>: the ratio of test dataset
+* <ratio_validation>: the ratio of the validation dataset
+* <ratio_test>: the ratio of the test dataset
 * <seed_number>: the random seed to generate the initial weights of the estimator model
 * <l2_regularization>: the coefficient of l2 regularization
 * <learning_rate>: the learning rate of the gradient descent optimization
 * <number_encoder_layers>: the number of layers in the encoder of the model
 * <encoder_scale>: the scale of the encoder of the model
-* <max_epoch>: the maximum number of epoches to train the model
+* <max_epoch>: the maximum number of epochs to train the model
 * <patience_number>: the number of epochs without improvement after which training will be early stopped
 * <delta_M>: the maximum substring edit distance threshold
 * <max_char>: It is the maximum number of most frequent characters to keep for the cardinality estimator.  
-    The remaining characters are considered as unknown.
+    The remaining characters are considered unknown.
 * <batch_size>: the number of samples processed before the model is updated
 * <decoder_scale>: the scale of the decoder of the model
-* <embedding_size>: the size of concatenated embedings of a pair of a character and a distance (Note that the size of a distance embedding is fixed as 5.)
-* <gradient_clipping>: the maximum norm of gradient to ensure the stable learning
+* <embedding_size>: the size of concatenated embeddings of a pair of a character and a distance (Note that the size of a distance embedding is fixed as 5.)
+* <gradient_clipping>: the maximum norm of a gradient to ensure the stable learning
 
 For example, if we use the following command, we train the DREAM model with the base training data for the DBLP dataset and evaluate the model with the test data.
 The model parameters of the DREAM model will be printed based on ```pytorch```  before training the model. The description can be found in <https://pytorch.org/docs/1.7.1/generated/torch.nn.Module.html>.
 While training the DREAM model, it will print the average q-error with the validation data.
-After training as well as evaluation of the DREAM model are done, the file pathes where the output file of the estimated cardinalities for test data and the trained model are printed.
+After training as well as evaluation of the DREAM model are done, the file paths where the output file of the estimated cardinalities for test data and the trained model are printed.
 In addition, the average q-error of estimated cardinalities is printed.
 
 ```bash
