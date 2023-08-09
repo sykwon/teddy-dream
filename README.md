@@ -10,7 +10,7 @@
 
 This repository implements training data generation algorithms (SODDY & TEDDY) and deep cardinality estimators (DREAM) proposed in our paper "Cardinality Estimation of Approximate Substring Queries using Deep Learning". It is created by Suyong Kwon, Woohwan Jung and Kyuseok Shim.
 
-## Repository Overwiew
+## Repository Overview
 
 It consists of four folders each of which contains its own README file and script.
 
