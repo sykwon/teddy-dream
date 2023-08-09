@@ -34,8 +34,8 @@ For ablation studies, ```<algorithm_name>``` can be TEDDY-S or TEDDY-R which is 
 * <prefix_aug_flag>: the flag to represent whether to generate the prefix-aug training data (0: base training data; 1: prefix-aug training data)
 * <ratio_training>: the sampling ratio of query strings used to generate the training data
 * <delta_M>: the maximum substring edit distance threshold
-* <number_of_repetitions>: the number of repeted executions of generating a dataset  
-  This parameter value is used to compute average execution time for experiments.
+* <number_of_repetitions>: the number of repeated executions of generating a dataset  
+  This parameter value is used to compute the average execution time for experiments.
 * <max_hours_to_execute>: the time to be allowed for generating training data (1 means an hour.)  
 If the algorithm does not finish within ```<max_hours_to_execute>```, we stop and generate nothing.
 
